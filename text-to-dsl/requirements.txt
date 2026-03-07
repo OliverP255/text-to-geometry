@@ -1,0 +1,5 @@
+transformers>=4.36
+accelerate
+transformers-cfg
+torch
+pytest

@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libkernel.a CMakeFiles/kernel.dir/src/kernel/accum_transform.cpp.o CMakeFiles/kernel.dir/src/kernel/builder.cpp.o CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o CMakeFiles/kernel.dir/src/kernel/intern.cpp.o CMakeFiles/kernel.dir/src/kernel/lower.cpp.o CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libkernel.a

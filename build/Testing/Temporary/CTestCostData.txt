@@ -1,0 +1,6 @@
+dag_builder_tests 4 0.00458611
+optimise_tests 4 0.00519905
+ir_tests 4 0.00526315
+lower_tests 4 0.00696877
+codegen_cuda_tests 4 0.00578228
+---

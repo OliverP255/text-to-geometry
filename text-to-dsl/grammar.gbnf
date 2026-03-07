@@ -1,0 +1,24 @@
+# SDF DSL grammar - GBNF for grammar-constrained decoding
+# Works with transformers-cfg, vLLM (xgrammar), and llama.cpp
+# Optional leading space at root for LLaMA-style tokenizers (prefix space)
+
+root ::= space? program
+
+program ::= (stmt space)* return_stmt
+
+stmt ::= var space "=" space (shape_expr | transform_expr)
+
+return_stmt ::= "return" space var
+
+shape_expr ::= "sphere" "(" num ")" | "box" "(" num "," space num "," space num ")" | "plane" "(" num "," space num "," space num "," space num ")" | "unite" "(" var ("," space var)+ ")" | "intersect" "(" var ("," space var)+ ")" | "subtract" "(" var "," space var ")" | "apply" "(" var "," space var ")"
+
+transform_expr ::= "translate" "(" num "," space num "," space num ")" | "scale" "(" num "," space num "," space num ")"
+
+var ::= "%" [0-9]+
+
+num ::= float_literal space
+
+# strtof-compatible: optional minus, digits, optional decimal, optional exponent
+float_literal ::= ("-"? [0-9]+ ("." [0-9]*)? ([eE] [-+]? [0-9]+)?)
+
+space ::= (" " | "\n" | "\t")*

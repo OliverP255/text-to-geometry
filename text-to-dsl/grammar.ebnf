@@ -1,0 +1,31 @@
+(* EBNF grammar for the SDF DSL - used for grammar-constrained decoding *)
+
+program     := (stmt | return_stmt)+
+stmt        := var "=" (shape_expr | transform_expr)
+return_stmt := "return" var
+
+shape_expr  := "sphere" "(" num ")"
+             | "box" "(" num "," num "," num ")"
+             | "plane" "(" num "," num "," num "," num ")"
+             | "unite" "(" shape_ref ("," shape_ref)+ ")"
+             | "intersect" "(" shape_ref ("," shape_ref)+ ")"
+             | "subtract" "(" shape_ref "," shape_ref ")"
+             | "apply" "(" transform_ref "," shape_ref ")"
+
+transform_expr := "translate" "(" num "," num "," num ")"
+                | "scale" "(" num "," num "," num ")"
+
+var         := "%" digit+
+shape_ref   := var   (* must reference a previously defined shape *)
+transform_ref := var (* must reference a previously defined transform *)
+num         := float_literal
+
+digit       := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+float_literal := (* strtof-compatible: optional minus, digits, optional .digit, optional e+-digit *)
+
+(* Semantic rules:
+   - shape_ref and transform_ref must reference vars defined earlier in the program
+   - shape_ref must refer to a var bound to a shape (sphere, box, plane, unite, intersect, subtract, apply)
+   - transform_ref must refer to a var bound to a transform (translate, scale)
+   - NaN and Inf are rejected
+   - Explicit "return" statement is required at end *)
