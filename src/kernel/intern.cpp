@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <cstring>
 
+//Hashing nodes and checking we don't duplicate them in the graph
+
 namespace kernel {
 namespace intern {
 

@@ -5,31 +5,44 @@
 #include <unordered_map>
 #include <vector>
 
+//Defines all the lowering functions from DAG to FlatIR and evaluates
+
+
 namespace kernel {
 
 namespace {
 
+  //set default value for unused children or no payloads
 constexpr uint32_t kUnusedChild = 0xFFFFFFFFu;
 constexpr uint32_t kInvalidPayload = 0xFFFFFFFFu;
 
+//get header from dag
 inline const NodeHeader& getHeader(const FrozenDAG& dag, uint32_t id) {
   return reinterpret_cast<const NodeHeader*>(dag.headers)[id - 1];
 }
 
+
+//get payload from dag
 inline const uint8_t* getPayload(const FrozenDAG& dag, const NodeHeader& h) {
   if (h.payloadOffset == kInvalidPayload) return nullptr;
   return dag.payloads + h.payloadOffset;
 }
 
+//get children for each node
 inline uint32_t getChild(const NodeHeader& h, int index) {
   if (index == 0) return h.in0 != kUnusedChild ? h.in0 : 0;
   return h.in1 != kUnusedChild ? h.in1 : 0;
 }
 
+
+//outputs true only if transform is identity
 bool isIdentity(const AccumTransform& a) {
   return a.translate.x == 0 && a.translate.y == 0 && a.translate.z == 0 &&
          a.scale.x == 1 && a.scale.y == 1 && a.scale.z == 1;
 }
+
+
+//checks if transform is already in our list. If not, adds it to list
 
 uint32_t addTransform(FlatIR& ir, const AccumTransform& accum) {
   if (isIdentity(accum)) return 0;
@@ -54,6 +67,9 @@ uint32_t addTransform(FlatIR& ir, const AccumTransform& accum) {
 
 using CacheKey = std::pair<uint32_t, AccumTransform>;
 
+
+//Emits the node to flat ir
+
 DistTemp emitNode(FlatIR& ir, const FrozenDAG& dag, uint32_t nodeId,
                   const AccumTransform& accum,
                   std::unordered_map<CacheKey, uint32_t, AccumTransformKeyHash>&
@@ -66,6 +82,10 @@ DistTemp emitNode(FlatIR& ir, const FrozenDAG& dag, uint32_t nodeId,
   if (nodeId == 0 || nodeId > dag.headerCount) return DistTemp{0};
 
   const NodeHeader& h = getHeader(dag, nodeId);
+
+
+  //Emit the shape or transformation nodes to flat ir
+
 
   if (h.category == NodeCategory::Shape) {
     if (h.opcode == static_cast<uint8_t>(ShapeOp::Sphere)) {

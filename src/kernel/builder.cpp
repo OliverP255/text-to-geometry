@@ -2,6 +2,7 @@
 #include "kernel/intern.h"
 #include <cstring>
 
+//Builder class that builds a DAG of shapes and transforms
 namespace kernel {
 
 uint32_t Builder::hashNode(NodeCategory cat, uint8_t opcode, uint32_t child0,
@@ -196,4 +197,3 @@ void Builder::freeze(ShapeH root, FrozenDAG& out) {
 }
 
 }  // namespace kernel
-

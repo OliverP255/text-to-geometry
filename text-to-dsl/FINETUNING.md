@@ -1,31 +1,30 @@
+Fine-tune deepseek coder or whatever is best low-level llm coder
+Use QLoRa adapter
+Use Grammar constrained decoding
+Use text->DSL pairs
+Eg
+Build up from easy DSL to harder DSL outputs
+Multiple paraphrased prompts for same output
+ wrong DSL -> corrected DSL
 
-Finetuning LLM that generates the graphs, distilled Text->SDF model
 
-THEN
-
-Training "inverse model" to generate DAGs from SDFs using fine-tuned LLM graph output as training data.
+Then score geometry by node count etc.
 
 
+GRAMMAR AND SYNTAX LEARNING
+Use grammar constrained decoding so it follows syntax of the DSL
+Train on synthetic dataset of good DSL
 
 
-Final representation (before lowering and then going to GPU) is DAG
+GEOMETRY FINETUNING
+Just make DAG differentiable
+LLM proposes idea. You reduce loss at DAG level then return DSL back for LLM to learn.
 
-LLM Code is working the best for CAD generation. 
-Don't put an intimediary representations inbetween.
 
-text → LLM codes program in my DSL script → FORMAL/LOWERED DAG → evaluate SDF
 
-------------
 
-I will be fine-tuning DeepSeek for Text->DSL Gen with the following:
-
-Supervised fine-tuning:
-(1) Grammar constrained decoding so it follows syntax of the DSL
-(2) Scoring the geometric model it produced: Validity of geometry, node-count penalties, (loss could be calculated from optimiser as well)
 
 Train from teacher Text->SDF Models (eg Diffusion-SDF):
+(2) Scoring the geometric model it produced: Validity of geometry, node-count penalties, (loss could be calculated from optimiser as well)
 (3) Determine loss from the SDF produced by the teacher model (what is the formula for this?)
-
-
-
 

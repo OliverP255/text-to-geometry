@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+//Optimises a frozen DAG into a smaller, more efficient DAG. - pretty quick and cheap
+
 namespace kernel {
 
 namespace {
