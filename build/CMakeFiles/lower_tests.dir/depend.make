@@ -9,6 +9,7 @@ CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: ../include/kernel/lower.h
 CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: ../include/kernel/node.h
 CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: ../include/kernel/optimise.h
 CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: ../tests/eval_dag.h
+CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: ../tests/eval_flat_ir.h
 CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: ../tests/lower_tests.cpp
 CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: _deps/googletest-src/googletest/include/gtest/gtest-assertion-result.h
 CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o: _deps/googletest-src/googletest/include/gtest/gtest-death-test.h

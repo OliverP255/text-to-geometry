@@ -10,6 +10,8 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/intern.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/intern.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/lower.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/lower.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/optimise.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
+  "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/param_extract.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o"
+  "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/unparse_dsl.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

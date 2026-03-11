@@ -1,6 +1,6 @@
 """
 Grammar and syntax compliance tests for SDF DSL.
-Uses validate_dsl subprocess; includes token-level smoke test for transformers-cfg.
+Uses validate_dsl subprocess.
 """
 
 import pytest
@@ -14,30 +14,30 @@ from inference import validate_dsl
 
 # Valid DSL fixtures from ir_tests.cpp
 VALID_DSL = [
-    "%0 = sphere(1.0)\nreturn %0",
-    "%0 = sphere(1.0)\n%1 = box(1.0, 1.0, 1.0)\n%2 = unite(%0, %1)\nreturn %2",
-    "%0 = sphere(0.5)\n%1 = translate(2.0, 0.0, 0.0)\n%2 = apply(%1, %0)\nreturn %2",
-    "%0 = sphere(1.0)\n%1 = box(0.5, 0.5, 0.5)\n%2 = subtract(%0, %1)\nreturn %2",
-    "%0 = sphere(1.0)\n%1 = box(1.0, 1.0, 1.0)\n%2 = unite(%0, %1)\nreturn %2",
-    "%0 = sphere(1.0)\n%1 = box(1.0, 1.0, 1.0)\n%2 = plane(0.0, 1.0, 0.0, 0.0)\n%3 = unite(%0, %1, %2)\nreturn %3",
-    "%0 = plane(0.0, 1.0, 0.0, 0.0)\nreturn %0",
-    "%0 = box(1.0, 1.0, 1.0)\n%1 = scale(2.0, 2.0, 2.0)\n%2 = apply(%1, %0)\nreturn %2",
-    "%0 = plane(0.0, -1.0, 0.0, 0.0)\nreturn %0",
+    "s0 = sphere(r=1.0)\nreturn s0",
+    "s0 = sphere(r=1.0)\ns1 = box(x=1.0, y=1.0, z=1.0)\ns2 = union(s0, s1)\nreturn s2",
+    "s0 = sphere(r=0.5)\nt0 = translate(x=2.0, y=0.0, z=0.0)\ns1 = apply(t0, s0)\nreturn s1",
+    "s0 = sphere(r=1.0)\ns1 = box(x=0.5, y=0.5, z=0.5)\ns2 = subtract(s0, s1)\nreturn s2",
+    "s0 = sphere(r=1.0)\ns1 = box(x=1.0, y=1.0, z=1.0)\ns2 = union(s0, s1)\nreturn s2",
+    "s0 = sphere(r=1.0)\ns1 = box(x=1.0, y=1.0, z=1.0)\ns2 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\ns3 = union(s0, s1, s2)\nreturn s3",
+    "s0 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\nreturn s0",
+    "s0 = box(x=1.0, y=1.0, z=1.0)\nt0 = scale(x=2.0, y=2.0, z=2.0)\ns1 = apply(t0, s0)\nreturn s1",
+    "s0 = plane(nx=0.0, ny=-1.0, nz=0.0, d=0.0)\nreturn s0",
 ]
 
 # Invalid DSL fixtures from ir_tests.cpp: (dsl, expected_error_substring)
 INVALID_DSL = [
-    ("%0 = sphere(1.0)\n%1 = box(1.0, 1.0, 1.0)\n%2 = unite(%0, %1)", "return"),
-    ("%0 = foo(1.0)", "unknown"),
-    ("%0 = unite(%1, %2)\nreturn %0", ""),  # undefined ref
+    ("s0 = sphere(r=1.0)\ns1 = box(x=1.0, y=1.0, z=1.0)\ns2 = union(s0, s1)", "return"),
+    ("s0 = foo(r=1.0)", "unknown"),
+    ("s0 = union(s1, s2)\nreturn s0", ""),  # undefined ref
     (
-        "%0 = sphere(1.0)\n%1 = apply(%0, %0)\nreturn %1",
+        "s0 = sphere(r=1.0)\ns1 = apply(s0, s0)\nreturn s1",
         "",
     ),  # apply type mismatch
-    ("%0 = sphere(1.0)\n%x = box(1,1,1)", "digit"),
-    ("%0 = sphere(1.0)\nreturn %0\nx", "unexpected"),
-    ("%0 = sphere(1e99)\nreturn %0", "invalid"),
-    ("%0 = sphere(nan)\nreturn %0", "number"),
+    ("s0 = sphere(r=1.0)\nq0 = box(x=1,y=1,z=1)", "expected"),
+    ("s0 = sphere(r=1.0)\nreturn s0\nx", "unexpected"),
+    ("s0 = sphere(r=1e99)\nreturn s0", "invalid"),
+    ("s0 = sphere(r=nan)\nreturn s0", "number"),
 ]
 
 
@@ -66,47 +66,20 @@ def test_invalid_dsl_fixtures():
 
 
 def test_grammar_coverage():
-    """At least one valid fixture per production: sphere, box, plane, unite, intersect, subtract, apply, translate, scale."""
+    """At least one valid fixture per production: sphere, box, plane, union, intersect, subtract, apply, translate, scale."""
     productions = {
-        "sphere": "%0 = sphere(1.0)\nreturn %0",
-        "box": "%0 = box(1.0, 1.0, 1.0)\nreturn %0",
-        "plane": "%0 = plane(0.0, 1.0, 0.0, 0.0)\nreturn %0",
-        "unite": "%0 = sphere(1.0)\n%1 = box(0.5, 0.5, 0.5)\n%2 = unite(%0, %1)\nreturn %2",
-        "intersect": "%0 = sphere(1.0)\n%1 = box(0.5, 0.5, 0.5)\n%2 = intersect(%0, %1)\nreturn %2",
-        "subtract": "%0 = sphere(1.0)\n%1 = box(0.5, 0.5, 0.5)\n%2 = subtract(%0, %1)\nreturn %2",
-        "apply": "%0 = sphere(0.5)\n%1 = translate(2.0, 0.0, 0.0)\n%2 = apply(%1, %0)\nreturn %2",
-        "translate": "%0 = sphere(0.5)\n%1 = translate(2.0, 0.0, 0.0)\n%2 = apply(%1, %0)\nreturn %2",
-        "scale": "%0 = box(1.0, 1.0, 1.0)\n%1 = scale(2.0, 2.0, 2.0)\n%2 = apply(%1, %0)\nreturn %2",
+        "sphere": "s0 = sphere(r=1.0)\nreturn s0",
+        "box": "s0 = box(x=1.0, y=1.0, z=1.0)\nreturn s0",
+        "plane": "s0 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\nreturn s0",
+        "union": "s0 = sphere(r=1.0)\ns1 = box(x=0.5, y=0.5, z=0.5)\ns2 = union(s0, s1)\nreturn s2",
+        "intersect": "s0 = sphere(r=1.0)\ns1 = box(x=0.5, y=0.5, z=0.5)\ns2 = intersect(s0, s1)\nreturn s2",
+        "subtract": "s0 = sphere(r=1.0)\ns1 = box(x=0.5, y=0.5, z=0.5)\ns2 = subtract(s0, s1)\nreturn s2",
+        "apply": "s0 = sphere(r=0.5)\nt0 = translate(x=2.0, y=0.0, z=0.0)\ns1 = apply(t0, s0)\nreturn s1",
+        "translate": "s0 = sphere(r=0.5)\nt0 = translate(x=2.0, y=0.0, z=0.0)\ns1 = apply(t0, s0)\nreturn s1",
+        "scale": "s0 = box(x=1.0, y=1.0, z=1.0)\nt0 = scale(x=2.0, y=2.0, z=2.0)\ns1 = apply(t0, s0)\nreturn s1",
     }
     for name, dsl in productions.items():
         ok, err = validate_dsl(dsl)
         assert ok, f"Grammar coverage for {name}: {dsl!r} -> {err}"
 
 
-@pytest.mark.skipif(
-    not __import__("inference").HAS_TRANSFORMERS_CFG,
-    reason="transformers-cfg not installed",
-)
-def test_token_level_smoke():
-    """Verify minimal DSL tokenizes and IncrementalGrammarConstraint creates with DeepSeek tokenizer."""
-    from transformers import AutoTokenizer
-    from transformers_cfg.grammar_utils import IncrementalGrammarConstraint
-
-    base = Path(__file__).resolve().parent.parent
-    grammar_path = base / "grammar.gbnf"
-    with open(grammar_path) as f:
-        grammar_str = f.read()
-
-    minimal_dsl = "%0 = sphere(1.0)\nreturn %0"
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        "deepseek-ai/DeepSeek-Coder-V2-Lite-Base",
-        trust_remote_code=True,
-    )
-    grammar = IncrementalGrammarConstraint(grammar_str, "root", tokenizer)
-
-    # Verify tokenizer produces sensible tokens for minimal DSL
-    tokens = tokenizer.encode(minimal_dsl, add_special_tokens=False)
-    assert len(tokens) > 0, "Minimal DSL should tokenize to non-empty sequence"
-    decoded = tokenizer.decode(tokens)
-    assert "sphere" in decoded and "return" in decoded, "Tokenization should preserve keywords"

@@ -10,6 +10,7 @@ CMakeFiles/lower_tests.dir/tests/lower_tests.cpp.o
  ../include/kernel/node.h
  ../include/kernel/optimise.h
  /Users/oliverpryce/Documents/AI/text-to-geometry/tests/eval_dag.h
+ /Users/oliverpryce/Documents/AI/text-to-geometry/tests/eval_flat_ir.h
  /Users/oliverpryce/Documents/AI/text-to-geometry/tests/lower_tests.cpp
  _deps/googletest-src/googletest/include/gtest/gtest-assertion-result.h
  _deps/googletest-src/googletest/include/gtest/gtest-death-test.h

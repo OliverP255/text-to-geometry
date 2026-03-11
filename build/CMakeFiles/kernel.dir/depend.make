@@ -35,3 +35,11 @@ CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../include/kernel/node.h
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../include/kernel/optimise.h
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../src/kernel/optimise.cpp
 
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../include/kernel/flat_ir.h
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../include/kernel/param_extract.h
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../src/kernel/param_extract.cpp
+
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o: ../include/kernel/flat_ir.h
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o: ../include/kernel/unparse_dsl.h
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o: ../src/kernel/unparse_dsl.cpp
+

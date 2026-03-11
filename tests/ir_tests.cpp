@@ -7,7 +7,7 @@ using namespace kernel;
 
 //make sure single sphere is compiled correctly
 TEST(IR, SingleSphere) {
-  auto r = compileIR("%0 = sphere(1.0)\nreturn %0");
+  auto r = compileIR("s0 = sphere(r=1.0)\nreturn s0");
   ASSERT_TRUE(r.ok) << r.error;
   EXPECT_NE(r.dag.rootId, 0u);
   EXPECT_GE(r.dag.headerCount, 1u);
@@ -20,10 +20,10 @@ TEST(IR, SingleSphere) {
 //make sure other combinations in DSL compile correctly in compileIR
 TEST(IR, SphereAndBoxUnion) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "%1 = box(1.0, 1.0, 1.0)\n"
-      "%2 = unite(%0, %1)\n"
-      "return %2");
+      "s0 = sphere(r=1.0)\n"
+      "s1 = box(x=1.0, y=1.0, z=1.0)\n"
+      "s2 = union(s0, s1)\n"
+      "return s2");
   ASSERT_TRUE(r.ok) << r.error;
   EXPECT_NE(r.dag.rootId, 0u);
   EXPECT_GE(r.dag.headerCount, 3u);
@@ -36,10 +36,10 @@ TEST(IR, SphereAndBoxUnion) {
 
 TEST(IR, TranslateAndApply) {
   auto r = compileIR(
-      "%0 = sphere(0.5)\n"
-      "%1 = translate(2.0, 0.0, 0.0)\n"
-      "%2 = apply(%1, %0)\n"
-      "return %2");
+      "s0 = sphere(r=0.5)\n"
+      "t0 = translate(x=2.0, y=0.0, z=0.0)\n"
+      "s1 = apply(t0, s0)\n"
+      "return s1");
   ASSERT_TRUE(r.ok) << r.error;
   EXPECT_NE(r.dag.rootId, 0u);
   const NodeHeader* headers =
@@ -50,10 +50,10 @@ TEST(IR, TranslateAndApply) {
 
 TEST(IR, Subtract) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "%1 = box(0.5, 0.5, 0.5)\n"
-      "%2 = subtract(%0, %1)\n"
-      "return %2");
+      "s0 = sphere(r=1.0)\n"
+      "s1 = box(x=0.5, y=0.5, z=0.5)\n"
+      "s2 = subtract(s0, s1)\n"
+      "return s2");
   ASSERT_TRUE(r.ok) << r.error;
   const NodeHeader* headers =
       reinterpret_cast<const NodeHeader*>(r.dag.headers);
@@ -63,10 +63,10 @@ TEST(IR, Subtract) {
 
 TEST(IR, ExplicitReturn) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "%1 = box(1.0, 1.0, 1.0)\n"
-      "%2 = unite(%0, %1)\n"
-      "return %2");
+      "s0 = sphere(r=1.0)\n"
+      "s1 = box(x=1.0, y=1.0, z=1.0)\n"
+      "s2 = union(s0, s1)\n"
+      "return s2");
   ASSERT_TRUE(r.ok) << r.error;
   EXPECT_NE(r.dag.rootId, 0u);
   const NodeHeader* headers =
@@ -77,20 +77,20 @@ TEST(IR, ExplicitReturn) {
 
 TEST(IRParseErrors, RequireReturn) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "%1 = box(1.0, 1.0, 1.0)\n"
-      "%2 = unite(%0, %1)");
+      "s0 = sphere(r=1.0)\n"
+      "s1 = box(x=1.0, y=1.0, z=1.0)\n"
+      "s2 = union(s0, s1)");
   EXPECT_FALSE(r.ok);
   EXPECT_NE(r.error.find("return"), std::string::npos);
 }
 
 TEST(IR, NaryUnite) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "%1 = box(1.0, 1.0, 1.0)\n"
-      "%2 = plane(0.0, 1.0, 0.0, 0.0)\n"
-      "%3 = unite(%0, %1, %2)\n"
-      "return %3");
+      "s0 = sphere(r=1.0)\n"
+      "s1 = box(x=1.0, y=1.0, z=1.0)\n"
+      "s2 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\n"
+      "s3 = union(s0, s1, s2)\n"
+      "return s3");
   ASSERT_TRUE(r.ok) << r.error;
   const NodeHeader* headers =
       reinterpret_cast<const NodeHeader*>(r.dag.headers);
@@ -99,7 +99,7 @@ TEST(IR, NaryUnite) {
 }
 
 TEST(IR, Plane) {
-  auto r = compileIR("%0 = plane(0.0, 1.0, 0.0, 0.0)\nreturn %0");
+  auto r = compileIR("s0 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\nreturn s0");
   ASSERT_TRUE(r.ok) << r.error;
   const NodeHeader* headers =
       reinterpret_cast<const NodeHeader*>(r.dag.headers);
@@ -109,46 +109,46 @@ TEST(IR, Plane) {
 
 TEST(IR, Scale) {
   auto r = compileIR(
-      "%0 = box(1.0, 1.0, 1.0)\n"
-      "%1 = scale(2.0, 2.0, 2.0)\n"
-      "%2 = apply(%1, %0)\n"
-      "return %2");
+      "s0 = box(x=1.0, y=1.0, z=1.0)\n"
+      "t0 = scale(x=2.0, y=2.0, z=2.0)\n"
+      "s1 = apply(t0, s0)\n"
+      "return s1");
   ASSERT_TRUE(r.ok) << r.error;
 }
 
 TEST(IRParseErrors, UnknownOp) {
-  auto r = compileIR("%0 = foo(1.0)");
+  auto r = compileIR("s0 = foo(r=1.0)");
   EXPECT_FALSE(r.ok);
   EXPECT_FALSE(r.error.empty());
   EXPECT_NE(r.error.find("unknown"), std::string::npos);
 }
 
 TEST(IRParseErrors, UndefinedRef) {
-  auto r = compileIR("%0 = unite(%1, %2)\nreturn %0");
+  auto r = compileIR("s0 = union(s1, s2)\nreturn s0");
   EXPECT_FALSE(r.ok);
   EXPECT_FALSE(r.error.empty());
 }
 
 TEST(IRParseErrors, ApplyTypeMismatch) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "%1 = apply(%0, %0)\n"
-      "return %1");
+      "s0 = sphere(r=1.0)\n"
+      "s1 = apply(s0, s0)\n"
+      "return s1");
   EXPECT_FALSE(r.ok);
   EXPECT_FALSE(r.error.empty());
 }
 
 TEST(IRParseErrors, Lex) {
-  auto r = compileIR("%0 = sphere(1.0)\n%x = box(1,1,1)");
+  auto r = compileIR("s0 = sphere(r=1.0)\nq0 = box(x=1,y=1,z=1)");
   EXPECT_FALSE(r.ok);
   EXPECT_FALSE(r.error.empty());
-  EXPECT_NE(r.error.find("digit"), std::string::npos);
+  EXPECT_NE(r.error.find("sN"), std::string::npos);
 }
 
 TEST(IRParseErrors, TrailingContent) {
   auto r = compileIR(
-      "%0 = sphere(1.0)\n"
-      "return %0\n"
+      "s0 = sphere(r=1.0)\n"
+      "return s0\n"
       "x");
   EXPECT_FALSE(r.ok);
   EXPECT_NE(r.error.find("unexpected"), std::string::npos);
@@ -156,8 +156,8 @@ TEST(IRParseErrors, TrailingContent) {
 
 TEST(IR, NegativeNum) {
   auto r = compileIR(
-      "%0 = plane(0.0, -1.0, 0.0, 0.0)\n"
-      "return %0");
+      "s0 = plane(nx=0.0, ny=-1.0, nz=0.0, d=0.0)\n"
+      "return s0");
   ASSERT_TRUE(r.ok) << r.error;
   const NodeHeader* headers =
       reinterpret_cast<const NodeHeader*>(r.dag.headers);
@@ -166,13 +166,13 @@ TEST(IR, NegativeNum) {
 }
 
 TEST(IRParseErrors, InfRejected) {
-  auto r = compileIR("%0 = sphere(1e99)\nreturn %0");
+  auto r = compileIR("s0 = sphere(r=1e99)\nreturn s0");
   EXPECT_FALSE(r.ok);
   EXPECT_NE(r.error.find("invalid"), std::string::npos);
 }
 
 TEST(IRParseErrors, NanRejected) {
-  auto r = compileIR("%0 = sphere(nan)\nreturn %0");
+  auto r = compileIR("s0 = sphere(r=nan)\nreturn s0");
   EXPECT_FALSE(r.ok);
   EXPECT_NE(r.error.find("number"), std::string::npos);
 }

@@ -1,2 +1,2 @@
-%0 = sphere(1.0)
-return %0
+s0 = sphere(r=1.0)
+return s0

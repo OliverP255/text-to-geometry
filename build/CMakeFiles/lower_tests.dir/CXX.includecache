@@ -74,9 +74,21 @@ kernel/node.h
 cmath
 -
 
+/Users/oliverpryce/Documents/AI/text-to-geometry/tests/eval_flat_ir.h
+eval_dag.h
+/Users/oliverpryce/Documents/AI/text-to-geometry/tests/eval_dag.h
+kernel/flat_ir.h
+/Users/oliverpryce/Documents/AI/text-to-geometry/tests/kernel/flat_ir.h
+kernel/node.h
+/Users/oliverpryce/Documents/AI/text-to-geometry/tests/kernel/node.h
+vector
+-
+
 /Users/oliverpryce/Documents/AI/text-to-geometry/tests/lower_tests.cpp
 eval_dag.h
 /Users/oliverpryce/Documents/AI/text-to-geometry/tests/eval_dag.h
+eval_flat_ir.h
+/Users/oliverpryce/Documents/AI/text-to-geometry/tests/eval_flat_ir.h
 kernel/builder.h
 /Users/oliverpryce/Documents/AI/text-to-geometry/tests/kernel/builder.h
 kernel/flat_ir.h

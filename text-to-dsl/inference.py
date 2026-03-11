@@ -1,6 +1,6 @@
 """
 Grammar-constrained DSL generation for SDF geometry.
-Uses transformers-cfg for token-level grammar decoding with DeepSeek-Coder-V2-Lite-Base.
+Uses vLLM with GuidedDecodingParams for grammar-constrained decoding. Model: GLM-4.7-Flash.
 """
 
 from __future__ import annotations
@@ -8,16 +8,6 @@ from __future__ import annotations
 import os
 import subprocess
 from pathlib import Path
-
-# Optional: transformers-cfg for grammar-constrained decoding
-try:
-    import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    from transformers_cfg.grammar_utils import IncrementalGrammarConstraint
-    from transformers_cfg.generation.logits_process import GrammarConstrainedLogitsProcessor
-    HAS_TRANSFORMERS_CFG = True
-except ImportError:
-    HAS_TRANSFORMERS_CFG = False
 
 
 def _find_validate_dsl() -> Path | None:
@@ -35,25 +25,24 @@ def _find_validate_dsl() -> Path | None:
     return None
 
 
-# Few-shot context so DeepSeek understands the DSL format
+# Few-shot context so GLM understands the DSL format
 DSL_CONTEXT = """SDF DSL for signed-distance-field geometry. Format:
-%N = <primitive|op>(args)
-return %N
+sN = shape, tN = transform. Named params. Define vars before use.
 
-Primitives: sphere(r), box(x,y,z), plane(nx,ny,nz,d)
-Transforms: translate(x,y,z), scale(x,y,z)
-CSG: unite(%a,%b,...), intersect(%a,%b,...), subtract(%a,%b)
-Apply: apply(transform_var, shape_var). Define vars before use.
+Primitives: sphere(r=1.0), box(x=0.5, y=0.5, z=0.5), plane(nx=0, ny=1, nz=0, d=0)
+Transforms: translate(x=1.0, y=0.0, z=0.0), scale(x=2.0, y=2.0, z=2.0)
+CSG: union(s0, s1, ...), intersect(s0, s1, ...), subtract(s0, s1)
+Apply: apply(t0, s0). Use # or // for comments.
 
 Example - "a unit sphere":
-%0 = sphere(1.0)
-return %0
+s0 = sphere(r=1.0)
+return s0
 
 Example - "sphere and box union":
-%0 = sphere(1.0)
-%1 = box(0.5, 0.5, 0.5)
-%2 = unite(%0, %1)
-return %2
+s0 = sphere(r=1.0)
+s1 = box(x=0.5, y=0.5, z=0.5)
+s2 = union(s0, s1)
+return s2
 
 Generate DSL for: """
 
@@ -81,60 +70,48 @@ def validate_dsl(dsl: str) -> tuple[bool, str]:
 
 def generate_dsl(
     prompt: str,
-    model_id: str = "deepseek-ai/DeepSeek-Coder-V2-Lite-Base",
+    model_id: str = "zai-org/GLM-4.7-Flash",
     dsl_context: str | None = DSL_CONTEXT,
     grammar_path: str | Path | None = None,
     max_new_tokens: int = 256,
     temperature: float = 0.2,
     top_p: float = 0.95,
     repetition_penalty: float = 1.05,
-    device: str | None = None,
+    tensor_parallel_size: int = 1,
+    max_model_len: int = 4096,
 ) -> str:
     """
     Generate DSL from prompt using grammar-constrained decoding.
-    Requires transformers-cfg and a loaded model.
+    Uses vLLM with GuidedDecodingParams. Model: GLM-4.7-Flash.
     """
-    if not HAS_TRANSFORMERS_CFG:
-        raise RuntimeError("transformers-cfg is required. Install with: pip install transformers-cfg")
+    from vllm import LLM
+    from vllm.sampling_params import GuidedDecodingParams, SamplingParams
 
     base = Path(__file__).resolve().parent
     grammar_path = grammar_path or base / "grammar.gbnf"
     with open(grammar_path) as f:
         grammar_str = f.read()
 
-    if device is None:
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-
-    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        trust_remote_code=True,
-        dtype=torch.bfloat16 if device == "cuda" else torch.float32,
-    ).to(device)
-
-    grammar = IncrementalGrammarConstraint(grammar_str, "root", tokenizer)
-    grammar_processor = GrammarConstrainedLogitsProcessor(grammar)
-
     full_prompt = (dsl_context or "") + prompt
-    inputs = tokenizer(full_prompt, return_tensors="pt", add_special_tokens=True).to(device)
-    input_len = inputs["input_ids"].shape[1]
 
-    output = model.generate(
-        **inputs,
-        max_new_tokens=max_new_tokens,
+    llm = LLM(
+        model=model_id,
+        trust_remote_code=True,
+        tensor_parallel_size=tensor_parallel_size,
+        max_model_len=max_model_len,
+    )
+
+    guided = GuidedDecodingParams(grammar=grammar_str)
+    sampling = SamplingParams(
+        guided_decoding=guided,
+        max_tokens=max_new_tokens,
         temperature=temperature,
         top_p=top_p,
         repetition_penalty=repetition_penalty,
-        do_sample=temperature > 0,
-        pad_token_id=tokenizer.pad_token_id,
-        eos_token_id=tokenizer.eos_token_id,
-        logits_processor=[grammar_processor],
     )
 
-    generated = tokenizer.decode(output[0][input_len:], skip_special_tokens=True)
-    return generated.strip()
+    outputs = llm.generate(prompts=[full_prompt], sampling_params=sampling)
+    return outputs[0].outputs[0].text.strip()
 
 
 def generate_valid_dsl(
@@ -181,7 +158,3 @@ if __name__ == "__main__":
         else:
             print("Failed to generate valid DSL after retries", file=sys.stderr)
             sys.exit(1)
-
-
-
-

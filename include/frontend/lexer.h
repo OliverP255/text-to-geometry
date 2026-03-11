@@ -7,21 +7,22 @@
 namespace frontend {
 
 enum class TokenType {
-  Var,      // %N
-  Ident,    // sphere, box, plane, translate, scale, unite, intersect, subtract, apply, return
-  Num,      // float literal
+  ShapeVar,     // s0, s1, s2, ...
+  TransformVar, // t0, t1, t2, ...
+  Ident,        // sphere, box, plane, translate, scale, union, intersect, subtract, apply, return
+  Num,          // float literal
   Lparen,
   Rparen,
   Comma,
-  Eq,       // =
-  Error,    // lex error
+  Eq,           // =
+  Error,       // lex error
   Eof,
 };
 
 struct Token {
   TokenType type = TokenType::Eof;
   float numValue = 0;
-  uint32_t varId = 0;  // for Var: the %N value
+  uint32_t varId = 0;  // for ShapeVar/TransformVar: the numeric part
   std::string ident;   // for Ident: the keyword
   int line = 0;
 };

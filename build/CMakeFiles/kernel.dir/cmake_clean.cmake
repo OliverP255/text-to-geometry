@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/kernel.dir/src/kernel/intern.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/lower.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
+  "CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o"
+  "CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
   "libkernel.a"
   "libkernel.pdb"
 )

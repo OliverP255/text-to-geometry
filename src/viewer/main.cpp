@@ -15,10 +15,10 @@
 #include <vector>
 
 static const char* DEFAULT_DSL = R"(
-%0 = sphere(1.0)
-%1 = box(0.5, 0.5, 0.5)
-%2 = unite(%0, %1)
-return %2
+s0 = sphere(r=1.0)
+s1 = box(x=0.5, y=0.5, z=0.5)
+s2 = union(s0, s1)
+return s2
 )";
 
 static const char* VERT_SRC = R"(#version 330 core

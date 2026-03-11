@@ -14,6 +14,10 @@ std::vector<Token> tokenize(const char* source) {
 
   while (*p) {
     while (*p == ' ' || *p == '\t' || *p == '\r') ++p;
+    if (*p == '#' || (*p == '/' && p[1] == '/')) {
+      while (*p && *p != '\n') ++p;
+      continue;
+    }
     if (*p == '\n') {
       ++line;
       ++p;
@@ -24,20 +28,26 @@ std::vector<Token> tokenize(const char* source) {
     Token t;
     t.line = line;
 
-    if (*p == '%') {
+    if (*p == 's' && std::isdigit(static_cast<unsigned char>(p[1]))) {
       ++p;
-      if (!std::isdigit(static_cast<unsigned char>(*p))) {
-        t.type = TokenType::Error;
-        t.ident = "expected digit after %";
-        tokens.push_back(t);
-        return tokens;
-      }
       unsigned long val = 0;
       while (std::isdigit(static_cast<unsigned char>(*p))) {
         val = val * 10 + (*p - '0');
         ++p;
       }
-      t.type = TokenType::Var;
+      t.type = TokenType::ShapeVar;
+      t.varId = static_cast<uint32_t>(val);
+      tokens.push_back(t);
+      continue;
+    }
+    if (*p == 't' && std::isdigit(static_cast<unsigned char>(p[1]))) {
+      ++p;
+      unsigned long val = 0;
+      while (std::isdigit(static_cast<unsigned char>(*p))) {
+        val = val * 10 + (*p - '0');
+        ++p;
+      }
+      t.type = TokenType::TransformVar;
       t.varId = static_cast<uint32_t>(val);
       tokens.push_back(t);
       continue;

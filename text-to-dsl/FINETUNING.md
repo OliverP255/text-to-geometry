@@ -1,4 +1,4 @@
-Fine-tune deepseek coder or whatever is best low-level llm coder
+Fine-tune GLM-4.7-Flash or whatever is best low-level llm coder
 Use QLoRa adapter
 Use Grammar constrained decoding
 Use text->DSL pairs
@@ -8,23 +8,28 @@ Multiple paraphrased prompts for same output
  wrong DSL -> corrected DSL
 
 
-Then score geometry by node count etc.
+Good DSL language that LLM can use nicely and understand well 
+
+Fine-tune model for good syntax + grammar constraints 
 
 
-GRAMMAR AND SYNTAX LEARNING
-Use grammar constrained decoding so it follows syntax of the DSL
-Train on synthetic dataset of good DSL
-
-
-GEOMETRY FINETUNING
-Just make DAG differentiable
-LLM proposes idea. You reduce loss at DAG level then return DSL back for LLM to learn.
+FULL FINE-TUNING:
+Make sure library of macro-primitives is big enough for each task set.
 
 
 
 
+During Training: 
+Give LLM maximum agency
+Tool use for checking loss at any coordinate points
+Tool use for optimising parameters
+Whatever is most useful for it
 
-Train from teacher Text->SDF Models (eg Diffusion-SDF):
-(2) Scoring the geometric model it produced: Validity of geometry, node-count penalties, (loss could be calculated from optimiser as well)
-(3) Determine loss from the SDF produced by the teacher model (what is the formula for this?)
+
+
+
+
+
+
+
 

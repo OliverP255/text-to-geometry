@@ -35,3 +35,11 @@ CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o
  ../include/kernel/node.h
  ../include/kernel/optimise.h
  /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/optimise.cpp
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o
+ ../include/kernel/flat_ir.h
+ ../include/kernel/param_extract.h
+ /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/param_extract.cpp
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o
+ ../include/kernel/flat_ir.h
+ ../include/kernel/unparse_dsl.h
+ /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/unparse_dsl.cpp

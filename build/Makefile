@@ -75,18 +75,6 @@ CMAKE_BINARY_DIR = /Users/oliverpryce/Documents/AI/text-to-geometry/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/Cellar/cmake/3.18.3/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/Cellar/cmake/3.18.3/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
@@ -154,6 +142,18 @@ test/fast: test
 
 .PHONY : test/fast
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/Cellar/cmake/3.18.3/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/Cellar/cmake/3.18.3/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles /Users/oliverpryce/Documents/AI/text-to-geometry/build//CMakeFiles/progress.marks
@@ -185,6 +185,19 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
+
+#=============================================================================
+# Target rules for targets named unparse_dsl_tests
+
+# Build rule for target.
+unparse_dsl_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 unparse_dsl_tests
+.PHONY : unparse_dsl_tests
+
+# fast build rule for target.
+unparse_dsl_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unparse_dsl_tests.dir/build.make CMakeFiles/unparse_dsl_tests.dir/build
+.PHONY : unparse_dsl_tests/fast
 
 #=============================================================================
 # Target rules for targets named codegen_cuda_tests
@@ -250,6 +263,19 @@ frontend: cmake_check_build_system
 frontend/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/frontend.dir/build.make CMakeFiles/frontend.dir/build
 .PHONY : frontend/fast
+
+#=============================================================================
+# Target rules for targets named text_to_geometry_bindings
+
+# Build rule for target.
+text_to_geometry_bindings: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 text_to_geometry_bindings
+.PHONY : text_to_geometry_bindings
+
+# fast build rule for target.
+text_to_geometry_bindings/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/build
+.PHONY : text_to_geometry_bindings/fast
 
 #=============================================================================
 # Target rules for targets named validate_dsl
@@ -341,6 +367,33 @@ gtest: cmake_check_build_system
 gtest/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
+
+bindings/pybind_compile.o: bindings/pybind_compile.cpp.o
+
+.PHONY : bindings/pybind_compile.o
+
+# target to build an object file
+bindings/pybind_compile.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o
+.PHONY : bindings/pybind_compile.cpp.o
+
+bindings/pybind_compile.i: bindings/pybind_compile.cpp.i
+
+.PHONY : bindings/pybind_compile.i
+
+# target to preprocess a source file
+bindings/pybind_compile.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.i
+.PHONY : bindings/pybind_compile.cpp.i
+
+bindings/pybind_compile.s: bindings/pybind_compile.cpp.s
+
+.PHONY : bindings/pybind_compile.s
+
+# target to generate assembly for a file
+bindings/pybind_compile.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.s
+.PHONY : bindings/pybind_compile.cpp.s
 
 src/frontend/lexer.o: src/frontend/lexer.cpp.o
 
@@ -558,6 +611,60 @@ src/kernel/optimise.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s
 .PHONY : src/kernel/optimise.cpp.s
 
+src/kernel/param_extract.o: src/kernel/param_extract.cpp.o
+
+.PHONY : src/kernel/param_extract.o
+
+# target to build an object file
+src/kernel/param_extract.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o
+.PHONY : src/kernel/param_extract.cpp.o
+
+src/kernel/param_extract.i: src/kernel/param_extract.cpp.i
+
+.PHONY : src/kernel/param_extract.i
+
+# target to preprocess a source file
+src/kernel/param_extract.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.i
+.PHONY : src/kernel/param_extract.cpp.i
+
+src/kernel/param_extract.s: src/kernel/param_extract.cpp.s
+
+.PHONY : src/kernel/param_extract.s
+
+# target to generate assembly for a file
+src/kernel/param_extract.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.s
+.PHONY : src/kernel/param_extract.cpp.s
+
+src/kernel/unparse_dsl.o: src/kernel/unparse_dsl.cpp.o
+
+.PHONY : src/kernel/unparse_dsl.o
+
+# target to build an object file
+src/kernel/unparse_dsl.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o
+.PHONY : src/kernel/unparse_dsl.cpp.o
+
+src/kernel/unparse_dsl.i: src/kernel/unparse_dsl.cpp.i
+
+.PHONY : src/kernel/unparse_dsl.i
+
+# target to preprocess a source file
+src/kernel/unparse_dsl.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.i
+.PHONY : src/kernel/unparse_dsl.cpp.i
+
+src/kernel/unparse_dsl.s: src/kernel/unparse_dsl.cpp.s
+
+.PHONY : src/kernel/unparse_dsl.s
+
+# target to generate assembly for a file
+src/kernel/unparse_dsl.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/kernel.dir/build.make CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.s
+.PHONY : src/kernel/unparse_dsl.cpp.s
+
 tests/codegen_cuda_tests.o: tests/codegen_cuda_tests.cpp.o
 
 .PHONY : tests/codegen_cuda_tests.o
@@ -693,6 +800,33 @@ tests/optimise_tests.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/optimise_tests.dir/build.make CMakeFiles/optimise_tests.dir/tests/optimise_tests.cpp.s
 .PHONY : tests/optimise_tests.cpp.s
 
+tests/unparse_dsl_tests.o: tests/unparse_dsl_tests.cpp.o
+
+.PHONY : tests/unparse_dsl_tests.o
+
+# target to build an object file
+tests/unparse_dsl_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unparse_dsl_tests.dir/build.make CMakeFiles/unparse_dsl_tests.dir/tests/unparse_dsl_tests.cpp.o
+.PHONY : tests/unparse_dsl_tests.cpp.o
+
+tests/unparse_dsl_tests.i: tests/unparse_dsl_tests.cpp.i
+
+.PHONY : tests/unparse_dsl_tests.i
+
+# target to preprocess a source file
+tests/unparse_dsl_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unparse_dsl_tests.dir/build.make CMakeFiles/unparse_dsl_tests.dir/tests/unparse_dsl_tests.cpp.i
+.PHONY : tests/unparse_dsl_tests.cpp.i
+
+tests/unparse_dsl_tests.s: tests/unparse_dsl_tests.cpp.s
+
+.PHONY : tests/unparse_dsl_tests.s
+
+# target to generate assembly for a file
+tests/unparse_dsl_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/unparse_dsl_tests.dir/build.make CMakeFiles/unparse_dsl_tests.dir/tests/unparse_dsl_tests.cpp.s
+.PHONY : tests/unparse_dsl_tests.cpp.s
+
 text-to-dsl/validate_dsl.o: text-to-dsl/validate_dsl.cpp.o
 
 .PHONY : text-to-dsl/validate_dsl.o
@@ -744,7 +878,12 @@ help:
 	@echo "... kernel"
 	@echo "... lower_tests"
 	@echo "... optimise_tests"
+	@echo "... text_to_geometry_bindings"
+	@echo "... unparse_dsl_tests"
 	@echo "... validate_dsl"
+	@echo "... bindings/pybind_compile.o"
+	@echo "... bindings/pybind_compile.i"
+	@echo "... bindings/pybind_compile.s"
 	@echo "... src/frontend/lexer.o"
 	@echo "... src/frontend/lexer.i"
 	@echo "... src/frontend/lexer.s"
@@ -769,6 +908,12 @@ help:
 	@echo "... src/kernel/optimise.o"
 	@echo "... src/kernel/optimise.i"
 	@echo "... src/kernel/optimise.s"
+	@echo "... src/kernel/param_extract.o"
+	@echo "... src/kernel/param_extract.i"
+	@echo "... src/kernel/param_extract.s"
+	@echo "... src/kernel/unparse_dsl.o"
+	@echo "... src/kernel/unparse_dsl.i"
+	@echo "... src/kernel/unparse_dsl.s"
 	@echo "... tests/codegen_cuda_tests.o"
 	@echo "... tests/codegen_cuda_tests.i"
 	@echo "... tests/codegen_cuda_tests.s"
@@ -784,6 +929,9 @@ help:
 	@echo "... tests/optimise_tests.o"
 	@echo "... tests/optimise_tests.i"
 	@echo "... tests/optimise_tests.s"
+	@echo "... tests/unparse_dsl_tests.o"
+	@echo "... tests/unparse_dsl_tests.i"
+	@echo "... tests/unparse_dsl_tests.s"
 	@echo "... text-to-dsl/validate_dsl.o"
 	@echo "... text-to-dsl/validate_dsl.i"
 	@echo "... text-to-dsl/validate_dsl.s"

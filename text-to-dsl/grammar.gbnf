@@ -1,24 +1,26 @@
 # SDF DSL grammar - GBNF for grammar-constrained decoding
-# Works with transformers-cfg, vLLM (xgrammar), and llama.cpp
+# Works with vLLM (xgrammar/guidance)
 # Optional leading space at root for LLaMA-style tokenizers (prefix space)
 
 root ::= space? program
 
 program ::= (stmt space)* return_stmt
 
-stmt ::= var space "=" space (shape_expr | transform_expr)
+stmt ::= (shape_var space "=" space shape_expr) | (transform_var space "=" space transform_expr)
 
-return_stmt ::= "return" space var
+return_stmt ::= "return" space shape_var
 
-shape_expr ::= "sphere" "(" num ")" | "box" "(" num "," space num "," space num ")" | "plane" "(" num "," space num "," space num "," space num ")" | "unite" "(" var ("," space var)+ ")" | "intersect" "(" var ("," space var)+ ")" | "subtract" "(" var "," space var ")" | "apply" "(" var "," space var ")"
+shape_expr ::= "sphere" "(" "r" "=" num ")" | "box" "(" "x" "=" num "," space "y" "=" num "," space "z" "=" num ")" | "plane" "(" "nx" "=" num "," space "ny" "=" num "," space "nz" "=" num "," space "d" "=" num ")" | "union" "(" shape_var ("," space shape_var)+ ")" | "intersect" "(" shape_var ("," space shape_var)+ ")" | "subtract" "(" shape_var "," space shape_var ")" | "apply" "(" transform_var "," space shape_var ")"
 
-transform_expr ::= "translate" "(" num "," space num "," space num ")" | "scale" "(" num "," space num "," space num ")"
+transform_expr ::= "translate" "(" "x" "=" num "," space "y" "=" num "," space "z" "=" num ")" | "scale" "(" "x" "=" num "," space "y" "=" num "," space "z" "=" num ")"
 
-var ::= "%" [0-9]+
+shape_var ::= "s" [0-9]+
+transform_var ::= "t" [0-9]+
 
 num ::= float_literal space
 
 # strtof-compatible: optional minus, digits, optional decimal, optional exponent
 float_literal ::= ("-"? [0-9]+ ("." [0-9]*)? ([eE] [-+]? [0-9]+)?)
 
-space ::= (" " | "\n" | "\t")*
+comment ::= ("#" | "//") [^\n]*
+space ::= (comment | " " | "\n" | "\t")*

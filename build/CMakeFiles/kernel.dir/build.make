@@ -154,6 +154,32 @@ CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/optimise.cpp -o CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s
 
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: CMakeFiles/kernel.dir/flags.make
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../src/kernel/param_extract.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/param_extract.cpp
+
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/param_extract.cpp > CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.i
+
+CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/param_extract.cpp -o CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.s
+
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o: CMakeFiles/kernel.dir/flags.make
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o: ../src/kernel/unparse_dsl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/unparse_dsl.cpp
+
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/unparse_dsl.cpp > CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.i
+
+CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/unparse_dsl.cpp -o CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.s
+
 # Object files for target kernel
 kernel_OBJECTS = \
 "CMakeFiles/kernel.dir/src/kernel/accum_transform.cpp.o" \
@@ -161,7 +187,9 @@ kernel_OBJECTS = \
 "CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/intern.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/lower.cpp.o" \
-"CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
+"CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o" \
+"CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o" \
+"CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
 
 # External object files for target kernel
 kernel_EXTERNAL_OBJECTS =
@@ -172,9 +200,11 @@ libkernel.a: CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/intern.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/lower.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o
+libkernel.a: CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o
+libkernel.a: CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/build.make
 libkernel.a: CMakeFiles/kernel.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libkernel.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libkernel.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/kernel.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/kernel.dir/link.txt --verbose=$(VERBOSE)
 

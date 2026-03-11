@@ -12,6 +12,14 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# pybind11 for Python bindings
+FetchContent_Declare(
+  pybind11
+  GIT_REPOSITORY https://github.com/pybind/pybind11.git
+  GIT_TAG v2.11.1
+)
+FetchContent_MakeAvailable(pybind11)
+
 add_library(kernel
   src/kernel/accum_transform.cpp
   src/kernel/builder.cpp
@@ -19,6 +27,8 @@ add_library(kernel
   src/kernel/intern.cpp
   src/kernel/lower.cpp
   src/kernel/optimise.cpp
+  src/kernel/param_extract.cpp
+  src/kernel/unparse_dsl.cpp
 )
 target_include_directories(kernel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -53,8 +63,17 @@ target_include_directories(codegen_cuda_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR
 target_link_libraries(codegen_cuda_tests PRIVATE kernel GTest::gtest GTest::gtest_main)
 add_test(NAME codegen_cuda_tests COMMAND codegen_cuda_tests)
 
+add_executable(unparse_dsl_tests tests/unparse_dsl_tests.cpp)
+target_include_directories(unparse_dsl_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+target_link_libraries(unparse_dsl_tests PRIVATE frontend kernel GTest::gtest GTest::gtest_main)
+add_test(NAME unparse_dsl_tests COMMAND unparse_dsl_tests)
+
 add_executable(validate_dsl text-to-dsl/validate_dsl.cpp)
 target_link_libraries(validate_dsl PRIVATE frontend)
+
+# Python bindings (pybind11)
+pybind11_add_module(text_to_geometry_bindings bindings/pybind_compile.cpp)
+target_link_libraries(text_to_geometry_bindings PRIVATE frontend kernel)
 
 # CUDA renderer (optional - requires CUDA toolkit)
 include(CheckLanguage)
@@ -68,6 +87,12 @@ if(CMAKE_CUDA_COMPILER)
   set_target_properties(cuda_renderer PROPERTIES CUDA_STANDARD 17)
   add_executable(launch_config_bench benchmarks/launch_config_bench.cpp)
   target_link_libraries(launch_config_bench PRIVATE cuda_renderer kernel)
+
+  add_executable(render_tests tests/render_tests.cpp)
+  target_include_directories(render_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+  target_link_libraries(render_tests PRIVATE frontend kernel cuda_renderer GTest::gtest GTest::gtest_main)
+  add_test(NAME render_tests COMMAND render_tests)
+
   message(STATUS "CUDA found: building cuda_renderer + benchmarks")
 
   # GLFW viewer (optional - requires GLFW3)

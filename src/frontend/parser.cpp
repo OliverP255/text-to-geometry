@@ -40,14 +40,14 @@ class Parser {
       }
       if (peek().type == TokenType::Ident && peek().ident == "return") {
         advance();
-        if (peek().type != TokenType::Var) {
-          return fail("expected %N after return", peek().line);
+        if (peek().type != TokenType::ShapeVar) {
+          return fail("expected sN after return", peek().line);
         }
         uint32_t id = peek().varId;
         advance();
         auto it = shapes_.find(id);
         if (it == shapes_.end()) {
-          return fail("undefined shape %" + std::to_string(id), peek().line);
+          return fail("undefined shape s" + std::to_string(id), peek().line);
         }
         lastShape = it->second;
         hasReturn = true;
@@ -57,150 +57,169 @@ class Parser {
         break;
       }
 
-      if (peek().type != TokenType::Var) {
-        return fail("expected %N = expr", peek().line);
-      }
-      uint32_t dstId = peek().varId;
-      int stmtLine = peek().line;
-      advance();
-
-      if (peek().type != TokenType::Eq) {
-        return fail("expected =", peek().line);
-      }
-      advance();
-
-      if (peek().type != TokenType::Ident) {
-        return fail("expected op (sphere, box, unite, etc.)", peek().line);
-      }
-      const std::string& op = peek().ident;
-      advance();
-
-      if (peek().type != TokenType::Lparen) {
-        return fail("expected (", peek().line);
-      }
-      advance();
-
-      if (op == "sphere") {
-        float r = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH s = b.sphere(r);
-        shapes_[dstId] = s;
-        lastShape = s;
-        lastStmtLine = stmtLine;
-      } else if (op == "box") {
-        float x = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float y = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float z = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH s = b.box({x, y, z});
-        shapes_[dstId] = s;
-        lastShape = s;
-        lastStmtLine = stmtLine;
-      } else if (op == "plane") {
-        float nx = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float ny = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float nz = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float d = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH s = b.plane({nx, ny, nz}, d);
-        shapes_[dstId] = s;
-        lastShape = s;
-        lastStmtLine = stmtLine;
-      } else if (op == "translate") {
-        float x = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float y = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float z = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::TransformH t = b.translate({x, y, z});
-        transforms_[dstId] = t;
-        lastStmtLine = stmtLine;
-      } else if (op == "scale") {
-        float x = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float y = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        float z = expectNum(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::TransformH t = b.scale({x, y, z});
-        transforms_[dstId] = t;
-        lastStmtLine = stmtLine;
-      } else if (op == "unite" || op == "intersect") {
-        std::vector<kernel::ShapeH> args = expectShapeRefs(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH s;
-        if (op == "unite") {
-          s = args.size() == 1 ? args[0] : b.unite(args);
-        } else {
-          s = args.size() == 1 ? args[0] : b.intersect(args);
+      if (peek().type == TokenType::ShapeVar) {
+        uint32_t dstId = peek().varId;
+        int stmtLine = peek().line;
+        advance();
+        if (peek().type != TokenType::Eq) {
+          return fail("expected =", peek().line);
         }
-        shapes_[dstId] = s;
-        lastShape = s;
-        lastStmtLine = stmtLine;
-      } else if (op == "subtract") {
-        kernel::ShapeH a = expectShapeRef(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH b_ = expectShapeRef(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH s = b.subtract(a, b_);
-        shapes_[dstId] = s;
-        lastShape = s;
-        lastStmtLine = stmtLine;
-      } else if (op == "apply") {
-        kernel::TransformH t = expectTransformRef(stmtLine);
-        if (!ok_) return failFromOk();
-        expectComma(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH s = expectShapeRef(stmtLine);
-        if (!ok_) return failFromOk();
-        expectRparen(stmtLine);
-        if (!ok_) return failFromOk();
-        kernel::ShapeH out = b.apply(t, s);
-        shapes_[dstId] = out;
-        lastShape = out;
-        lastStmtLine = stmtLine;
+        advance();
+        if (peek().type != TokenType::Ident) {
+          return fail("expected op (sphere, box, union, etc.)", peek().line);
+        }
+        const std::string& op = peek().ident;
+        advance();
+        if (peek().type != TokenType::Lparen) {
+          return fail("expected (", peek().line);
+        }
+        advance();
+
+        if (op == "sphere") {
+          float r = expectNamedNum("r", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s = b.sphere(r);
+          shapes_[dstId] = s;
+          lastShape = s;
+          lastStmtLine = stmtLine;
+        } else if (op == "box") {
+          float x = expectNamedNum("x", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float y = expectNamedNum("y", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float z = expectNamedNum("z", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s = b.box({x, y, z});
+          shapes_[dstId] = s;
+          lastShape = s;
+          lastStmtLine = stmtLine;
+        } else if (op == "plane") {
+          float nx = expectNamedNum("nx", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float ny = expectNamedNum("ny", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float nz = expectNamedNum("nz", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float d = expectNamedNum("d", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s = b.plane({nx, ny, nz}, d);
+          shapes_[dstId] = s;
+          lastShape = s;
+          lastStmtLine = stmtLine;
+        } else if (op == "union" || op == "intersect") {
+          std::vector<kernel::ShapeH> args = expectShapeRefs(stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s;
+          if (op == "union") {
+            s = args.size() == 1 ? args[0] : b.unite(args);
+          } else {
+            s = args.size() == 1 ? args[0] : b.intersect(args);
+          }
+          shapes_[dstId] = s;
+          lastShape = s;
+          lastStmtLine = stmtLine;
+        } else if (op == "subtract") {
+          kernel::ShapeH a = expectShapeRef(stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH b_ = expectShapeRef(stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s = b.subtract(a, b_);
+          shapes_[dstId] = s;
+          lastShape = s;
+          lastStmtLine = stmtLine;
+        } else if (op == "apply") {
+          kernel::TransformH t = expectTransformRef(stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s = expectShapeRef(stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH out = b.apply(t, s);
+          shapes_[dstId] = out;
+          lastShape = out;
+          lastStmtLine = stmtLine;
+        } else {
+          return fail("unknown op: " + op, stmtLine);
+        }
+      } else if (peek().type == TokenType::TransformVar) {
+        uint32_t dstId = peek().varId;
+        int stmtLine = peek().line;
+        advance();
+        if (peek().type != TokenType::Eq) {
+          return fail("expected =", peek().line);
+        }
+        advance();
+        if (peek().type != TokenType::Ident) {
+          return fail("expected op (translate, scale)", peek().line);
+        }
+        const std::string& op = peek().ident;
+        advance();
+        if (peek().type != TokenType::Lparen) {
+          return fail("expected (", peek().line);
+        }
+        advance();
+
+        if (op == "translate") {
+          float x = expectNamedNum("x", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float y = expectNamedNum("y", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float z = expectNamedNum("z", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::TransformH t = b.translate({x, y, z});
+          transforms_[dstId] = t;
+          lastStmtLine = stmtLine;
+        } else if (op == "scale") {
+          float x = expectNamedNum("x", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float y = expectNamedNum("y", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float z = expectNamedNum("z", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::TransformH t = b.scale({x, y, z});
+          transforms_[dstId] = t;
+          lastStmtLine = stmtLine;
+        } else {
+          return fail("expected translate or scale", stmtLine);
+        }
       } else {
-        return fail("unknown op: " + op, stmtLine);
+        return fail("expected sN or tN = expr", peek().line);
       }
     }
 
@@ -289,6 +308,24 @@ class Parser {
     }
     return v;
   }
+
+  float expectNamedNum(const char* name, int line) {
+    if (peek().type != TokenType::Ident || peek().ident != name) {
+      ok_ = false;
+      lastError_ = std::string("expected ") + name + "=";
+      lastErrorLine_ = peek().line;
+      return 0;
+    }
+    advance();
+    if (peek().type != TokenType::Eq) {
+      ok_ = false;
+      lastError_ = std::string("expected ") + name + "=";
+      lastErrorLine_ = peek().line;
+      return 0;
+    }
+    advance();
+    return expectNum(line);
+  }
   void expectComma(int line) {
     if (peek().type != TokenType::Comma) {
       ok_ = false;
@@ -309,9 +346,9 @@ class Parser {
   }
 
   kernel::ShapeH expectShapeRef(int line) {
-    if (peek().type != TokenType::Var) {
+    if (peek().type != TokenType::ShapeVar) {
       ok_ = false;
-      lastError_ = "expected %N shape reference";
+      lastError_ = "expected sN shape reference";
       lastErrorLine_ = peek().line;
       return kernel::ShapeH{};
     }
@@ -320,7 +357,7 @@ class Parser {
     auto it = shapes_.find(id);
     if (it == shapes_.end()) {
       ok_ = false;
-      lastError_ = "undefined shape %" + std::to_string(id);
+      lastError_ = "undefined shape s" + std::to_string(id);
       lastErrorLine_ = peek().line;
       return kernel::ShapeH{};
     }
@@ -328,9 +365,9 @@ class Parser {
   }
 
   kernel::TransformH expectTransformRef(int line) {
-    if (peek().type != TokenType::Var) {
+    if (peek().type != TokenType::TransformVar) {
       ok_ = false;
-      lastError_ = "expected %N transform reference";
+      lastError_ = "expected tN transform reference";
       lastErrorLine_ = peek().line;
       return kernel::TransformH{};
     }
@@ -339,7 +376,7 @@ class Parser {
     auto it = transforms_.find(id);
     if (it == transforms_.end()) {
       ok_ = false;
-      lastError_ = "undefined transform %" + std::to_string(id);
+      lastError_ = "undefined transform t" + std::to_string(id);
       lastErrorLine_ = peek().line;
       return kernel::TransformH{};
     }
