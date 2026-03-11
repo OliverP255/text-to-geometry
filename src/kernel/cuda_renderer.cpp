@@ -24,10 +24,10 @@ void checkNvrtc(nvrtcResult res, const char* msg, nvrtcProgram prog = nullptr) {
     std::string errMsg = std::string(msg) + ": " + nvrtcGetErrorString(res);
     if (prog) {
       size_t logSize = 0;
-      nvrtcGetProgramLogSize(*prog, &logSize);
+      nvrtcGetProgramLogSize(prog, &logSize);
       if (logSize > 1) {
         std::vector<char> log(logSize);
-        nvrtcGetProgramLog(*prog, log.data());
+        nvrtcGetProgramLog(prog, log.data());
         errMsg += "\nCompilation log:\n";
         errMsg += log.data();
       }
@@ -79,7 +79,7 @@ CudaRenderer::CudaRenderer() {
   CUcontext ctx = nullptr;
   checkCu(cuCtxGetCurrent(&ctx), "cuCtxGetCurrent");
   if (!ctx) {
-    checkCu(cuCtxCreate(&ctx, 0, device), "cuCtxCreate");
+    checkCu(cuCtxCreate(&ctx, nullptr, 0, device), "cuCtxCreate");
     context_ = ctx;
     ownsContext_ = true;
   }
@@ -132,9 +132,10 @@ void CudaRenderer::setScene(const FlatIR& ir) {
           "cuModuleLoadData");
   module_ = mod;
 
-  checkCu(cuModuleGetFunction(static_cast<CUfunction*>(&evalPointsFunc_), mod,
-                               "evalPointsKernel"),
+  CUfunction evalFunc;
+  checkCu(cuModuleGetFunction(&evalFunc, mod, "evalPointsKernel"),
           "cuModuleGetFunction(evalPointsKernel)");
+  evalPointsFunc_ = evalFunc;
 
   CUfunction rmFunc;
   CUresult rmRes =
