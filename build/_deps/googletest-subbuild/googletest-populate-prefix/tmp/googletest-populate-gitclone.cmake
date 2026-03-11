@@ -17,7 +17,7 @@ set(error_code 1)
 set(number_of_tries 0)
 while(error_code AND number_of_tries LESS 3)
   execute_process(
-    COMMAND "/usr/local/bin/git"  clone --no-checkout "https://github.com/google/googletest.git" "googletest-src"
+    COMMAND "/Users/oliverpryce/homebrew/bin/git"  clone --no-checkout "https://github.com/google/googletest.git" "googletest-src"
     WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps"
     RESULT_VARIABLE error_code
     )
@@ -32,7 +32,7 @@ if(error_code)
 endif()
 
 execute_process(
-  COMMAND "/usr/local/bin/git"  checkout v1.14.0 --
+  COMMAND "/Users/oliverpryce/homebrew/bin/git"  checkout v1.14.0 --
   WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
   RESULT_VARIABLE error_code
   )
@@ -43,7 +43,7 @@ endif()
 set(init_submodules TRUE)
 if(init_submodules)
   execute_process(
-    COMMAND "/usr/local/bin/git"  submodule update --recursive --init 
+    COMMAND "/Users/oliverpryce/homebrew/bin/git"  submodule update --recursive --init 
     WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
     RESULT_VARIABLE error_code
     )

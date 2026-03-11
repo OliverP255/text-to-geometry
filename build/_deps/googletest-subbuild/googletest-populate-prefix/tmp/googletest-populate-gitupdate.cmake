@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 execute_process(
-  COMMAND "/usr/local/bin/git" rev-list --max-count=1 HEAD
+  COMMAND "/Users/oliverpryce/homebrew/bin/git" rev-list --max-count=1 HEAD
   WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
   RESULT_VARIABLE error_code
   OUTPUT_VARIABLE head_sha
@@ -15,7 +15,7 @@ if(error_code)
 endif()
 
 execute_process(
-  COMMAND "/usr/local/bin/git" show-ref "v1.14.0"
+  COMMAND "/Users/oliverpryce/homebrew/bin/git" show-ref "v1.14.0"
   WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
   OUTPUT_VARIABLE show_ref_output
   )
@@ -41,7 +41,7 @@ endif()
 # This will fail if the tag does not exist (it probably has not been fetched
 # yet).
 execute_process(
-  COMMAND "/usr/local/bin/git" rev-list --max-count=1 "${git_tag}"
+  COMMAND "/Users/oliverpryce/homebrew/bin/git" rev-list --max-count=1 "${git_tag}"
   WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
   RESULT_VARIABLE error_code
   OUTPUT_VARIABLE tag_sha
@@ -51,7 +51,7 @@ execute_process(
 # Is the hash checkout out that we want?
 if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
   execute_process(
-    COMMAND "/usr/local/bin/git" fetch
+    COMMAND "/Users/oliverpryce/homebrew/bin/git" fetch
     WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
     RESULT_VARIABLE error_code
     )
@@ -62,7 +62,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
   if(is_remote_ref)
     # Check if stash is needed
     execute_process(
-      COMMAND "/usr/local/bin/git" status --porcelain
+      COMMAND "/Users/oliverpryce/homebrew/bin/git" status --porcelain
       WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
       RESULT_VARIABLE error_code
       OUTPUT_VARIABLE repo_status
@@ -76,7 +76,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
     # rebase or checkout without losing those changes permanently
     if(need_stash)
       execute_process(
-        COMMAND "/usr/local/bin/git" stash save --all;--quiet
+        COMMAND "/Users/oliverpryce/homebrew/bin/git" stash save --all;--quiet
         WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
         RESULT_VARIABLE error_code
         )
@@ -87,7 +87,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
 
     if("REBASE" STREQUAL "CHECKOUT")
       execute_process(
-        COMMAND "/usr/local/bin/git" checkout "${git_remote}/${git_tag}"
+        COMMAND "/Users/oliverpryce/homebrew/bin/git" checkout "${git_remote}/${git_tag}"
         WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
         RESULT_VARIABLE error_code
         )
@@ -97,7 +97,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
     else()
       # Pull changes from the remote branch
       execute_process(
-        COMMAND "/usr/local/bin/git" rebase "${git_remote}/${git_tag}"
+        COMMAND "/Users/oliverpryce/homebrew/bin/git" rebase "${git_remote}/${git_tag}"
         WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
         RESULT_VARIABLE error_code
         OUTPUT_VARIABLE rebase_output
@@ -106,7 +106,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
       if(error_code)
         # Rebase failed, undo the rebase attempt before continuing
         execute_process(
-          COMMAND "/usr/local/bin/git" rebase --abort
+          COMMAND "/Users/oliverpryce/homebrew/bin/git" rebase --abort
           WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
         )
 
@@ -114,7 +114,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
           # Not allowed to do a checkout as a fallback, so cannot proceed
           if(need_stash)
             execute_process(
-              COMMAND "/usr/local/bin/git" stash pop --index --quiet
+              COMMAND "/Users/oliverpryce/homebrew/bin/git" stash pop --index --quiet
               WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
               )
           endif()
@@ -136,7 +136,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
         message(WARNING "Rebase failed, output has been saved to ${error_log_file}"
                         "\nFalling back to checkout, previous commit tagged as ${tag_name}")
         execute_process(
-          COMMAND "/usr/local/bin/git" tag -a
+          COMMAND "/Users/oliverpryce/homebrew/bin/git" tag -a
                   -m "ExternalProject attempting to move from here to ${git_remote}/${git_tag}"
                   ${tag_name}
           WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
@@ -147,7 +147,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
         endif()
 
         execute_process(
-          COMMAND "/usr/local/bin/git" checkout "${git_remote}/${git_tag}"
+          COMMAND "/Users/oliverpryce/homebrew/bin/git" checkout "${git_remote}/${git_tag}"
           WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
           RESULT_VARIABLE error_code
         )
@@ -160,30 +160,30 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
 
     if(need_stash)
       execute_process(
-        COMMAND "/usr/local/bin/git" stash pop --index --quiet
+        COMMAND "/Users/oliverpryce/homebrew/bin/git" stash pop --index --quiet
         WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
         RESULT_VARIABLE error_code
         )
       if(error_code)
         # Stash pop --index failed: Try again dropping the index
         execute_process(
-          COMMAND "/usr/local/bin/git" reset --hard --quiet
+          COMMAND "/Users/oliverpryce/homebrew/bin/git" reset --hard --quiet
           WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
           RESULT_VARIABLE error_code
           )
         execute_process(
-          COMMAND "/usr/local/bin/git" stash pop --quiet
+          COMMAND "/Users/oliverpryce/homebrew/bin/git" stash pop --quiet
           WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
           RESULT_VARIABLE error_code
           )
         if(error_code)
           # Stash pop failed: Restore previous state.
           execute_process(
-            COMMAND "/usr/local/bin/git" reset --hard --quiet ${head_sha}
+            COMMAND "/Users/oliverpryce/homebrew/bin/git" reset --hard --quiet ${head_sha}
             WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
           )
           execute_process(
-            COMMAND "/usr/local/bin/git" stash pop --index --quiet
+            COMMAND "/Users/oliverpryce/homebrew/bin/git" stash pop --index --quiet
             WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
           )
           message(FATAL_ERROR "\nFailed to unstash changes in: '/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src'."
@@ -193,7 +193,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
     endif()
   else()
     execute_process(
-      COMMAND "/usr/local/bin/git" checkout "${git_tag}"
+      COMMAND "/Users/oliverpryce/homebrew/bin/git" checkout "${git_tag}"
       WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
       RESULT_VARIABLE error_code
       )
@@ -205,7 +205,7 @@ if(error_code OR is_remote_ref OR NOT ("${tag_sha}" STREQUAL "${head_sha}"))
   set(init_submodules "TRUE")
   if(init_submodules)
     execute_process(
-      COMMAND "/usr/local/bin/git" submodule update --recursive --init 
+      COMMAND "/Users/oliverpryce/homebrew/bin/git" submodule update --recursive --init 
       WORKING_DIRECTORY "/Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src"
       RESULT_VARIABLE error_code
       )

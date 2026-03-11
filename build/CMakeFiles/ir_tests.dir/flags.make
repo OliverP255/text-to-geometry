@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/Users/oliverpryce/Documents/AI/text-to-geometry/include -isystem /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/include -isystem /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest
 
-CXX_FLAGS =  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk -std=gnu++17
+CXX_FLAGS =  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk -fPIE -std=gnu++17
 

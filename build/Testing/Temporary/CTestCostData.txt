@@ -1,7 +1,0 @@
-dag_builder_tests 6 0.0805575
-optimise_tests 6 0.0783225
-ir_tests 7 0.061361
-lower_tests 6 0.0955879
-codegen_cuda_tests 6 0.0763102
-unparse_dsl_tests 1 0.715438
----

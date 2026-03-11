@@ -8,6 +8,7 @@
 #include "kernel/lower.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -108,11 +109,39 @@ static std::string readFile(const char* path) {
   return ss.str();
 }
 
+static void writePPM(const char* path, int w, int h,
+                     const unsigned char* rgba) {
+  std::ofstream f(path);
+  if (!f.is_open()) {
+    fprintf(stderr, "Cannot write: %s\n", path);
+    std::exit(1);
+  }
+  f << "P6\n" << w << " " << h << "\n255\n";
+  for (int i = 0; i < w * h; i++) {
+    f.put(rgba[i * 4]);
+    f.put(rgba[i * 4 + 1]);
+    f.put(rgba[i * 4 + 2]);
+  }
+}
+
 int main(int argc, char** argv) {
   const char* dslSource = DEFAULT_DSL;
+  const char* outputPath = nullptr;
+  int dslArg = 0;
+
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--output") == 0 && i + 1 < argc) {
+      outputPath = argv[++i];
+    } else if (strcmp(argv[i], "--headless") == 0) {
+      outputPath = "output.ppm";
+    } else if (!dslArg && argv[i][0] != '-') {
+      dslArg = i;
+    }
+  }
+
   std::string fileContents;
-  if (argc > 1) {
-    fileContents = readFile(argv[1]);
+  if (dslArg > 0) {
+    fileContents = readFile(argv[dslArg]);
     dslSource = fileContents.c_str();
   }
 
@@ -124,6 +153,17 @@ int main(int argc, char** argv) {
   }
 
   kernel::FlatIR ir = kernel::lower(result.dag);
+
+  if (outputPath) {
+    kernel::CudaRenderer renderer;
+    renderer.setScene(ir);
+    int w = 640, h = 480;
+    std::vector<unsigned char> framebuf(static_cast<size_t>(w) * h * 4);
+    renderer.render(w, h, 0.f, 0.f, 5.f, 0.f, 0.f, 0.f, framebuf.data());
+    writePPM(outputPath, w, h, framebuf.data());
+    printf("Wrote %s\n", outputPath);
+    return 0;
+  }
 
   if (!glfwInit()) {
     const char* desc = nullptr;

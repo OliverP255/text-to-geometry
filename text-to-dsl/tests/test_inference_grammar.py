@@ -13,8 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 pytest.importorskip("vllm")
 
 # Skip by default - requires model download and GPU. Set RUN_INFERENCE_TESTS=1 to enable.
-#if os.environ.get("RUN_INFERENCE_TESTS", "").lower() not in ("1", "true", "yes"):
-    #pytest.skip("Set RUN_INFERENCE_TESTS=1 to run (requires model)", allow_module_level=True)
+if os.environ.get("RUN_INFERENCE_TESTS", "").lower() not in ("1", "true", "yes"):
+    pytest.skip("Set RUN_INFERENCE_TESTS=1 to run (requires model)", allow_module_level=True)
 
 
 def test_generate_dsl_passes_validation():
