@@ -1,3 +1,5 @@
 vllm
 pytest
 torch
+flask
+Pillow
