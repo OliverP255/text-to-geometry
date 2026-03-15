@@ -21,7 +21,7 @@ sys.path.insert(0, str(_root / "build"))
 sys.path.insert(0, str(_root / "text-to-dsl"))
 
 import text_to_geometry_bindings as t2g
-from inference import generate_dsl
+from inference import generate_dsl, load_llm
 
 OUTPUT_DIR = Path(__file__).resolve().parent
 DSL_PATH = OUTPUT_DIR / "chatbot-output.dsl"
@@ -32,7 +32,8 @@ SERVER_URL = os.environ.get("SCENE_SERVER_URL", "http://localhost:5001/scene")
 def main() -> None:
     model_id = "mratsim/GLM-4.7-Flash-FP8"
     print(f"Loading model {model_id}...")
-    print("Describe a shape. Type 'quit' or 'exit' to stop.\n")
+    llm = load_llm(model_id=model_id)
+    print("Ready. Describe a shape. Type 'quit' or 'exit' to stop.\n")
 
     while True:
         try:
@@ -47,7 +48,7 @@ def main() -> None:
             print("Bye.")
             break
 
-        dsl = generate_dsl(prompt, model_id=model_id)
+        dsl = generate_dsl(prompt, model_id=model_id, llm=llm)
         print(f"\nDSL:\n{dsl}\n")
 
         DSL_PATH.write_text(dsl)

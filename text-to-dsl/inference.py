@@ -49,6 +49,9 @@ return s2
 
 Generate DSL for: """
 
+# Module-level cache: (model_id, tensor_parallel_size, max_model_len) -> LLM
+_llm_cache: dict[tuple[str, int, int], LLM] = {}
+
 
 def validate_dsl(dsl: str) -> tuple[bool, str]:
     """
@@ -78,13 +81,18 @@ def load_llm(
     **kwargs,
 ) -> LLM:
     """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading."""
-    return LLM(
+    cache_key = (model_id, tensor_parallel_size, max_model_len)
+    if cache_key in _llm_cache:
+        return _llm_cache[cache_key]
+    llm = LLM(
         model=model_id,
         trust_remote_code=True,
         tensor_parallel_size=tensor_parallel_size,
         max_model_len=max_model_len,
         **kwargs,
     )
+    _llm_cache[cache_key] = llm
+    return llm
 
 
 def generate_dsl(
