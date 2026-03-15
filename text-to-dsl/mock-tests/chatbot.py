@@ -21,7 +21,7 @@ sys.path.insert(0, str(_root / "build"))
 sys.path.insert(0, str(_root / "text-to-dsl"))
 
 import text_to_geometry_bindings as t2g
-from inference import generate_dsl, load_llm
+from inference import generate_dsl, load_llm, warmup_prefix_cache
 
 OUTPUT_DIR = Path(__file__).resolve().parent
 DSL_PATH = OUTPUT_DIR / "chatbot-output.dsl"
@@ -33,6 +33,8 @@ def main() -> None:
     model_id = "mratsim/GLM-4.7-Flash-FP8"
     print(f"Loading model {model_id}...")
     llm = load_llm(model_id=model_id)
+    print("Warming up prefix cache...")
+    warmup_prefix_cache(llm)
     print("Ready. Describe a shape. Type 'quit' or 'exit' to stop.\n")
 
     while True:

@@ -77,7 +77,8 @@ def validate_dsl(dsl: str) -> tuple[bool, str]:
 def load_llm(
     model_id: str = "zai-org/GLM-4.7-Flash",
     tensor_parallel_size: int = 1,
-    max_model_len: int = 4096,
+    max_model_len: int = 1024,
+    enable_prefix_caching: bool = True,
     **kwargs,
 ) -> LLM:
     """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading."""
@@ -89,10 +90,21 @@ def load_llm(
         trust_remote_code=True,
         tensor_parallel_size=tensor_parallel_size,
         max_model_len=max_model_len,
+        enable_prefix_caching=enable_prefix_caching,
         **kwargs,
     )
     _llm_cache[cache_key] = llm
     return llm
+
+
+def warmup_prefix_cache(llm: LLM, dsl_context: str = DSL_CONTEXT) -> None:
+    """Run a warmup generation to populate the prefix cache for dsl_context."""
+    base = Path(__file__).resolve().parent
+    with open(base / "grammar.gbnf") as f:
+        grammar_str = f.read()
+    structured = StructuredOutputsParams(grammar=grammar_str)
+    sampling = SamplingParams(structured_outputs=structured, max_tokens=16)
+    llm.generate(prompts=[dsl_context + "warmup"], sampling_params=sampling)
 
 
 def generate_dsl(
@@ -100,12 +112,12 @@ def generate_dsl(
     model_id: str = "zai-org/GLM-4.7-Flash",
     dsl_context: str | None = DSL_CONTEXT,
     grammar_path: str | Path | None = None,
-    max_new_tokens: int = 256,
+    max_new_tokens: int = 128,
     temperature: float = 0.2,
     top_p: float = 0.95,
     repetition_penalty: float = 1.05,
     tensor_parallel_size: int = 1,
-    max_model_len: int = 4096,
+    max_model_len: int = 1024,
     llm: LLM | None = None,
 ) -> str:
     """
