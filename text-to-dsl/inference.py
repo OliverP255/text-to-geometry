@@ -79,6 +79,7 @@ def load_llm(
     tensor_parallel_size: int = 1,
     max_model_len: int = 1024,
     enable_prefix_caching: bool = True,
+    gpu_memory_utilization: float = 0.95,
     **kwargs,
 ) -> LLM:
     """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading."""
@@ -91,6 +92,7 @@ def load_llm(
         tensor_parallel_size=tensor_parallel_size,
         max_model_len=max_model_len,
         enable_prefix_caching=enable_prefix_caching,
+        gpu_memory_utilization=gpu_memory_utilization,
         **kwargs,
     )
     _llm_cache[cache_key] = llm
