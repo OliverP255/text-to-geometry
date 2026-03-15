@@ -76,6 +76,7 @@ def load_llm(
         tensor_parallel_size=tensor_parallel_size,
         max_model_len=max_model_len,
         enable_prefix_caching=enable_prefix_caching,
+        enable_chunked_prefill=True,
         gpu_memory_utilization=gpu_memory_utilization,
         **kwargs,
     )
