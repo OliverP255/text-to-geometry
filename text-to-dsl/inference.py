@@ -28,25 +28,9 @@ def _find_validate_dsl() -> Path | None:
     return None
 
 
-# Few-shot context so GLM understands the DSL format
-DSL_CONTEXT = """SDF DSL for signed-distance-field geometry. Format:
-sN = shape, tN = transform. Named params. Define vars before use.
-
-Primitives: sphere(r=1.0), box(x=0.5, y=0.5, z=0.5), plane(nx=0, ny=1, nz=0, d=0)
-Transforms: translate(x=1.0, y=0.0, z=0.0), scale(x=2.0, y=2.0, z=2.0)
-CSG: union(s0, s1, ...), intersect(s0, s1, ...), subtract(s0, s1)
-Apply: apply(t0, s0). Use # or // for comments.
-
-Example - "a unit sphere":
-s0 = sphere(r=1.0)
-return s0
-
-Example - "sphere and box union":
-s0 = sphere(r=1.0)
-s1 = box(x=0.5, y=0.5, z=0.5)
-s2 = union(s0, s1)
-return s2
-
+# Few-shot context so GLM understands the DSL format (kept short for faster prefill)
+DSL_CONTEXT = """SDF DSL. sN=shape, tN=transform. Primitives: sphere(r), box(x,y,z), plane(nx,ny,nz,d). Transforms: translate(x,y,z), scale(x,y,z). CSG: union, intersect, subtract. Apply: apply(t,s).
+Example: s0=sphere(r=1)\nreturn s0
 Generate DSL for: """
 
 # Module-level cache: (model_id, tensor_parallel_size, max_model_len) -> LLM
@@ -114,7 +98,7 @@ def generate_dsl(
     model_id: str = "zai-org/GLM-4.7-Flash",
     dsl_context: str | None = DSL_CONTEXT,
     grammar_path: str | Path | None = None,
-    max_new_tokens: int = 128,
+    max_new_tokens: int = 64,
     temperature: float = 0.2,
     top_p: float = 0.95,
     repetition_penalty: float = 1.05,
