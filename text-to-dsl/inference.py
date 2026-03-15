@@ -1,6 +1,6 @@
 """
 Grammar-constrained DSL generation for SDF geometry.
-Uses vLLM with GuidedDecodingParams for grammar-constrained decoding. Model: GLM-4.7-Flash.
+Uses vLLM with StructuredOutputsParams (grammar) for grammar-constrained decoding. Model: GLM-4.7-Flash.
 """
 
 from __future__ import annotations
@@ -82,10 +82,10 @@ def generate_dsl(
 ) -> str:
     """
     Generate DSL from prompt using grammar-constrained decoding.
-    Uses vLLM with GuidedDecodingParams. Model: GLM-4.7-Flash.
+    Uses vLLM with StructuredOutputsParams (grammar). Model: GLM-4.7-Flash.
     """
     from vllm import LLM
-    from vllm.sampling_params import GuidedDecodingParams, SamplingParams
+    from vllm.sampling_params import SamplingParams, StructuredOutputsParams
 
     base = Path(__file__).resolve().parent
     grammar_path = grammar_path or base / "grammar.gbnf"
@@ -101,9 +101,9 @@ def generate_dsl(
         max_model_len=max_model_len,
     )
 
-    guided = GuidedDecodingParams(grammar=grammar_str)
+    structured = StructuredOutputsParams(grammar=grammar_str)
     sampling = SamplingParams(
-        guided_decoding=guided,
+        structured_outputs=structured,
         max_tokens=max_new_tokens,
         temperature=temperature,
         top_p=top_p,

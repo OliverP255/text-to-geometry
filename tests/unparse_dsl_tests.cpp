@@ -32,9 +32,9 @@ TEST(UnparseDSL, SingleSphereRoundTrip) {
   FlatIR ir2 = compileAndLower(unparsed);
   EXPECT_EQ(ir.instrs.size(), ir2.instrs.size());
   EXPECT_EQ(ir.instrs[0].op, ir2.instrs[0].op);
-  EXPECT_EQ(ir.rootTemp.id, ir2.rootTemp.id);
+  EXPECT_EQ(ir.rootTemp, ir2.rootTemp);
   EXPECT_EQ(ir.spheres.size(), ir2.spheres.size());
-  EXPECT_FLOAT_EQ(ir.spheres[0], ir2.spheres[0]);
+  EXPECT_FLOAT_EQ(ir.spheres[0].r, ir2.spheres[0].r);
 }
 
 TEST(UnparseDSL, UnionRoundTrip) {
@@ -49,7 +49,7 @@ TEST(UnparseDSL, UnionRoundTrip) {
 
   FlatIR ir2 = compileAndLower(unparsed);
   EXPECT_EQ(ir.instrs.size(), ir2.instrs.size());
-  EXPECT_EQ(ir.rootTemp.id, ir2.rootTemp.id);
+  EXPECT_EQ(ir.rootTemp, ir2.rootTemp);
   for (size_t i = 0; i < ir.instrs.size(); ++i) {
     EXPECT_EQ(static_cast<int>(ir.instrs[i].op),
               static_cast<int>(ir2.instrs[i].op));
@@ -68,7 +68,7 @@ TEST(UnparseDSL, TranslateAndApplyRoundTrip) {
 
   FlatIR ir2 = compileAndLower(unparsed);
   EXPECT_EQ(ir.instrs.size(), ir2.instrs.size());
-  EXPECT_EQ(ir.rootTemp.id, ir2.rootTemp.id);
+  EXPECT_EQ(ir.rootTemp, ir2.rootTemp);
 }
 
 TEST(UnparseDSL, UnparsedDSLEvaluatesCorrectly) {

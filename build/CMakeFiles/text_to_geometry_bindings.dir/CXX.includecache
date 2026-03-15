@@ -62,6 +62,12 @@ cstdint
 vector
 -
 
+../include/kernel/pack_for_webgpu.h
+kernel/flat_ir.h
+../include/kernel/kernel/flat_ir.h
+vector
+-
+
 ../include/kernel/param_extract.h
 kernel/flat_ir.h
 ../include/kernel/kernel/flat_ir.h
@@ -87,6 +93,8 @@ kernel/lower.h
 /Users/oliverpryce/Documents/AI/text-to-geometry/bindings/kernel/lower.h
 kernel/optimise.h
 /Users/oliverpryce/Documents/AI/text-to-geometry/bindings/kernel/optimise.h
+kernel/pack_for_webgpu.h
+/Users/oliverpryce/Documents/AI/text-to-geometry/bindings/kernel/pack_for_webgpu.h
 kernel/param_extract.h
 /Users/oliverpryce/Documents/AI/text-to-geometry/bindings/kernel/param_extract.h
 kernel/unparse_dsl.h

@@ -42,18 +42,13 @@ std::string unparseDSL(const FlatIR& ir) {
 
   // Build transform var assignments and wrap strings for each transform index
   std::vector<std::string> transformWrap;
-  size_t numTransforms = ir.transforms.size() / 6;
+  size_t numTransforms = ir.transforms.size();
   transformWrap.resize(numTransforms);
 
   for (size_t ti = 1; ti < numTransforms; ++ti) {
-    size_t base = ti * 6;
-    if (base + 6 > ir.transforms.size()) break;
-    float tx = ir.transforms[base];
-    float ty = ir.transforms[base + 1];
-    float tz = ir.transforms[base + 2];
-    float sx = ir.transforms[base + 3];
-    float sy = ir.transforms[base + 4];
-    float sz = ir.transforms[base + 5];
+    const FlatTransform& t = ir.transforms[ti];
+    float tx = t.tx, ty = t.ty, tz = t.tz;
+    float sx = t.sx, sy = t.sy, sz = t.sz;
 
     if (isIdentityTransform(tx, ty, tz, sx, sy, sz)) {
       transformWrap[ti] = "";
@@ -89,8 +84,9 @@ std::string unparseDSL(const FlatIR& ir) {
   for (size_t i = 0; i < ir.instrs.size(); ++i) {
     const FlatInstr& instr = ir.instrs[i];
     bool hasTransform =
-        (instr.op == FlatOp::EvalSphere || instr.op == FlatOp::EvalBox ||
-         instr.op == FlatOp::EvalPlane) &&
+        (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
+         instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
+         instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) &&
         instr.arg0 < transformWrap.size() && !transformWrap[instr.arg0].empty();
     if (hasTransform) {
       ++nextTemp;  // primitive temp
@@ -106,33 +102,31 @@ std::string unparseDSL(const FlatIR& ir) {
     const FlatInstr& instr = ir.instrs[i];
     std::string prim;
 
-    switch (instr.op) {
+    switch (static_cast<FlatOp>(instr.op)) {
       case FlatOp::EvalSphere: {
         if (instr.constIdx < ir.spheres.size()) {
-          prim = "sphere(r=" + formatFloat(ir.spheres[instr.constIdx]) + ")";
+          prim = "sphere(r=" + formatFloat(ir.spheres[instr.constIdx].r) + ")";
         } else {
           prim = "sphere(r=1)";
         }
         break;
       }
       case FlatOp::EvalBox: {
-        size_t base = instr.constIdx * 3;
-        if (base + 3 <= ir.boxes.size()) {
-          prim = "box(x=" + formatFloat(ir.boxes[base]) + ",y=" +
-                 formatFloat(ir.boxes[base + 1]) + ",z=" +
-                 formatFloat(ir.boxes[base + 2]) + ")";
+        if (instr.constIdx < ir.boxes.size()) {
+          prim = "box(x=" + formatFloat(ir.boxes[instr.constIdx].hx) + ",y=" +
+                 formatFloat(ir.boxes[instr.constIdx].hy) + ",z=" +
+                 formatFloat(ir.boxes[instr.constIdx].hz) + ")";
         } else {
           prim = "box(x=1,y=1,z=1)";
         }
         break;
       }
       case FlatOp::EvalPlane: {
-        size_t base = instr.constIdx * 4;
-        if (base + 4 <= ir.planes.size()) {
-          prim = "plane(nx=" + formatFloat(ir.planes[base]) + ",ny=" +
-                 formatFloat(ir.planes[base + 1]) + ",nz=" +
-                 formatFloat(ir.planes[base + 2]) + ",d=" +
-                 formatFloat(ir.planes[base + 3]) + ")";
+        if (instr.constIdx < ir.planes.size()) {
+          prim = "plane(nx=" + formatFloat(ir.planes[instr.constIdx].nx) +
+                 ",ny=" + formatFloat(ir.planes[instr.constIdx].ny) + ",nz=" +
+                 formatFloat(ir.planes[instr.constIdx].nz) + ",d=" +
+                 formatFloat(ir.planes[instr.constIdx].d) + ")";
         } else {
           prim = "plane(nx=0,ny=1,nz=0,d=0)";
         }
@@ -165,8 +159,9 @@ std::string unparseDSL(const FlatIR& ir) {
         break;
     }
 
-    if (instr.op == FlatOp::EvalSphere || instr.op == FlatOp::EvalBox ||
-        instr.op == FlatOp::EvalPlane) {
+    if (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
+        instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
+        instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) {
       primitiveExprs[i] = prim;
     }
   }
@@ -175,12 +170,14 @@ std::string unparseDSL(const FlatIR& ir) {
   for (size_t i = 0; i < ir.instrs.size(); ++i) {
     const FlatInstr& instr = ir.instrs[i];
     bool hasTransform =
-        (instr.op == FlatOp::EvalSphere || instr.op == FlatOp::EvalBox ||
-         instr.op == FlatOp::EvalPlane) &&
+        (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
+         instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
+         instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) &&
         instr.arg0 < transformWrap.size() && !transformWrap[instr.arg0].empty();
 
-    if (instr.op == FlatOp::EvalSphere || instr.op == FlatOp::EvalBox ||
-        instr.op == FlatOp::EvalPlane) {
+    if (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
+        instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
+        instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) {
       if (hasTransform) {
         size_t primTemp = resultTemp[i] - 1;
         size_t resultIdx = resultTemp[i];
@@ -202,8 +199,8 @@ std::string unparseDSL(const FlatIR& ir) {
   }
 
   // Emit return
-  if (ir.rootTemp.id < resultTemp.size()) {
-    out << "return s" << resultTemp[ir.rootTemp.id];
+  if (ir.rootTemp < resultTemp.size()) {
+    out << "return s" << resultTemp[ir.rootTemp];
   }
 
   return out.str();

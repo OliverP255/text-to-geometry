@@ -18,7 +18,7 @@ def test_compile_returns_dict():
     assert "instrs" in d
     assert "spheres" in d
     assert len(d["spheres"]) == 1
-    assert d["spheres"][0] == 1.0
+    assert d["spheres"][0]["r"] == 1.0
 
 
 def test_serialize_deserialize_roundtrip():
@@ -38,7 +38,7 @@ def test_extract_writeback_roundtrip():
     params = t2g.extractParams(d)
     params[6] = 2.0
     t2g.writeBackParams(d, params)
-    assert d["spheres"][0] == 2.0
+    assert d["spheres"][0]["r"] == 2.0
 
 
 def test_topology_hash_same_topology():
@@ -105,4 +105,4 @@ def test_optimise_converges():
     d = t2g.compile("s0=sphere(r=0.5)\nreturn s0")
     target = sphere_target(radius=1.0)
     d = optimise_params(d, target, steps=200, batch_size=512)
-    assert d["spheres"][0] > 0.6
+    assert d["spheres"][0]["r"] > 0.6

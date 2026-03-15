@@ -37,6 +37,50 @@ def _min_scale(sx: torch.Tensor, sy: torch.Tensor, sz: torch.Tensor) -> torch.Te
     return torch.minimum(torch.minimum(sx, sy), sz)
 
 
+def _flatten_flatir(flatir_dict: Dict[str, Any]) -> tuple:
+    """Convert FlatIR dict (semantic: list of dicts) to flat arrays for SDFModule."""
+    transforms = flatir_dict.get("transforms", [])
+    spheres = flatir_dict.get("spheres", [])
+    boxes = flatir_dict.get("boxes", [])
+    planes = flatir_dict.get("planes", [])
+
+    def flat_transforms() -> List[float]:
+        out: List[float] = []
+        for t in transforms:
+            if isinstance(t, dict):
+                out.extend([t.get("tx", 0), t.get("ty", 0), t.get("tz", 0),
+                            t.get("sx", 1), t.get("sy", 1), t.get("sz", 1)])
+            else:
+                out.append(float(t))
+        return out if out else [0, 0, 0, 1, 1, 1]
+
+    def flat_spheres() -> List[float]:
+        out: List[float] = []
+        for s in spheres:
+            out.append(float(s["r"]) if isinstance(s, dict) else float(s))
+        return out if out else [1.0]
+
+    def flat_boxes() -> List[float]:
+        out: List[float] = []
+        for b in boxes:
+            if isinstance(b, dict):
+                out.extend([b.get("hx", 1), b.get("hy", 1), b.get("hz", 1)])
+            else:
+                out.append(float(b))
+        return out if out else [1, 1, 1]
+
+    def flat_planes() -> List[float]:
+        out: List[float] = []
+        for p in planes:
+            if isinstance(p, dict):
+                out.extend([p.get("nx", 0), p.get("ny", 1), p.get("nz", 0), p.get("d", 0)])
+            else:
+                out.append(float(p))
+        return out if out else [0, 1, 0, 0]
+
+    return flat_transforms(), flat_spheres(), flat_boxes(), flat_planes()
+
+
 class SDFModule(nn.Module):
     """PyTorch nn.Module that evaluates FlatIR SDF at points (N,3) -> (N,)."""
 
@@ -45,12 +89,8 @@ class SDFModule(nn.Module):
         self.instrs = flatir_dict.get("instrs", [])
         self.root_temp = flatir_dict.get("rootTemp", 0)
 
-        # Build parameter tensors from FlatIR
-        transforms = flatir_dict.get("transforms", [0, 0, 0, 1, 1, 1])
-        spheres = flatir_dict.get("spheres", [1.0])
-        boxes = flatir_dict.get("boxes", [1, 1, 1])
-        planes = flatir_dict.get("planes", [0, 1, 0, 0])
-
+        # Build parameter tensors from FlatIR (supports semantic dict format)
+        transforms, spheres, boxes, planes = _flatten_flatir(flatir_dict)
         self.transforms = nn.Parameter(torch.tensor(transforms, dtype=torch.float32))
         self.spheres = nn.Parameter(torch.tensor(spheres, dtype=torch.float32))
         self.boxes = nn.Parameter(torch.tensor(boxes, dtype=torch.float32))

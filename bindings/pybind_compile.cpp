@@ -4,6 +4,7 @@
 #include "kernel/flat_ir.h"
 #include "kernel/lower.h"
 #include "kernel/optimise.h"
+#include "kernel/pack_for_webgpu.h"
 #include "kernel/param_extract.h"
 #include "kernel/unparse_dsl.h"
 #include <string>
@@ -13,11 +14,10 @@ namespace py = pybind11;
 
 namespace {
 
-// Convert FlatIR to Python dict
+// Convert FlatIR to Python dict (semantic schema)
 py::dict flatIRToDict(const kernel::FlatIR& ir) {
   py::dict d;
 
-  // instrs: list of (op, arg0, arg1, constIdx)
   py::list instrs;
   for (const auto& instr : ir.instrs) {
     py::dict i;
@@ -29,16 +29,54 @@ py::dict flatIRToDict(const kernel::FlatIR& ir) {
   }
   d["instrs"] = instrs;
 
-  d["transforms"] = ir.transforms;
-  d["spheres"] = ir.spheres;
-  d["boxes"] = ir.boxes;
-  d["planes"] = ir.planes;
-  d["rootTemp"] = ir.rootTemp.id;
+  py::list transforms;
+  for (const auto& t : ir.transforms) {
+    py::dict item;
+    item["tx"] = t.tx;
+    item["ty"] = t.ty;
+    item["tz"] = t.tz;
+    item["sx"] = t.sx;
+    item["sy"] = t.sy;
+    item["sz"] = t.sz;
+    transforms.append(item);
+  }
+  d["transforms"] = transforms;
+
+  py::list spheres;
+  for (const auto& s : ir.spheres) {
+    py::dict item;
+    item["r"] = s.r;
+    spheres.append(item);
+  }
+  d["spheres"] = spheres;
+
+  py::list boxes;
+  for (const auto& b : ir.boxes) {
+    py::dict item;
+    item["hx"] = b.hx;
+    item["hy"] = b.hy;
+    item["hz"] = b.hz;
+    boxes.append(item);
+  }
+  d["boxes"] = boxes;
+
+  py::list planes;
+  for (const auto& p : ir.planes) {
+    py::dict item;
+    item["nx"] = p.nx;
+    item["ny"] = p.ny;
+    item["nz"] = p.nz;
+    item["d"] = p.d;
+    planes.append(item);
+  }
+  d["planes"] = planes;
+
+  d["rootTemp"] = static_cast<int>(ir.rootTemp);
 
   return d;
 }
 
-// Convert Python dict to FlatIR (for deserialize)
+// Convert Python dict to FlatIR
 kernel::FlatIR dictToFlatIR(const py::dict& d) {
   kernel::FlatIR ir;
 
@@ -46,20 +84,69 @@ kernel::FlatIR dictToFlatIR(const py::dict& d) {
   for (py::handle h : instrs) {
     py::dict i = h.cast<py::dict>();
     kernel::FlatInstr instr;
-    instr.op = static_cast<kernel::FlatOp>(i["op"].cast<int>());
+    instr.op = static_cast<uint32_t>(i["op"].cast<int>());
     instr.arg0 = i["arg0"].cast<uint32_t>();
     instr.arg1 = i["arg1"].cast<uint32_t>();
     instr.constIdx = i["constIdx"].cast<uint32_t>();
     ir.instrs.push_back(instr);
   }
 
-  ir.transforms = d["transforms"].cast<std::vector<float>>();
-  ir.spheres = d["spheres"].cast<std::vector<float>>();
-  ir.boxes = d["boxes"].cast<std::vector<float>>();
-  ir.planes = d["planes"].cast<std::vector<float>>();
-  ir.rootTemp.id = d["rootTemp"].cast<uint32_t>();
+  py::list transforms = d["transforms"];
+  for (py::handle h : transforms) {
+    py::dict item = h.cast<py::dict>();
+    kernel::FlatTransform t;
+    t.tx = item["tx"].cast<float>();
+    t.ty = item["ty"].cast<float>();
+    t.tz = item["tz"].cast<float>();
+    t.sx = item["sx"].cast<float>();
+    t.sy = item["sy"].cast<float>();
+    t.sz = item["sz"].cast<float>();
+    ir.transforms.push_back(t);
+  }
+
+  py::list spheres = d["spheres"];
+  for (py::handle h : spheres) {
+    py::dict item = h.cast<py::dict>();
+    ir.spheres.push_back({item["r"].cast<float>()});
+  }
+
+  py::list boxes = d["boxes"];
+  for (py::handle h : boxes) {
+    py::dict item = h.cast<py::dict>();
+    ir.boxes.push_back(
+        {item["hx"].cast<float>(), item["hy"].cast<float>(), item["hz"].cast<float>()});
+  }
+
+  py::list planes = d["planes"];
+  for (py::handle h : planes) {
+    py::dict item = h.cast<py::dict>();
+    ir.planes.push_back({item["nx"].cast<float>(), item["ny"].cast<float>(),
+                         item["nz"].cast<float>(), item["d"].cast<float>()});
+  }
+
+  ir.rootTemp = static_cast<uint32_t>(d["rootTemp"].cast<int>());
 
   return ir;
+}
+
+py::dict packedFlatIRToDict(const kernel::PackedFlatIR& packed) {
+  py::dict d;
+  py::list instrs;
+  for (const auto& instr : packed.instrs) {
+    py::dict i;
+    i["op"] = static_cast<int>(instr.op);
+    i["arg0"] = instr.arg0;
+    i["arg1"] = instr.arg1;
+    i["constIdx"] = instr.constIdx;
+    instrs.append(i);
+  }
+  d["instrs"] = instrs;
+  d["transforms"] = packed.transforms;
+  d["spheres"] = packed.spheres;
+  d["boxes"] = packed.boxes;
+  d["planes"] = packed.planes;
+  d["rootTemp"] = static_cast<int>(packed.rootTemp);
+  return d;
 }
 
 }  // namespace
@@ -90,10 +177,11 @@ PYBIND11_MODULE(text_to_geometry_bindings, m) {
   m.def("writeBackParams", [](py::dict& flatir_dict, const std::vector<float>& params) {
     kernel::FlatIR ir = dictToFlatIR(flatir_dict);
     kernel::applyParams(ir, params);
-    flatir_dict["transforms"] = ir.transforms;
-    flatir_dict["spheres"] = ir.spheres;
-    flatir_dict["boxes"] = ir.boxes;
-    flatir_dict["planes"] = ir.planes;
+    py::dict updated = flatIRToDict(ir);
+    flatir_dict["transforms"] = updated["transforms"];
+    flatir_dict["spheres"] = updated["spheres"];
+    flatir_dict["boxes"] = updated["boxes"];
+    flatir_dict["planes"] = updated["planes"];
   }, py::arg("flatir_dict"), py::arg("params"), "Write optimized params back into FlatIR dict");
 
   m.def("extractParams", [](const py::dict& flatir_dict) {
@@ -105,4 +193,10 @@ PYBIND11_MODULE(text_to_geometry_bindings, m) {
     kernel::FlatIR ir = dictToFlatIR(flatir_dict);
     return kernel::unparseDSL(ir);
   }, py::arg("flatir_dict"), "Convert FlatIR dict to DSL string");
+
+  m.def("packForWebGPU", [](const py::dict& flatir_dict) {
+    kernel::FlatIR ir = dictToFlatIR(flatir_dict);
+    kernel::PackedFlatIR packed = kernel::packForWebGPU(ir);
+    return packedFlatIRToDict(packed);
+  }, py::arg("flatir_dict"), "Pack FlatIR dict to WGSL-aligned format for WebGPU");
 }

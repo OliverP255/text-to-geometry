@@ -21,11 +21,11 @@ TEST(Lower, SingleSphere) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[0].arg0, 0u);  // transformIdx 0 = identity
   EXPECT_EQ(ir.spheres.size(), 1u);
-  EXPECT_FLOAT_EQ(ir.spheres[0], 1.0f);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_FLOAT_EQ(ir.spheres[0].r, 1.0f);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, SingleBox) {
@@ -36,13 +36,13 @@ TEST(Lower, SingleBox) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalBox);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalBox));
   EXPECT_EQ(ir.instrs[0].arg0, 0u);
-  EXPECT_EQ(ir.boxes.size(), 3u);
-  EXPECT_FLOAT_EQ(ir.boxes[0], 1.0f);
-  EXPECT_FLOAT_EQ(ir.boxes[1], 1.0f);
-  EXPECT_FLOAT_EQ(ir.boxes[2], 1.0f);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.boxes.size(), 1u);
+  EXPECT_FLOAT_EQ(ir.boxes[0].hx, 1.0f);
+  EXPECT_FLOAT_EQ(ir.boxes[0].hy, 1.0f);
+  EXPECT_FLOAT_EQ(ir.boxes[0].hz, 1.0f);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, SinglePlane) {
@@ -53,14 +53,14 @@ TEST(Lower, SinglePlane) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalPlane);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalPlane));
   EXPECT_EQ(ir.instrs[0].arg0, 0u);
-  EXPECT_EQ(ir.planes.size(), 4u);
-  EXPECT_FLOAT_EQ(ir.planes[0], 0.0f);
-  EXPECT_FLOAT_EQ(ir.planes[1], 1.0f);
-  EXPECT_FLOAT_EQ(ir.planes[2], 0.0f);
-  EXPECT_FLOAT_EQ(ir.planes[3], 0.0f);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.planes.size(), 1u);
+  EXPECT_FLOAT_EQ(ir.planes[0].nx, 0.0f);
+  EXPECT_FLOAT_EQ(ir.planes[0].ny, 1.0f);
+  EXPECT_FLOAT_EQ(ir.planes[0].nz, 0.0f);
+  EXPECT_FLOAT_EQ(ir.planes[0].d, 0.0f);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, EmptyDAG) {
@@ -74,7 +74,7 @@ TEST(Lower, EmptyDAG) {
   FlatIR ir = lower(dag);
 
   EXPECT_TRUE(ir.instrs.empty());
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, Union) {
@@ -87,10 +87,10 @@ TEST(Lower, Union) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 3u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.instrs[1].op, FlatOp::EvalBox);
-  EXPECT_EQ(ir.instrs[2].op, FlatOp::CsgUnion);
-  EXPECT_EQ(ir.rootTemp.id, 2u);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.instrs[1].op, static_cast<uint32_t>(FlatOp::EvalBox));
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::CsgUnion));
+  EXPECT_EQ(ir.rootTemp, 2u);
 }
 
 TEST(Lower, Intersect) {
@@ -103,8 +103,8 @@ TEST(Lower, Intersect) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 3u);
-  EXPECT_EQ(ir.instrs[2].op, FlatOp::CsgIntersect);
-  EXPECT_EQ(ir.rootTemp.id, 2u);
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::CsgIntersect));
+  EXPECT_EQ(ir.rootTemp, 2u);
 }
 
 TEST(Lower, Subtract) {
@@ -117,8 +117,8 @@ TEST(Lower, Subtract) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 3u);
-  EXPECT_EQ(ir.instrs[2].op, FlatOp::CsgSubtract);
-  EXPECT_EQ(ir.rootTemp.id, 2u);
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::CsgSubtract));
+  EXPECT_EQ(ir.rootTemp, 2u);
 }
 
 TEST(Lower, UnionSameShape) {
@@ -130,10 +130,10 @@ TEST(Lower, UnionSameShape) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 2u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.instrs[1].op, FlatOp::CsgUnion);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.instrs[1].op, static_cast<uint32_t>(FlatOp::CsgUnion));
   EXPECT_EQ(ir.spheres.size(), 1u);
-  EXPECT_EQ(ir.rootTemp.id, 1u);
+  EXPECT_EQ(ir.rootTemp, 1u);
 }
 
 TEST(Lower, TranslateSphere) {
@@ -146,13 +146,13 @@ TEST(Lower, TranslateSphere) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[0].arg0, 1u);
-  EXPECT_EQ(ir.transforms.size(), 12u);
-  EXPECT_FLOAT_EQ(ir.transforms[6], 1.0f);
-  EXPECT_FLOAT_EQ(ir.transforms[7], 0.0f);
-  EXPECT_FLOAT_EQ(ir.transforms[8], 0.0f);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.transforms.size(), 2u);  // identity + translate(1,0,0)
+  EXPECT_FLOAT_EQ(ir.transforms[1].tx, 1.0f);
+  EXPECT_FLOAT_EQ(ir.transforms[1].ty, 0.0f);
+  EXPECT_FLOAT_EQ(ir.transforms[1].tz, 0.0f);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, ScaleSphere) {
@@ -165,10 +165,10 @@ TEST(Lower, ScaleSphere) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[0].arg0, 1u);
-  EXPECT_GE(ir.transforms.size(), 12u);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_GE(ir.transforms.size(), 2u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, NestedTransforms) {
@@ -183,10 +183,10 @@ TEST(Lower, NestedTransforms) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[0].arg0, 1u);
-  EXPECT_GE(ir.transforms.size(), 12u);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_GE(ir.transforms.size(), 2u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, MixedUnion) {
@@ -201,10 +201,10 @@ TEST(Lower, MixedUnion) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 3u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.instrs[1].op, FlatOp::EvalBox);
-  EXPECT_EQ(ir.instrs[2].op, FlatOp::CsgUnion);
-  EXPECT_EQ(ir.rootTemp.id, 2u);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.instrs[1].op, static_cast<uint32_t>(FlatOp::EvalBox));
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::CsgUnion));
+  EXPECT_EQ(ir.rootTemp, 2u);
 }
 
 TEST(Lower, SameNodeDifferentTransforms) {
@@ -220,11 +220,11 @@ TEST(Lower, SameNodeDifferentTransforms) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 3u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.instrs[1].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.instrs[2].op, FlatOp::CsgUnion);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.instrs[1].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::CsgUnion));
   EXPECT_EQ(ir.spheres.size(), 2u);  // No dedup: same shape, different transforms
-  EXPECT_EQ(ir.rootTemp.id, 2u);
+  EXPECT_EQ(ir.rootTemp, 2u);
 }
 
 TEST(Lower, IdentityTransform) {
@@ -237,9 +237,9 @@ TEST(Lower, IdentityTransform) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[0].arg0, 0u);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, NullHeaders) {
@@ -253,7 +253,7 @@ TEST(Lower, NullHeaders) {
   FlatIR ir = lower(dag);
 
   EXPECT_TRUE(ir.instrs.empty());
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, ZeroHeaderCount) {
@@ -267,7 +267,7 @@ TEST(Lower, ZeroHeaderCount) {
   FlatIR ir = lower(dag);
 
   EXPECT_TRUE(ir.instrs.empty());
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, DeeplyNestedCSG) {
@@ -284,8 +284,8 @@ TEST(Lower, DeeplyNestedCSG) {
   FlatIR ir = lower(dag);
 
   EXPECT_GE(ir.instrs.size(), 4u);
-  EXPECT_EQ(ir.instrs.back().op, FlatOp::CsgUnion);
-  EXPECT_TRUE(ir.rootTemp.id > 0);
+  EXPECT_EQ(ir.instrs.back().op, static_cast<uint32_t>(FlatOp::CsgUnion));
+  EXPECT_TRUE(ir.rootTemp > 0);
 }
 
 TEST(Lower, TripleUnion) {
@@ -300,12 +300,12 @@ TEST(Lower, TripleUnion) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 5u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.instrs[1].op, FlatOp::EvalBox);
-  EXPECT_EQ(ir.instrs[2].op, FlatOp::EvalPlane);
-  EXPECT_EQ(ir.instrs[3].op, FlatOp::CsgUnion);
-  EXPECT_EQ(ir.instrs[4].op, FlatOp::CsgUnion);
-  EXPECT_EQ(ir.rootTemp.id, 4u);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.instrs[1].op, static_cast<uint32_t>(FlatOp::EvalBox));
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::EvalPlane));
+  EXPECT_EQ(ir.instrs[3].op, static_cast<uint32_t>(FlatOp::CsgUnion));
+  EXPECT_EQ(ir.instrs[4].op, static_cast<uint32_t>(FlatOp::CsgUnion));
+  EXPECT_EQ(ir.rootTemp, 4u);
 }
 
 TEST(Lower, ScaleOne) {
@@ -318,9 +318,9 @@ TEST(Lower, ScaleOne) {
   FlatIR ir = lower(dag);
 
   EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[0].arg0, 0u);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, OptimisedThenLower) {
@@ -334,8 +334,8 @@ TEST(Lower, OptimisedThenLower) {
   FlatIR ir = lower(opt.view);
 
   EXPECT_GE(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, FlatOp::EvalSphere);
-  EXPECT_EQ(ir.rootTemp.id, 0u);
+  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
+  EXPECT_EQ(ir.rootTemp, 0u);
 }
 
 TEST(Lower, LoweringIsDeterministic) {
@@ -364,12 +364,30 @@ TEST(Lower, LoweringIsDeterministic) {
 
   EXPECT_EQ(ir0.transforms.size(), ir1.transforms.size());
   for (size_t i = 0; i < ir0.transforms.size(); ++i) {
-    EXPECT_FLOAT_EQ(ir0.transforms[i], ir1.transforms[i]);
+    EXPECT_FLOAT_EQ(ir0.transforms[i].tx, ir1.transforms[i].tx);
+    EXPECT_FLOAT_EQ(ir0.transforms[i].ty, ir1.transforms[i].ty);
+    EXPECT_FLOAT_EQ(ir0.transforms[i].tz, ir1.transforms[i].tz);
+    EXPECT_FLOAT_EQ(ir0.transforms[i].sx, ir1.transforms[i].sx);
+    EXPECT_FLOAT_EQ(ir0.transforms[i].sy, ir1.transforms[i].sy);
+    EXPECT_FLOAT_EQ(ir0.transforms[i].sz, ir1.transforms[i].sz);
   }
-  EXPECT_EQ(ir0.spheres, ir1.spheres);
-  EXPECT_EQ(ir0.boxes, ir1.boxes);
-  EXPECT_EQ(ir0.planes, ir1.planes);
-  EXPECT_EQ(ir0.rootTemp.id, ir1.rootTemp.id);
+  EXPECT_EQ(ir0.spheres.size(), ir1.spheres.size());
+  for (size_t i = 0; i < ir0.spheres.size(); ++i)
+    EXPECT_FLOAT_EQ(ir0.spheres[i].r, ir1.spheres[i].r);
+  EXPECT_EQ(ir0.boxes.size(), ir1.boxes.size());
+  for (size_t i = 0; i < ir0.boxes.size(); ++i) {
+    EXPECT_FLOAT_EQ(ir0.boxes[i].hx, ir1.boxes[i].hx);
+    EXPECT_FLOAT_EQ(ir0.boxes[i].hy, ir1.boxes[i].hy);
+    EXPECT_FLOAT_EQ(ir0.boxes[i].hz, ir1.boxes[i].hz);
+  }
+  EXPECT_EQ(ir0.planes.size(), ir1.planes.size());
+  for (size_t i = 0; i < ir0.planes.size(); ++i) {
+    EXPECT_FLOAT_EQ(ir0.planes[i].nx, ir1.planes[i].nx);
+    EXPECT_FLOAT_EQ(ir0.planes[i].ny, ir1.planes[i].ny);
+    EXPECT_FLOAT_EQ(ir0.planes[i].nz, ir1.planes[i].nz);
+    EXPECT_FLOAT_EQ(ir0.planes[i].d, ir1.planes[i].d);
+  }
+  EXPECT_EQ(ir0.rootTemp, ir1.rootTemp);
 }
 
 TEST(Lower, SemanticEquivalenceAtSamplePoints) {

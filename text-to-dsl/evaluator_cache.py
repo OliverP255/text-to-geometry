@@ -31,12 +31,9 @@ def get_or_create_evaluator(flatir_dict: dict) -> Tuple[SDFModule, bool]:
 def _load_params(evaluator: SDFModule, flatir_dict: dict) -> None:
     """Load params from flatir_dict into evaluator (in-place)."""
     import torch
+    from sdf_module import _flatten_flatir
 
-    t = flatir_dict.get("transforms", [0, 0, 0, 1, 1, 1])
-    s = flatir_dict.get("spheres", [1.0])
-    b = flatir_dict.get("boxes", [1, 1, 1])
-    p = flatir_dict.get("planes", [0, 1, 0, 0])
-
+    t, s, b, p = _flatten_flatir(flatir_dict)
     tt = torch.tensor(t, dtype=evaluator.transforms.dtype, device=evaluator.transforms.device)
     ss = torch.tensor(s, dtype=evaluator.spheres.dtype, device=evaluator.spheres.device)
     bb = torch.tensor(b, dtype=evaluator.boxes.dtype, device=evaluator.boxes.device)

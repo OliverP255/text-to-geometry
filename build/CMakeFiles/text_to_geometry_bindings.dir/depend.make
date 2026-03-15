@@ -8,6 +8,7 @@ CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../inclu
 CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../include/kernel/lower.h
 CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../include/kernel/node.h
 CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../include/kernel/optimise.h
+CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../include/kernel/pack_for_webgpu.h
 CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../include/kernel/param_extract.h
 CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../include/kernel/unparse_dsl.h
 CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o: ../bindings/pybind_compile.cpp

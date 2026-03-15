@@ -2,4 +2,7 @@ vllm
 pytest
 torch
 flask
+flask-socketio
+eventlet
 Pillow
+transformers

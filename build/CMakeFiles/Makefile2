@@ -72,15 +72,17 @@ CMAKE_BINARY_DIR = /Users/oliverpryce/Documents/AI/text-to-geometry/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/text_to_geometry_bindings.dir/all
 all: CMakeFiles/unparse_dsl_tests.dir/all
-all: CMakeFiles/codegen_cuda_tests.dir/all
+all: CMakeFiles/pack_for_webgpu_tests.dir/all
 all: CMakeFiles/lower_tests.dir/all
 all: CMakeFiles/optimise_tests.dir/all
 all: CMakeFiles/ir_tests.dir/all
-all: CMakeFiles/frontend.dir/all
-all: CMakeFiles/text_to_geometry_bindings.dir/all
 all: CMakeFiles/validate_dsl.dir/all
+all: CMakeFiles/flat_ir_tests.dir/all
 all: CMakeFiles/dag_builder_tests.dir/all
+all: CMakeFiles/param_extract_tests.dir/all
+all: CMakeFiles/frontend.dir/all
 all: CMakeFiles/kernel.dir/all
 all: _deps/googletest-build/all
 all: _deps/pybind11-build/all
@@ -94,15 +96,17 @@ preinstall: _deps/pybind11-build/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/text_to_geometry_bindings.dir/clean
 clean: CMakeFiles/unparse_dsl_tests.dir/clean
-clean: CMakeFiles/codegen_cuda_tests.dir/clean
+clean: CMakeFiles/pack_for_webgpu_tests.dir/clean
 clean: CMakeFiles/lower_tests.dir/clean
 clean: CMakeFiles/optimise_tests.dir/clean
 clean: CMakeFiles/ir_tests.dir/clean
-clean: CMakeFiles/frontend.dir/clean
-clean: CMakeFiles/text_to_geometry_bindings.dir/clean
 clean: CMakeFiles/validate_dsl.dir/clean
+clean: CMakeFiles/flat_ir_tests.dir/clean
 clean: CMakeFiles/dag_builder_tests.dir/clean
+clean: CMakeFiles/param_extract_tests.dir/clean
+clean: CMakeFiles/frontend.dir/clean
 clean: CMakeFiles/kernel.dir/clean
 clean: _deps/googletest-build/clean
 clean: _deps/pybind11-build/clean
@@ -188,6 +192,34 @@ _deps/pybind11-build/clean:
 .PHONY : _deps/pybind11-build/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/text_to_geometry_bindings.dir
+
+# All Build rule for target.
+CMakeFiles/text_to_geometry_bindings.dir/all: CMakeFiles/frontend.dir/all
+CMakeFiles/text_to_geometry_bindings.dir/all: CMakeFiles/kernel.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=35,36 "Built target text_to_geometry_bindings"
+.PHONY : CMakeFiles/text_to_geometry_bindings.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/text_to_geometry_bindings.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 14
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/text_to_geometry_bindings.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
+.PHONY : CMakeFiles/text_to_geometry_bindings.dir/rule
+
+# Convenience name for target.
+text_to_geometry_bindings: CMakeFiles/text_to_geometry_bindings.dir/rule
+
+.PHONY : text_to_geometry_bindings
+
+# clean rule for target.
+CMakeFiles/text_to_geometry_bindings.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/clean
+.PHONY : CMakeFiles/text_to_geometry_bindings.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/unparse_dsl_tests.dir
 
 # All Build rule for target.
@@ -197,7 +229,7 @@ CMakeFiles/unparse_dsl_tests.dir/all: _deps/googletest-build/googletest/CMakeFil
 CMakeFiles/unparse_dsl_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/unparse_dsl_tests.dir/build.make CMakeFiles/unparse_dsl_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/unparse_dsl_tests.dir/build.make CMakeFiles/unparse_dsl_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=33,34 "Built target unparse_dsl_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=37,38 "Built target unparse_dsl_tests"
 .PHONY : CMakeFiles/unparse_dsl_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -218,33 +250,33 @@ CMakeFiles/unparse_dsl_tests.dir/clean:
 .PHONY : CMakeFiles/unparse_dsl_tests.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/codegen_cuda_tests.dir
+# Target rules for target CMakeFiles/pack_for_webgpu_tests.dir
 
 # All Build rule for target.
-CMakeFiles/codegen_cuda_tests.dir/all: CMakeFiles/kernel.dir/all
-CMakeFiles/codegen_cuda_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-CMakeFiles/codegen_cuda_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/codegen_cuda_tests.dir/build.make CMakeFiles/codegen_cuda_tests.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/codegen_cuda_tests.dir/build.make CMakeFiles/codegen_cuda_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=1,2 "Built target codegen_cuda_tests"
-.PHONY : CMakeFiles/codegen_cuda_tests.dir/all
+CMakeFiles/pack_for_webgpu_tests.dir/all: CMakeFiles/kernel.dir/all
+CMakeFiles/pack_for_webgpu_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/pack_for_webgpu_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pack_for_webgpu_tests.dir/build.make CMakeFiles/pack_for_webgpu_tests.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pack_for_webgpu_tests.dir/build.make CMakeFiles/pack_for_webgpu_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=31,32 "Built target pack_for_webgpu_tests"
+.PHONY : CMakeFiles/pack_for_webgpu_tests.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/codegen_cuda_tests.dir/rule: cmake_check_build_system
+CMakeFiles/pack_for_webgpu_tests.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 15
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/codegen_cuda_tests.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/pack_for_webgpu_tests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
-.PHONY : CMakeFiles/codegen_cuda_tests.dir/rule
+.PHONY : CMakeFiles/pack_for_webgpu_tests.dir/rule
 
 # Convenience name for target.
-codegen_cuda_tests: CMakeFiles/codegen_cuda_tests.dir/rule
+pack_for_webgpu_tests: CMakeFiles/pack_for_webgpu_tests.dir/rule
 
-.PHONY : codegen_cuda_tests
+.PHONY : pack_for_webgpu_tests
 
 # clean rule for target.
-CMakeFiles/codegen_cuda_tests.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/codegen_cuda_tests.dir/build.make CMakeFiles/codegen_cuda_tests.dir/clean
-.PHONY : CMakeFiles/codegen_cuda_tests.dir/clean
+CMakeFiles/pack_for_webgpu_tests.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pack_for_webgpu_tests.dir/build.make CMakeFiles/pack_for_webgpu_tests.dir/clean
+.PHONY : CMakeFiles/pack_for_webgpu_tests.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/lower_tests.dir
@@ -335,6 +367,121 @@ CMakeFiles/ir_tests.dir/clean:
 .PHONY : CMakeFiles/ir_tests.dir/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/validate_dsl.dir
+
+# All Build rule for target.
+CMakeFiles/validate_dsl.dir/all: CMakeFiles/frontend.dir/all
+CMakeFiles/validate_dsl.dir/all: CMakeFiles/kernel.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/validate_dsl.dir/build.make CMakeFiles/validate_dsl.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/validate_dsl.dir/build.make CMakeFiles/validate_dsl.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=39,40 "Built target validate_dsl"
+.PHONY : CMakeFiles/validate_dsl.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/validate_dsl.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 14
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/validate_dsl.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
+.PHONY : CMakeFiles/validate_dsl.dir/rule
+
+# Convenience name for target.
+validate_dsl: CMakeFiles/validate_dsl.dir/rule
+
+.PHONY : validate_dsl
+
+# clean rule for target.
+CMakeFiles/validate_dsl.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/validate_dsl.dir/build.make CMakeFiles/validate_dsl.dir/clean
+.PHONY : CMakeFiles/validate_dsl.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/flat_ir_tests.dir
+
+# All Build rule for target.
+CMakeFiles/flat_ir_tests.dir/all: CMakeFiles/kernel.dir/all
+CMakeFiles/flat_ir_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/flat_ir_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flat_ir_tests.dir/build.make CMakeFiles/flat_ir_tests.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flat_ir_tests.dir/build.make CMakeFiles/flat_ir_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=3,4 "Built target flat_ir_tests"
+.PHONY : CMakeFiles/flat_ir_tests.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/flat_ir_tests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 15
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/flat_ir_tests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
+.PHONY : CMakeFiles/flat_ir_tests.dir/rule
+
+# Convenience name for target.
+flat_ir_tests: CMakeFiles/flat_ir_tests.dir/rule
+
+.PHONY : flat_ir_tests
+
+# clean rule for target.
+CMakeFiles/flat_ir_tests.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flat_ir_tests.dir/build.make CMakeFiles/flat_ir_tests.dir/clean
+.PHONY : CMakeFiles/flat_ir_tests.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/dag_builder_tests.dir
+
+# All Build rule for target.
+CMakeFiles/dag_builder_tests.dir/all: CMakeFiles/kernel.dir/all
+CMakeFiles/dag_builder_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/dag_builder_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dag_builder_tests.dir/build.make CMakeFiles/dag_builder_tests.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dag_builder_tests.dir/build.make CMakeFiles/dag_builder_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=1,2 "Built target dag_builder_tests"
+.PHONY : CMakeFiles/dag_builder_tests.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/dag_builder_tests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 15
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/dag_builder_tests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
+.PHONY : CMakeFiles/dag_builder_tests.dir/rule
+
+# Convenience name for target.
+dag_builder_tests: CMakeFiles/dag_builder_tests.dir/rule
+
+.PHONY : dag_builder_tests
+
+# clean rule for target.
+CMakeFiles/dag_builder_tests.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dag_builder_tests.dir/build.make CMakeFiles/dag_builder_tests.dir/clean
+.PHONY : CMakeFiles/dag_builder_tests.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/param_extract_tests.dir
+
+# All Build rule for target.
+CMakeFiles/param_extract_tests.dir/all: CMakeFiles/kernel.dir/all
+CMakeFiles/param_extract_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+CMakeFiles/param_extract_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/param_extract_tests.dir/build.make CMakeFiles/param_extract_tests.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/param_extract_tests.dir/build.make CMakeFiles/param_extract_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=33,34 "Built target param_extract_tests"
+.PHONY : CMakeFiles/param_extract_tests.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/param_extract_tests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 15
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/param_extract_tests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
+.PHONY : CMakeFiles/param_extract_tests.dir/rule
+
+# Convenience name for target.
+param_extract_tests: CMakeFiles/param_extract_tests.dir/rule
+
+.PHONY : param_extract_tests
+
+# clean rule for target.
+CMakeFiles/param_extract_tests.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/param_extract_tests.dir/build.make CMakeFiles/param_extract_tests.dir/clean
+.PHONY : CMakeFiles/param_extract_tests.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/frontend.dir
 
 # All Build rule for target.
@@ -360,91 +507,6 @@ frontend: CMakeFiles/frontend.dir/rule
 CMakeFiles/frontend.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/frontend.dir/build.make CMakeFiles/frontend.dir/clean
 .PHONY : CMakeFiles/frontend.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/text_to_geometry_bindings.dir
-
-# All Build rule for target.
-CMakeFiles/text_to_geometry_bindings.dir/all: CMakeFiles/frontend.dir/all
-CMakeFiles/text_to_geometry_bindings.dir/all: CMakeFiles/kernel.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=31,32 "Built target text_to_geometry_bindings"
-.PHONY : CMakeFiles/text_to_geometry_bindings.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/text_to_geometry_bindings.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/text_to_geometry_bindings.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
-.PHONY : CMakeFiles/text_to_geometry_bindings.dir/rule
-
-# Convenience name for target.
-text_to_geometry_bindings: CMakeFiles/text_to_geometry_bindings.dir/rule
-
-.PHONY : text_to_geometry_bindings
-
-# clean rule for target.
-CMakeFiles/text_to_geometry_bindings.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/text_to_geometry_bindings.dir/build.make CMakeFiles/text_to_geometry_bindings.dir/clean
-.PHONY : CMakeFiles/text_to_geometry_bindings.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/validate_dsl.dir
-
-# All Build rule for target.
-CMakeFiles/validate_dsl.dir/all: CMakeFiles/frontend.dir/all
-CMakeFiles/validate_dsl.dir/all: CMakeFiles/kernel.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/validate_dsl.dir/build.make CMakeFiles/validate_dsl.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/validate_dsl.dir/build.make CMakeFiles/validate_dsl.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=35,36 "Built target validate_dsl"
-.PHONY : CMakeFiles/validate_dsl.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/validate_dsl.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/validate_dsl.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
-.PHONY : CMakeFiles/validate_dsl.dir/rule
-
-# Convenience name for target.
-validate_dsl: CMakeFiles/validate_dsl.dir/rule
-
-.PHONY : validate_dsl
-
-# clean rule for target.
-CMakeFiles/validate_dsl.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/validate_dsl.dir/build.make CMakeFiles/validate_dsl.dir/clean
-.PHONY : CMakeFiles/validate_dsl.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/dag_builder_tests.dir
-
-# All Build rule for target.
-CMakeFiles/dag_builder_tests.dir/all: CMakeFiles/kernel.dir/all
-CMakeFiles/dag_builder_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-CMakeFiles/dag_builder_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dag_builder_tests.dir/build.make CMakeFiles/dag_builder_tests.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dag_builder_tests.dir/build.make CMakeFiles/dag_builder_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=3,4 "Built target dag_builder_tests"
-.PHONY : CMakeFiles/dag_builder_tests.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/dag_builder_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 15
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/dag_builder_tests.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles 0
-.PHONY : CMakeFiles/dag_builder_tests.dir/rule
-
-# Convenience name for target.
-dag_builder_tests: CMakeFiles/dag_builder_tests.dir/rule
-
-.PHONY : dag_builder_tests
-
-# clean rule for target.
-CMakeFiles/dag_builder_tests.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dag_builder_tests.dir/build.make CMakeFiles/dag_builder_tests.dir/clean
-.PHONY : CMakeFiles/dag_builder_tests.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/kernel.dir

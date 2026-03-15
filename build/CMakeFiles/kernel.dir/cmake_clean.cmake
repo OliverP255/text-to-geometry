@@ -1,10 +1,10 @@
 file(REMOVE_RECURSE
   "CMakeFiles/kernel.dir/src/kernel/accum_transform.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/builder.cpp.o"
-  "CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/intern.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/lower.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
+  "CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o"
   "CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
   "libkernel.a"

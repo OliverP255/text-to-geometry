@@ -24,10 +24,10 @@ FetchContent_MakeAvailable(pybind11)
 add_library(kernel
   src/kernel/accum_transform.cpp
   src/kernel/builder.cpp
-  src/kernel/codegen_cuda.cpp
   src/kernel/intern.cpp
   src/kernel/lower.cpp
   src/kernel/optimise.cpp
+  src/kernel/pack_for_webgpu.cpp
   src/kernel/param_extract.cpp
   src/kernel/unparse_dsl.cpp
 )
@@ -54,15 +54,24 @@ add_executable(ir_tests tests/ir_tests.cpp)
 target_link_libraries(ir_tests PRIVATE frontend GTest::gtest GTest::gtest_main)
 add_test(NAME ir_tests COMMAND ir_tests)
 
+add_executable(flat_ir_tests tests/flat_ir_tests.cpp)
+target_link_libraries(flat_ir_tests PRIVATE kernel GTest::gtest GTest::gtest_main)
+add_test(NAME flat_ir_tests COMMAND flat_ir_tests)
+
 add_executable(lower_tests tests/lower_tests.cpp)
 target_include_directories(lower_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 target_link_libraries(lower_tests PRIVATE kernel GTest::gtest GTest::gtest_main)
 add_test(NAME lower_tests COMMAND lower_tests)
 
-add_executable(codegen_cuda_tests tests/codegen_cuda_tests.cpp)
-target_include_directories(codegen_cuda_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-target_link_libraries(codegen_cuda_tests PRIVATE kernel GTest::gtest GTest::gtest_main)
-add_test(NAME codegen_cuda_tests COMMAND codegen_cuda_tests)
+add_executable(param_extract_tests tests/param_extract_tests.cpp)
+target_include_directories(param_extract_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+target_link_libraries(param_extract_tests PRIVATE kernel GTest::gtest GTest::gtest_main)
+add_test(NAME param_extract_tests COMMAND param_extract_tests)
+
+add_executable(pack_for_webgpu_tests tests/pack_for_webgpu_tests.cpp)
+target_include_directories(pack_for_webgpu_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+target_link_libraries(pack_for_webgpu_tests PRIVATE kernel GTest::gtest GTest::gtest_main)
+add_test(NAME pack_for_webgpu_tests COMMAND pack_for_webgpu_tests)
 
 add_executable(unparse_dsl_tests tests/unparse_dsl_tests.cpp)
 target_include_directories(unparse_dsl_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -75,44 +84,3 @@ target_link_libraries(validate_dsl PRIVATE frontend)
 # Python bindings (pybind11)
 pybind11_add_module(text_to_geometry_bindings bindings/pybind_compile.cpp)
 target_link_libraries(text_to_geometry_bindings PRIVATE frontend kernel)
-
-# CUDA renderer (optional - requires CUDA toolkit)
-include(CheckLanguage)
-check_language(CUDA)
-if(CMAKE_CUDA_COMPILER)
-  enable_language(CUDA)
-  find_package(CUDAToolkit REQUIRED)
-  add_library(cuda_renderer src/kernel/cuda_renderer.cpp)
-  target_include_directories(cuda_renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-  target_link_libraries(cuda_renderer PUBLIC kernel CUDA::cuda_driver CUDA::nvrtc)
-  set_target_properties(cuda_renderer PROPERTIES CUDA_STANDARD 17)
-  add_executable(launch_config_bench benchmarks/launch_config_bench.cpp)
-  target_link_libraries(launch_config_bench PRIVATE cuda_renderer kernel)
-
-  add_executable(render_tests tests/render_tests.cpp)
-  target_include_directories(render_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-  target_link_libraries(render_tests PRIVATE frontend kernel cuda_renderer GTest::gtest GTest::gtest_main)
-  add_test(NAME render_tests COMMAND render_tests)
-
-  message(STATUS "CUDA found: building cuda_renderer + benchmarks")
-
-  # GLFW viewer (optional - requires GLFW3)
-  find_package(glfw3 QUIET)
-  find_package(OpenGL QUIET)
-  if(glfw3_FOUND AND OpenGL_FOUND)
-    add_library(glad STATIC third_party/glad/src/gl.c)
-    target_include_directories(glad PUBLIC third_party/glad/include)
-
-    add_executable(sdf_viewer src/viewer/main.cpp)
-    target_link_libraries(sdf_viewer PRIVATE
-      frontend kernel cuda_renderer
-      glfw OpenGL::GL glad
-    )
-    target_include_directories(sdf_viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    message(STATUS "GLFW found: building sdf_viewer")
-  else()
-    message(STATUS "GLFW or OpenGL not found: skipping sdf_viewer")
-  endif()
-else()
-  message(STATUS "CUDA not found: skipping cuda_renderer + benchmarks")
-endif()

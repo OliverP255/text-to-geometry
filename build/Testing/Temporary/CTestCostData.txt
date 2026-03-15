@@ -1,0 +1,9 @@
+dag_builder_tests 1 0.0234845
+optimise_tests 1 0.0281995
+ir_tests 1 0.0313111
+flat_ir_tests 1 0.0236424
+lower_tests 1 0.0257207
+param_extract_tests 1 0.0259426
+pack_for_webgpu_tests 1 0.0273261
+unparse_dsl_tests 1 0.0202914
+---

@@ -12,10 +12,6 @@ CMakeFiles/kernel.dir/src/kernel/builder.cpp.o: ../include/kernel/intern.h
 CMakeFiles/kernel.dir/src/kernel/builder.cpp.o: ../include/kernel/node.h
 CMakeFiles/kernel.dir/src/kernel/builder.cpp.o: ../src/kernel/builder.cpp
 
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o: ../include/kernel/codegen_cuda.h
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o: ../include/kernel/flat_ir.h
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o: ../src/kernel/codegen_cuda.cpp
-
 CMakeFiles/kernel.dir/src/kernel/intern.cpp.o: ../include/kernel/handle.h
 CMakeFiles/kernel.dir/src/kernel/intern.cpp.o: ../include/kernel/node.h
 CMakeFiles/kernel.dir/src/kernel/intern.cpp.o: ../src/kernel/intern.cpp
@@ -34,6 +30,10 @@ CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../include/kernel/intern.h
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../include/kernel/node.h
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../include/kernel/optimise.h
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../src/kernel/optimise.cpp
+
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o: ../include/kernel/flat_ir.h
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o: ../include/kernel/pack_for_webgpu.h
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o: ../src/kernel/pack_for_webgpu.cpp
 
 CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../include/kernel/flat_ir.h
 CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../include/kernel/param_extract.h

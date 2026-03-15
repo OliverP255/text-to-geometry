@@ -9,6 +9,7 @@ CMakeFiles/text_to_geometry_bindings.dir/bindings/pybind_compile.cpp.o
  ../include/kernel/lower.h
  ../include/kernel/node.h
  ../include/kernel/optimise.h
+ ../include/kernel/pack_for_webgpu.h
  ../include/kernel/param_extract.h
  ../include/kernel/unparse_dsl.h
  /Users/oliverpryce/Documents/AI/text-to-geometry/bindings/pybind_compile.cpp

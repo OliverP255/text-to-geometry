@@ -12,13 +12,29 @@ constexpr float kEpsilon = 1e-6f;
 
 std::vector<float> extractParams(const FlatIR& ir) {
   std::vector<float> params;
-  params.reserve(ir.transforms.size() + ir.spheres.size() + ir.boxes.size() +
-                 ir.planes.size());
+  params.reserve(ir.transforms.size() * 6 + ir.spheres.size() +
+                 ir.boxes.size() * 3 + ir.planes.size() * 4);
 
-  for (float v : ir.transforms) params.push_back(v);
-  for (float v : ir.spheres) params.push_back(v);
-  for (float v : ir.boxes) params.push_back(v);
-  for (float v : ir.planes) params.push_back(v);
+  for (const FlatTransform& t : ir.transforms) {
+    params.push_back(t.tx);
+    params.push_back(t.ty);
+    params.push_back(t.tz);
+    params.push_back(t.sx);
+    params.push_back(t.sy);
+    params.push_back(t.sz);
+  }
+  for (const FlatSphere& s : ir.spheres) params.push_back(s.r);
+  for (const FlatBox& b : ir.boxes) {
+    params.push_back(b.hx);
+    params.push_back(b.hy);
+    params.push_back(b.hz);
+  }
+  for (const FlatPlane& p : ir.planes) {
+    params.push_back(p.nx);
+    params.push_back(p.ny);
+    params.push_back(p.nz);
+    params.push_back(p.d);
+  }
 
   return params;
 }
@@ -26,26 +42,32 @@ std::vector<float> extractParams(const FlatIR& ir) {
 void applyParams(FlatIR& ir, const std::vector<float>& params) {
   size_t idx = 0;
 
-  for (size_t i = 0; i < ir.transforms.size() && idx < params.size(); ++i, ++idx) {
-    float v = params[idx];
-    if (i % 6 >= 3) {  // sx, sy, sz (indices 3,4,5 of each transform)
-      v = std::max(v, kEpsilon);
-    }
-    ir.transforms[i] = v;
+  for (size_t i = 0; i < ir.transforms.size() && idx + 6 <= params.size();
+       ++i) {
+    ir.transforms[i].tx = params[idx++];
+    ir.transforms[i].ty = params[idx++];
+    ir.transforms[i].tz = params[idx++];
+    ir.transforms[i].sx = std::max(params[idx++], kEpsilon);
+    ir.transforms[i].sy = std::max(params[idx++], kEpsilon);
+    ir.transforms[i].sz = std::max(params[idx++], kEpsilon);
   }
 
-  for (size_t i = 0; i < ir.spheres.size() && idx < params.size(); ++i, ++idx) {
-    ir.spheres[i] = std::max(params[idx], kEpsilon);
+  for (size_t i = 0; i < ir.spheres.size() && idx < params.size(); ++i) {
+    ir.spheres[i].r = std::max(params[idx++], kEpsilon);
   }
 
-  for (size_t i = 0; i < ir.boxes.size() && idx < params.size(); ++i, ++idx) {
-    ir.boxes[i] = std::max(params[idx], kEpsilon);
+  for (size_t i = 0; i < ir.boxes.size() && idx + 3 <= params.size(); ++i) {
+    ir.boxes[i].hx = std::max(params[idx++], kEpsilon);
+    ir.boxes[i].hy = std::max(params[idx++], kEpsilon);
+    ir.boxes[i].hz = std::max(params[idx++], kEpsilon);
   }
 
-  for (size_t i = 0; i < ir.planes.size() && idx < params.size(); ++i, ++idx) {
-    ir.planes[i] = params[idx];
+  for (size_t i = 0; i < ir.planes.size() && idx + 4 <= params.size(); ++i) {
+    ir.planes[i].nx = params[idx++];
+    ir.planes[i].ny = params[idx++];
+    ir.planes[i].nz = params[idx++];
+    ir.planes[i].d = params[idx++];
   }
-  // Optionally renormalize plane normals - for now we just apply values
 }
 
 }  // namespace kernel

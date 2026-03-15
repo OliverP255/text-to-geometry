@@ -6,10 +6,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/accum_transform.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/accum_transform.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/builder.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/builder.cpp.o"
-  "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/codegen_cuda.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/intern.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/intern.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/lower.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/lower.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/optimise.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
+  "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/pack_for_webgpu.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/param_extract.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o"
   "/Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/unparse_dsl.cpp" "/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
   )

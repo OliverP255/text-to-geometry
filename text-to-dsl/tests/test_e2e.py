@@ -32,7 +32,7 @@ def test_e2e_sphere_optimization():
     loss_after = evaluate_loss(result, target, seed=123)
 
     assert loss_after < loss_before, f"Loss should decrease: {loss_before:.6f} -> {loss_after:.6f}"
-    assert result["spheres"][0] >= 0.7, f"Expected r >= 0.7, got {result['spheres'][0]}"
+    assert result["spheres"][0]["r"] >= 0.7, f"Expected r >= 0.7, got {result['spheres'][0]}"
     assert loss_after < 0.1, f"Final loss should be below 0.1, got {loss_after:.6f}"
 
 
@@ -60,7 +60,7 @@ def test_e2e_union_optimization():
 
     assert loss_after < loss_before, f"Loss should decrease: {loss_before:.6f} -> {loss_after:.6f}"
     assert len(result["spheres"]) == 2
-    assert any(r > 0.3 for r in result["spheres"]), (
+    assert any(s["r"] > 0.3 for s in result["spheres"]), (
         f"Expected at least one sphere radius to increase from 0.3, got {result['spheres']}"
     )
 
@@ -86,7 +86,7 @@ def test_e2e_serialize_optimize_roundtrip():
 
     assert loss_after < loss_before, f"Loss should decrease: {loss_before:.6f} -> {loss_after:.6f}"
     assert "spheres" in final and "transforms" in final and "instrs" in final
-    assert final["spheres"][0] != 0.5
+    assert final["spheres"][0]["r"] != 0.5
     assert set(final.keys()) == set(flatir.keys())
 
 
@@ -141,7 +141,7 @@ def test_e2e_cli():
         # Round-trip: compiled DSL should be valid
         flatir = t2g.compile(out)
         assert "spheres" in flatir and len(flatir["spheres"]) >= 1
-        assert flatir["spheres"][0] > 0.5, f"Optimized r should be > 0.5, got {flatir['spheres'][0]}"
+        assert flatir["spheres"][0]["r"] > 0.5, f"Optimized r should be > 0.5, got {flatir['spheres'][0]}"
     finally:
         Path(dsl_path).unlink(missing_ok=True)
 

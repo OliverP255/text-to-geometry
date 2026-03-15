@@ -5,8 +5,22 @@
 
 namespace kernel {
 
-struct DistTemp {
-  uint32_t id = 0;
+struct FlatTransform {
+  float tx = 0, ty = 0, tz = 0;
+  float sx = 1, sy = 1, sz = 1;
+  // NO minScale - derived only in packForWebGPU()
+};
+
+struct FlatSphere {
+  float r = 1.0f;
+};
+
+struct FlatBox {
+  float hx = 1, hy = 1, hz = 1;
+};
+
+struct FlatPlane {
+  float nx = 0, ny = 1, nz = 0, d = 0;
 };
 
 enum class FlatOp : uint8_t {
@@ -19,19 +33,19 @@ enum class FlatOp : uint8_t {
 };
 
 struct FlatInstr {
-  FlatOp op = FlatOp::EvalSphere;
-  uint32_t arg0 = 0;   // transform_idx for EVAL_*; DistTemp for CSG
-  uint32_t arg1 = 0;   // DistTemp for CSG; unused for EVAL_*
-  uint32_t constIdx = 0;  // sphereIdx, boxIdx, or planeIdx for EVAL_*
+  uint32_t op = 0;  // FlatOp as uint32_t (fixed-width)
+  uint32_t arg0 = 0;
+  uint32_t arg1 = 0;
+  uint32_t constIdx = 0;
 };
 
 struct FlatIR {
   std::vector<FlatInstr> instrs;
-  std::vector<float> transforms;  // 6 floats per entry (tx,ty,tz,sx,sy,sz)
-  std::vector<float> spheres;     // 1 float per entry (r)
-  std::vector<float> boxes;       // 3 floats per entry (halfExtents)
-  std::vector<float> planes;      // 4 floats per entry (normal + d)
-  DistTemp rootTemp;
+  std::vector<FlatTransform> transforms;
+  std::vector<FlatSphere> spheres;
+  std::vector<FlatBox> boxes;
+  std::vector<FlatPlane> planes;
+  uint32_t rootTemp = 0;
 };
 
 }  // namespace kernel

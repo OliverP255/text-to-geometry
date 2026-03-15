@@ -102,22 +102,9 @@ CMakeFiles/kernel.dir/src/kernel/builder.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/builder.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/builder.cpp -o CMakeFiles/kernel.dir/src/kernel/builder.cpp.s
 
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o: CMakeFiles/kernel.dir/flags.make
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o: ../src/kernel/codegen_cuda.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/codegen_cuda.cpp
-
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/codegen_cuda.cpp > CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.i
-
-CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/codegen_cuda.cpp -o CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.s
-
 CMakeFiles/kernel.dir/src/kernel/intern.cpp.o: CMakeFiles/kernel.dir/flags.make
 CMakeFiles/kernel.dir/src/kernel/intern.cpp.o: ../src/kernel/intern.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/kernel.dir/src/kernel/intern.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/kernel.dir/src/kernel/intern.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/intern.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/intern.cpp
 
 CMakeFiles/kernel.dir/src/kernel/intern.cpp.i: cmake_force
@@ -130,7 +117,7 @@ CMakeFiles/kernel.dir/src/kernel/intern.cpp.s: cmake_force
 
 CMakeFiles/kernel.dir/src/kernel/lower.cpp.o: CMakeFiles/kernel.dir/flags.make
 CMakeFiles/kernel.dir/src/kernel/lower.cpp.o: ../src/kernel/lower.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/kernel.dir/src/kernel/lower.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/kernel.dir/src/kernel/lower.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/lower.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/lower.cpp
 
 CMakeFiles/kernel.dir/src/kernel/lower.cpp.i: cmake_force
@@ -143,7 +130,7 @@ CMakeFiles/kernel.dir/src/kernel/lower.cpp.s: cmake_force
 
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: CMakeFiles/kernel.dir/flags.make
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o: ../src/kernel/optimise.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/optimise.cpp
 
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.i: cmake_force
@@ -153,6 +140,19 @@ CMakeFiles/kernel.dir/src/kernel/optimise.cpp.i: cmake_force
 CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/optimise.cpp -o CMakeFiles/kernel.dir/src/kernel/optimise.cpp.s
+
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o: CMakeFiles/kernel.dir/flags.make
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o: ../src/kernel/pack_for_webgpu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/oliverpryce/Documents/AI/text-to-geometry/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o -c /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/pack_for_webgpu.cpp
+
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/pack_for_webgpu.cpp > CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.i
+
+CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/oliverpryce/Documents/AI/text-to-geometry/src/kernel/pack_for_webgpu.cpp -o CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.s
 
 CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: CMakeFiles/kernel.dir/flags.make
 CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o: ../src/kernel/param_extract.cpp
@@ -184,10 +184,10 @@ CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.s: cmake_force
 kernel_OBJECTS = \
 "CMakeFiles/kernel.dir/src/kernel/accum_transform.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/builder.cpp.o" \
-"CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/intern.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/lower.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o" \
+"CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o" \
 "CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o"
 
@@ -196,10 +196,10 @@ kernel_EXTERNAL_OBJECTS =
 
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/accum_transform.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/builder.cpp.o
-libkernel.a: CMakeFiles/kernel.dir/src/kernel/codegen_cuda.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/intern.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/lower.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/optimise.cpp.o
+libkernel.a: CMakeFiles/kernel.dir/src/kernel/pack_for_webgpu.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/param_extract.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/src/kernel/unparse_dsl.cpp.o
 libkernel.a: CMakeFiles/kernel.dir/build.make

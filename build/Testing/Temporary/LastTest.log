@@ -1,0 +1,393 @@
+Start testing: Mar 14 04:41 GMT
+----------------------------------------------------------
+1/8 Testing: dag_builder_tests
+1/8 Test: dag_builder_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/dag_builder_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"dag_builder_tests" start time: Mar 14 04:41 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 15 tests from 4 test suites.
+[----------] Global test environment set-up.
+[----------] 7 tests from DagBuilderInterning
+[ RUN      ] DagBuilderInterning.SameShapeSameHandle
+[       OK ] DagBuilderInterning.SameShapeSameHandle (0 ms)
+[ RUN      ] DagBuilderInterning.DifferentShapeDifferentHandle
+[       OK ] DagBuilderInterning.DifferentShapeDifferentHandle (0 ms)
+[ RUN      ] DagBuilderInterning.UnionCommutativeCanonicalization
+[       OK ] DagBuilderInterning.UnionCommutativeCanonicalization (0 ms)
+[ RUN      ] DagBuilderInterning.IntersectCommutativeCanonicalization
+[       OK ] DagBuilderInterning.IntersectCommutativeCanonicalization (0 ms)
+[ RUN      ] DagBuilderInterning.SubtractNotCommutative
+[       OK ] DagBuilderInterning.SubtractNotCommutative (0 ms)
+[ RUN      ] DagBuilderInterning.TransformDeduplication
+[       OK ] DagBuilderInterning.TransformDeduplication (0 ms)
+[ RUN      ] DagBuilderInterning.ApplyTransformDeduplication
+[       OK ] DagBuilderInterning.ApplyTransformDeduplication (0 ms)
+[----------] 7 tests from DagBuilderInterning (0 ms total)
+
+[----------] 3 tests from DagBuilderFreeze
+[ RUN      ] DagBuilderFreeze.FreezeSealsBuilder
+[       OK ] DagBuilderFreeze.FreezeSealsBuilder (0 ms)
+[ RUN      ] DagBuilderFreeze.FreezePreventsFurtherConstruction
+[       OK ] DagBuilderFreeze.FreezePreventsFurtherConstruction (0 ms)
+[ RUN      ] DagBuilderFreeze.FrozenDagLayout
+[       OK ] DagBuilderFreeze.FrozenDagLayout (0 ms)
+[----------] 3 tests from DagBuilderFreeze (0 ms total)
+
+[----------] 1 test from DagBuilderPrimitives
+[ RUN      ] DagBuilderPrimitives.PlaneAndBox
+[       OK ] DagBuilderPrimitives.PlaneAndBox (0 ms)
+[----------] 1 test from DagBuilderPrimitives (0 ms total)
+
+[----------] 4 tests from DagBuilderNary
+[ RUN      ] DagBuilderNary.UniteSingle
+[       OK ] DagBuilderNary.UniteSingle (0 ms)
+[ RUN      ] DagBuilderNary.IntersectSingle
+[       OK ] DagBuilderNary.IntersectSingle (0 ms)
+[ RUN      ] DagBuilderNary.UniteBalanced
+[       OK ] DagBuilderNary.UniteBalanced (0 ms)
+[ RUN      ] DagBuilderNary.IntersectBalanced
+[       OK ] DagBuilderNary.IntersectBalanced (0 ms)
+[----------] 4 tests from DagBuilderNary (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 15 tests from 4 test suites ran. (0 ms total)
+[  PASSED  ] 15 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"dag_builder_tests" end time: Mar 14 04:41 GMT
+"dag_builder_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/8 Testing: optimise_tests
+2/8 Test: optimise_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/optimise_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"optimise_tests" start time: Mar 14 04:41 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 24 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 24 tests from Optimise
+[ RUN      ] Optimise.IdentityElisionTranslateZero
+[       OK ] Optimise.IdentityElisionTranslateZero (0 ms)
+[ RUN      ] Optimise.IdentityElisionScaleOne
+[       OK ] Optimise.IdentityElisionScaleOne (0 ms)
+[ RUN      ] Optimise.NonIdentityPreserved
+[       OK ] Optimise.NonIdentityPreserved (0 ms)
+[ RUN      ] Optimise.NestedIdentityElided
+[       OK ] Optimise.NestedIdentityElided (0 ms)
+[ RUN      ] Optimise.DedupIdenticalPrimitives
+[       OK ] Optimise.DedupIdenticalPrimitives (0 ms)
+[ RUN      ] Optimise.DedupIdenticalSubtrees
+[       OK ] Optimise.DedupIdenticalSubtrees (0 ms)
+[ RUN      ] Optimise.DedupCommutativeCanonical
+[       OK ] Optimise.DedupCommutativeCanonical (0 ms)
+[ RUN      ] Optimise.PassthroughNoOp
+[       OK ] Optimise.PassthroughNoOp (0 ms)
+[ RUN      ] Optimise.NodeCountReduced
+[       OK ] Optimise.NodeCountReduced (0 ms)
+[ RUN      ] Optimise.EmptyInvalid
+[       OK ] Optimise.EmptyInvalid (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Sphere
+[       OK ] Optimise.SemanticEquiv_Sphere (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Box
+[       OK ] Optimise.SemanticEquiv_Box (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Plane
+[       OK ] Optimise.SemanticEquiv_Plane (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Union
+[       OK ] Optimise.SemanticEquiv_Union (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Intersect
+[       OK ] Optimise.SemanticEquiv_Intersect (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Subtract
+[       OK ] Optimise.SemanticEquiv_Subtract (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Translate
+[       OK ] Optimise.SemanticEquiv_Translate (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Scale
+[       OK ] Optimise.SemanticEquiv_Scale (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_NestedTransforms
+[       OK ] Optimise.SemanticEquiv_NestedTransforms (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_IdentityElided
+[       OK ] Optimise.SemanticEquiv_IdentityElided (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_ScaleOneElided
+[       OK ] Optimise.SemanticEquiv_ScaleOneElided (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_DedupIdentical
+[       OK ] Optimise.SemanticEquiv_DedupIdentical (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_DedupSubtrees
+[       OK ] Optimise.SemanticEquiv_DedupSubtrees (0 ms)
+[ RUN      ] Optimise.SemanticEquiv_Complex
+[       OK ] Optimise.SemanticEquiv_Complex (0 ms)
+[----------] 24 tests from Optimise (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 24 tests from 1 test suite ran. (1 ms total)
+[  PASSED  ] 24 tests.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"optimise_tests" end time: Mar 14 04:41 GMT
+"optimise_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/8 Testing: ir_tests
+3/8 Test: ir_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/ir_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"ir_tests" start time: Mar 14 04:41 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 17 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 9 tests from IR
+[ RUN      ] IR.SingleSphere
+[       OK ] IR.SingleSphere (0 ms)
+[ RUN      ] IR.SphereAndBoxUnion
+[       OK ] IR.SphereAndBoxUnion (0 ms)
+[ RUN      ] IR.TranslateAndApply
+[       OK ] IR.TranslateAndApply (0 ms)
+[ RUN      ] IR.Subtract
+[       OK ] IR.Subtract (0 ms)
+[ RUN      ] IR.ExplicitReturn
+[       OK ] IR.ExplicitReturn (0 ms)
+[ RUN      ] IR.NaryUnite
+[       OK ] IR.NaryUnite (0 ms)
+[ RUN      ] IR.Plane
+[       OK ] IR.Plane (0 ms)
+[ RUN      ] IR.Scale
+[       OK ] IR.Scale (0 ms)
+[ RUN      ] IR.NegativeNum
+[       OK ] IR.NegativeNum (0 ms)
+[----------] 9 tests from IR (0 ms total)
+
+[----------] 8 tests from IRParseErrors
+[ RUN      ] IRParseErrors.RequireReturn
+[       OK ] IRParseErrors.RequireReturn (0 ms)
+[ RUN      ] IRParseErrors.UnknownOp
+[       OK ] IRParseErrors.UnknownOp (0 ms)
+[ RUN      ] IRParseErrors.UndefinedRef
+[       OK ] IRParseErrors.UndefinedRef (0 ms)
+[ RUN      ] IRParseErrors.ApplyTypeMismatch
+[       OK ] IRParseErrors.ApplyTypeMismatch (0 ms)
+[ RUN      ] IRParseErrors.Lex
+[       OK ] IRParseErrors.Lex (0 ms)
+[ RUN      ] IRParseErrors.TrailingContent
+[       OK ] IRParseErrors.TrailingContent (0 ms)
+[ RUN      ] IRParseErrors.InfRejected
+[       OK ] IRParseErrors.InfRejected (0 ms)
+[ RUN      ] IRParseErrors.NanRejected
+[       OK ] IRParseErrors.NanRejected (0 ms)
+[----------] 8 tests from IRParseErrors (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 17 tests from 2 test suites ran. (0 ms total)
+[  PASSED  ] 17 tests.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"ir_tests" end time: Mar 14 04:41 GMT
+"ir_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/8 Testing: flat_ir_tests
+4/8 Test: flat_ir_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/flat_ir_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"flat_ir_tests" start time: Mar 14 04:41 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 3 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 3 tests from FlatIR
+[ RUN      ] FlatIR.StructSizes
+[       OK ] FlatIR.StructSizes (0 ms)
+[ RUN      ] FlatIR.DefaultValues
+[       OK ] FlatIR.DefaultValues (0 ms)
+[ RUN      ] FlatIR.FlatOpValues
+[       OK ] FlatIR.FlatOpValues (0 ms)
+[----------] 3 tests from FlatIR (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 3 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 3 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"flat_ir_tests" end time: Mar 14 04:41 GMT
+"flat_ir_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/8 Testing: lower_tests
+5/8 Test: lower_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/lower_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"lower_tests" start time: Mar 14 04:41 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 22 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 22 tests from Lower
+[ RUN      ] Lower.SingleSphere
+[       OK ] Lower.SingleSphere (0 ms)
+[ RUN      ] Lower.SingleBox
+[       OK ] Lower.SingleBox (0 ms)
+[ RUN      ] Lower.SinglePlane
+[       OK ] Lower.SinglePlane (0 ms)
+[ RUN      ] Lower.EmptyDAG
+[       OK ] Lower.EmptyDAG (0 ms)
+[ RUN      ] Lower.Union
+[       OK ] Lower.Union (0 ms)
+[ RUN      ] Lower.Intersect
+[       OK ] Lower.Intersect (0 ms)
+[ RUN      ] Lower.Subtract
+[       OK ] Lower.Subtract (0 ms)
+[ RUN      ] Lower.UnionSameShape
+[       OK ] Lower.UnionSameShape (0 ms)
+[ RUN      ] Lower.TranslateSphere
+[       OK ] Lower.TranslateSphere (0 ms)
+[ RUN      ] Lower.ScaleSphere
+[       OK ] Lower.ScaleSphere (0 ms)
+[ RUN      ] Lower.NestedTransforms
+[       OK ] Lower.NestedTransforms (0 ms)
+[ RUN      ] Lower.MixedUnion
+[       OK ] Lower.MixedUnion (0 ms)
+[ RUN      ] Lower.SameNodeDifferentTransforms
+[       OK ] Lower.SameNodeDifferentTransforms (0 ms)
+[ RUN      ] Lower.IdentityTransform
+[       OK ] Lower.IdentityTransform (0 ms)
+[ RUN      ] Lower.NullHeaders
+[       OK ] Lower.NullHeaders (0 ms)
+[ RUN      ] Lower.ZeroHeaderCount
+[       OK ] Lower.ZeroHeaderCount (0 ms)
+[ RUN      ] Lower.DeeplyNestedCSG
+[       OK ] Lower.DeeplyNestedCSG (0 ms)
+[ RUN      ] Lower.TripleUnion
+[       OK ] Lower.TripleUnion (0 ms)
+[ RUN      ] Lower.ScaleOne
+[       OK ] Lower.ScaleOne (0 ms)
+[ RUN      ] Lower.OptimisedThenLower
+[       OK ] Lower.OptimisedThenLower (0 ms)
+[ RUN      ] Lower.LoweringIsDeterministic
+[       OK ] Lower.LoweringIsDeterministic (0 ms)
+[ RUN      ] Lower.SemanticEquivalenceAtSamplePoints
+[       OK ] Lower.SemanticEquivalenceAtSamplePoints (0 ms)
+[----------] 22 tests from Lower (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 22 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 22 tests.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"lower_tests" end time: Mar 14 04:41 GMT
+"lower_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/8 Testing: param_extract_tests
+6/8 Test: param_extract_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/param_extract_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"param_extract_tests" start time: Mar 14 04:41 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 2 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 2 tests from ParamExtract
+[ RUN      ] ParamExtract.ExtractAndApplyRoundTrip
+[       OK ] ParamExtract.ExtractAndApplyRoundTrip (0 ms)
+[ RUN      ] ParamExtract.NoMinScaleInIR
+[       OK ] ParamExtract.NoMinScaleInIR (0 ms)
+[----------] 2 tests from ParamExtract (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 2 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 2 tests.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"param_extract_tests" end time: Mar 14 04:42 GMT
+"param_extract_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/8 Testing: pack_for_webgpu_tests
+7/8 Test: pack_for_webgpu_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/pack_for_webgpu_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"pack_for_webgpu_tests" start time: Mar 14 04:42 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from PackForWebGPU
+[ RUN      ] PackForWebGPU.TransformLayout
+[       OK ] PackForWebGPU.TransformLayout (0 ms)
+[ RUN      ] PackForWebGPU.MinScaleComputed
+[       OK ] PackForWebGPU.MinScaleComputed (0 ms)
+[ RUN      ] PackForWebGPU.SphereLayout
+[       OK ] PackForWebGPU.SphereLayout (0 ms)
+[ RUN      ] PackForWebGPU.BoxLayout
+[       OK ] PackForWebGPU.BoxLayout (0 ms)
+[ RUN      ] PackForWebGPU.PlaneLayout
+[       OK ] PackForWebGPU.PlaneLayout (0 ms)
+[----------] 5 tests from PackForWebGPU (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 5 tests.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"pack_for_webgpu_tests" end time: Mar 14 04:42 GMT
+"pack_for_webgpu_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/8 Testing: unparse_dsl_tests
+8/8 Test: unparse_dsl_tests
+Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/unparse_dsl_tests"
+Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
+"unparse_dsl_tests" start time: Mar 14 04:42 GMT
+Output:
+----------------------------------------------------------
+Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from UnparseDSL
+[ RUN      ] UnparseDSL.EmptyFlatIR
+[       OK ] UnparseDSL.EmptyFlatIR (0 ms)
+[ RUN      ] UnparseDSL.SingleSphereRoundTrip
+[       OK ] UnparseDSL.SingleSphereRoundTrip (0 ms)
+[ RUN      ] UnparseDSL.UnionRoundTrip
+[       OK ] UnparseDSL.UnionRoundTrip (0 ms)
+[ RUN      ] UnparseDSL.TranslateAndApplyRoundTrip
+[       OK ] UnparseDSL.TranslateAndApplyRoundTrip (0 ms)
+[ RUN      ] UnparseDSL.UnparsedDSLEvaluatesCorrectly
+[       OK ] UnparseDSL.UnparsedDSLEvaluatesCorrectly (0 ms)
+[----------] 5 tests from UnparseDSL (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 5 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"unparse_dsl_tests" end time: Mar 14 04:42 GMT
+"unparse_dsl_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Mar 14 04:42 GMT
