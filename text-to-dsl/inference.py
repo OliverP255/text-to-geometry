@@ -5,6 +5,9 @@ Uses vLLM with StructuredOutputsParams (grammar) for grammar-constrained decodin
 
 from __future__ import annotations
 
+from vllm import LLM
+from vllm.sampling_params import SamplingParams, StructuredOutputsParams
+
 import os
 import subprocess
 from pathlib import Path
@@ -68,6 +71,22 @@ def validate_dsl(dsl: str) -> tuple[bool, str]:
     return False, (result.stderr or result.stdout or "unknown error").strip()
 
 
+def load_llm(
+    model_id: str = "zai-org/GLM-4.7-Flash",
+    tensor_parallel_size: int = 1,
+    max_model_len: int = 4096,
+    **kwargs,
+) -> LLM:
+    """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading."""
+    return LLM(
+        model=model_id,
+        trust_remote_code=True,
+        tensor_parallel_size=tensor_parallel_size,
+        max_model_len=max_model_len,
+        **kwargs,
+    )
+
+
 def generate_dsl(
     prompt: str,
     model_id: str = "zai-org/GLM-4.7-Flash",
@@ -79,13 +98,13 @@ def generate_dsl(
     repetition_penalty: float = 1.05,
     tensor_parallel_size: int = 1,
     max_model_len: int = 4096,
+    llm: LLM | None = None,
 ) -> str:
     """
     Generate DSL from prompt using grammar-constrained decoding.
     Uses vLLM with StructuredOutputsParams (grammar). Model: GLM-4.7-Flash.
+    Pass llm from load_llm() to reuse a loaded model across calls.
     """
-    from vllm import LLM
-    from vllm.sampling_params import SamplingParams, StructuredOutputsParams
 
     base = Path(__file__).resolve().parent
     grammar_path = grammar_path or base / "grammar.gbnf"
@@ -94,12 +113,12 @@ def generate_dsl(
 
     full_prompt = (dsl_context or "") + prompt
 
-    llm = LLM(
-        model=model_id,
-        trust_remote_code=True,
-        tensor_parallel_size=tensor_parallel_size,
-        max_model_len=max_model_len,
-    )
+    if llm is None:
+        llm = load_llm(
+            model_id=model_id,
+            tensor_parallel_size=tensor_parallel_size,
+            max_model_len=max_model_len,
+        )
 
     structured = StructuredOutputsParams(grammar=grammar_str)
     sampling = SamplingParams(
