@@ -13,21 +13,9 @@ export function defaultScene(): PackedFlatIR {
   };
 }
 
-export async function fetchScene(url = '/scene'): Promise<PackedFlatIR> {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return (await res.json()) as PackedFlatIR;
-  } catch {
-    return defaultScene();
-  }
-}
-
-/** Subscribe to scene updates via WebSocket. On scene_updated, fetches GET /scene and calls callback. */
-export function subscribeToSceneUpdates(callback: (packed: PackedFlatIR) => void): void {
-  const socket = io({ path: '/socket.io' });
-  socket.on('scene_updated', async () => {
-    const packed = await fetchScene();
-    callback(packed);
-  });
+/** Connect to WebSocket and subscribe to scene updates. On connect, server emits "scene" with packed data. On connect_error, calls callback with defaultScene(). */
+export function connectAndSubscribe(callback: (packed: PackedFlatIR) => void): void {
+  const socket = io({ path: '/socket.io', transports: ["websocket"] });
+  socket.on('scene', (packed: PackedFlatIR) => callback(packed));
+  socket.on('connect_error', () => callback(defaultScene()));
 }

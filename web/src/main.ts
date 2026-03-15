@@ -1,5 +1,5 @@
 import { WebGPURenderer } from './webgpu_renderer';
-import { fetchScene, subscribeToSceneUpdates } from './flatir';
+import { connectAndSubscribe } from './flatir';
 
 async function main(): Promise<void> {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -20,10 +20,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const scene = await fetchScene();
-  renderer.setScene(scene);
-
-  subscribeToSceneUpdates((packed) => renderer.setScene(packed));
+  connectAndSubscribe((packed) => renderer.setScene(packed));
 
   const loop = () => {
     renderer.render();

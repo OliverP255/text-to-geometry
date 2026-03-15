@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Minimal backend: GET /scene returns packed FlatIR JSON."""
+"""Minimal backend: POST /scene accepts DSL; WebSocket delivers scene on connect and after POST."""
 
 import json
 import sys
@@ -22,13 +22,13 @@ except ImportError:
     sys.exit(1)
 
 try:
-    from flask_socketio import SocketIO
+    from flask_socketio import SocketIO, emit
 except ImportError:
     print("Install flask-socketio: pip install flask-socketio", file=sys.stderr)
     sys.exit(1)
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading", transports=["websocket"])
 
 # Default scene: compile DSL and pack for WebGPU
 _DEFAULT_DSL = "s0=sphere(r=1)\nreturn s0"
@@ -43,12 +43,9 @@ def get_scene():
     return _scene_cache
 
 
-@app.route("/scene", methods=["GET", "POST"])
+@app.route("/scene", methods=["POST"])
 def scene():
-    if request.method == "GET":
-        return jsonify(get_scene())
-
-    # POST: accept semantic FlatIR, pack, update cache, emit, return packed
+    # POST: accept DSL only; compile -> pack -> store -> emit -> return
     try:
         body = request.get_json(force=True, silent=False)
     except Exception as e:
@@ -57,15 +54,25 @@ def scene():
     if body is None:
         return jsonify({"error": "Invalid JSON: body required"}), 400
 
+    dsl = body.get("dsl") if isinstance(body, dict) else None
+    if not isinstance(dsl, str) or not dsl.strip():
+        return jsonify({"error": "Missing or empty 'dsl' field"}), 400
+
     try:
-        packed = t2g.packForWebGPU(body)
-    except (ValueError, TypeError, KeyError) as e:
+        semantic = t2g.compile(dsl)
+        packed = t2g.packForWebGPU(semantic)
+    except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
     global _scene_cache
     _scene_cache = packed
-    socketio.emit("scene_updated")
+    socketio.emit("scene", packed)
     return jsonify(packed)
+
+
+@socketio.on("connect")
+def on_connect():
+    emit("scene", get_scene())
 
 
 if __name__ == "__main__":
