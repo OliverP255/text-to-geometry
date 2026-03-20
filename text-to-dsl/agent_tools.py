@@ -15,7 +15,7 @@ import torch
 
 import text_to_geometry_bindings as t2g
 from evaluator_cache import get_or_create_evaluator
-from loss import l1_clamped_loss
+from loss import agent_eval_loss
 from optimise_params import optimise_params, sample_batch
 
 
@@ -25,22 +25,24 @@ def evaluate_loss(
     *,
     batch_size: int = 1024,
     delta: float = 0.1,
+    node_count_weight: float = 0.01,
     bbox_min: Tuple[float, float, float] = (-2, -2, -2),
     bbox_max: Tuple[float, float, float] = (2, 2, 2),
     band: float = 0.1,
     seed: Optional[int] = None,
     device: Optional[torch.device] = None,
 ) -> float:
-    """Evaluate L1 clamped loss between DSL SDF and target SDF.
+    """Evaluate agent loss between DSL SDF and target SDF.
 
     Same flow as the optimiser (compile, evaluator, sample_batch, loss) but no
-    optimisation step—just one forward pass and return the loss.
+    optimisation step—just one forward pass. Returns SDF loss + node count penalty.
 
     Args:
         dsl_or_flatir: DSL source code (str) or FlatIR dict. If str, compiles first.
         target_sdf: Callable (N,3) -> (N,) returns target SDF values.
         batch_size: Number of points to sample.
         delta: L1 clamped loss delta.
+        node_count_weight: Weight for node count penalty (default 0.01).
         bbox_min: (x_min, y_min, z_min).
         bbox_max: (x_max, y_max, z_max).
         band: Hard pool band |target| < band.
@@ -48,7 +50,7 @@ def evaluate_loss(
         device: Torch device.
 
     Returns:
-        Scalar loss value.
+        Agent eval loss: SDF loss + node_count_weight * node_count.
     """
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -68,9 +70,9 @@ def evaluate_loss(
     with torch.no_grad():
         pred = evaluator(points)
         target_vals = target_sdf(points)
-        loss = l1_clamped_loss(pred, target_vals, delta)
 
-    return loss.item()
+    node_count = len(flatir.get("instrs", []))
+    return agent_eval_loss(pred, target_vals, node_count, delta, node_count_weight)
 
 
 def optimise_params_for_target(

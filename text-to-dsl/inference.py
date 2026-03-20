@@ -87,7 +87,7 @@ def load_llm(
 def warmup_prefix_cache(llm: LLM, dsl_context: str = DSL_CONTEXT) -> None:
     """Run a warmup generation to populate the prefix cache for dsl_context."""
     base = Path(__file__).resolve().parent
-    with open(base / "grammar.gbnf") as f:
+    with open(base / "grammar_dsl.gbnf") as f:
         grammar_str = f.read()
     structured = StructuredOutputsParams(grammar=grammar_str)
     sampling = SamplingParams(structured_outputs=structured, max_tokens=16)
@@ -114,7 +114,7 @@ def generate_dsl(
     """
 
     base = Path(__file__).resolve().parent
-    grammar_path = grammar_path or base / "grammar.gbnf"
+    grammar_path = grammar_path or base / "grammar_dsl.gbnf"
     with open(grammar_path) as f:
         grammar_str = f.read()
 
@@ -138,6 +138,35 @@ def generate_dsl(
 
     outputs = llm.generate(prompts=[full_prompt], sampling_params=sampling)
     return outputs[0].outputs[0].text.strip()
+
+
+def generate_with_grammar(
+    prompt: str,
+    grammar_path: str | Path,
+    max_new_tokens: int = 256,
+    temperature: float = 0.2,
+    top_p: float = 0.95,
+    repetition_penalty: float = 1.05,
+    llm: LLM | None = None,
+    model_id: str = "zai-org/GLM-4.7-Flash",
+    **kwargs,
+) -> str:
+    """
+    Generate text with a specific grammar. No DSL context prefix.
+    Used for plan phase, choice phase, edit phase, etc.
+    """
+    return generate_dsl(
+        prompt=prompt,
+        dsl_context="",  # No context - caller provides full prompt
+        grammar_path=grammar_path,
+        max_new_tokens=max_new_tokens,
+        temperature=temperature,
+        top_p=top_p,
+        repetition_penalty=repetition_penalty,
+        llm=llm,
+        model_id=model_id,
+        **kwargs,
+    )
 
 
 def generate_valid_dsl(

@@ -19,12 +19,18 @@ if os.environ.get("RUN_INFERENCE_TESTS", "").lower() not in ("1", "true", "yes")
 
 def test_generate_dsl_passes_validation():
     """For fixed prompts, generated DSL must pass validate_dsl."""
+    from pathlib import Path
+
     from inference import generate_dsl, validate_dsl
+
+    base = Path(__file__).resolve().parent.parent
+    grammar_path = base / "grammar_dsl.gbnf"
+    assert grammar_path.exists(), "grammar_dsl.gbnf must exist"
 
     # Use a simple prompt - model may not have been fine-tuned for DSL
     prompt = "Generate SDF DSL for a unit sphere:\n\n"
     try:
-        dsl = generate_dsl(prompt, max_new_tokens=64)
+        dsl = generate_dsl(prompt, max_new_tokens=64, grammar_path=grammar_path)
     except Exception as e:
         pytest.skip(f"Model load/generation failed: {e}")
 

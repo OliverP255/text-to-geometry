@@ -55,4 +55,4 @@ def test_optimise_params_for_target_decreases_loss():
     result = optimise_params_for_target(dsl, target, steps=200, batch_size=512)
     loss_after = evaluate_loss(result, target, seed=123)
     assert loss_after < loss_before, f"Loss should decrease: {loss_before:.6f} -> {loss_after:.6f}"
-    assert result["spheres"][0] > 0.5
+    assert result["spheres"][0]["r"] > 0.5
