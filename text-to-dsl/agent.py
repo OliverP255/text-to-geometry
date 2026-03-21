@@ -14,20 +14,6 @@ import sys
 from pathlib import Path
 
 
-def _reexec_with_repo_venv_if_needed() -> None:
-    """Use repo .venv when launched with system Python (same as `source .venv/bin/activate`)."""
-    if os.environ.get("T2G_NO_VENV_REEXEC"):
-        return
-    root = Path(__file__).resolve().parent.parent
-    vpy = root / ".venv" / "bin" / "python"
-    if not vpy.is_file():
-        return
-    if Path(sys.executable).resolve() == vpy.resolve():
-        return
-    # Already in some virtual env — do not override conda/other layouts
-    if sys.prefix != sys.base_prefix:
-        return
-    os.execv(str(vpy.resolve()), [str(vpy.resolve()), *sys.argv])
 
 
 _reexec_with_repo_venv_if_needed()

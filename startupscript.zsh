@@ -1,6 +1,3 @@
-#!/usr/bin/env bash
-# Clone repo, install system + Python deps (downloads only), build C++/pybind and web. No swap/disk checks/tests.
-# Use bash (Debian/GCP default); zsh is optional. Run: bash startupscript.zsh   or   ./startupscript.zsh
 set -euo pipefail
 
 REPO_URL="${REPO_URL:-https://github.com/OliverP255/text-to-geometry.git}"
@@ -10,7 +7,6 @@ VENV_DIR="${VENV_DIR:-$INSTALL_DIR/.venv}"
 
 NPROC="$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)"
 
-# Args: [install_dir] [repo_url] — either order for URL (must start with http)
 if [[ -n "${1:-}" && "${1}" != -* && "${1}" != http* && "${1}" != https* ]]; then
   INSTALL_DIR="$(realpath "${1}")"
 fi
@@ -51,18 +47,15 @@ python3 -m pip install -U pip
 
 export PYTHONUNBUFFERED=1
 
-# PyTorch first: CUDA 12.1 wheels from pytorch.org (required for agent_tools / vLLM stack)
 TORCH_INDEX="https://download.pytorch.org/whl/cu121"
 echo "==> Installing PyTorch (CUDA 12.1) from $TORCH_INDEX"
 pip install --no-cache-dir torch --index-url "$TORCH_INDEX"
 
 echo "==> text-to-dsl/requirements.txt (skip duplicate torch line — already installed above)"
-# Use repo dir, not /tmp — some GCP/OS Login setups deny writing /tmp for redirects
 REQS_TMP="${INSTALL_DIR}/.t2g-reqs-no-torch.txt"
 grep -vE '^[[:space:]]*torch[[:space:]]*(#.*)?$' text-to-dsl/requirements.txt > "$REQS_TMP"
 pip install --no-cache-dir -r "$REQS_TMP"
 
-# GLM-4.7 / mratsim FP8 checkpoint needs transformers>=5.3; vLLM 0.18 still declares transformers<5.
 echo "==> Upgrading transformers + huggingface-hub for GLM-4.7 (agent model)"
 pip install --no-cache-dir -U 'transformers>=5.3' 'huggingface-hub>=0.28'
 
@@ -86,12 +79,6 @@ mkdir -p build
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j"$NPROC"
 
-if command -v npm &>/dev/null && [[ -f web/package.json ]]; then
-  echo "==> Web (npm ci + build)"
-  (cd web && npm ci && npm run build)
-fi
-
-echo ""
 echo "Done:"
 echo "  source $VENV_DIR/bin/activate"
 echo "  cd $INSTALL_DIR/text-to-dsl && python agent.py"
