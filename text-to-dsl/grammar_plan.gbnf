@@ -1,0 +1,8 @@
+# Free-form plan text - GBNF for grammar-constrained decoding
+# Allows any text for plan phase output
+
+root ::= space? content
+
+content ::= ( [^\n] | "\n" )*
+
+space ::= ( " " | "\t" )*
