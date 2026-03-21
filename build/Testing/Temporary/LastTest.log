@@ -1,10 +1,10 @@
-Start testing: Mar 14 04:41 GMT
+Start testing: Mar 18 20:32 GMT
 ----------------------------------------------------------
 1/8 Testing: dag_builder_tests
 1/8 Test: dag_builder_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/dag_builder_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"dag_builder_tests" start time: Mar 14 04:41 GMT
+"dag_builder_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -56,10 +56,10 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [==========] 15 tests from 4 test suites ran. (0 ms total)
 [  PASSED  ] 15 tests.
 <end of output>
-Test time =   0.02 sec
+Test time =   0.03 sec
 ----------------------------------------------------------
 Test Passed.
-"dag_builder_tests" end time: Mar 14 04:41 GMT
+"dag_builder_tests" end time: Mar 18 20:32 GMT
 "dag_builder_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -67,7 +67,7 @@ Test Passed.
 2/8 Test: optimise_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/optimise_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"optimise_tests" start time: Mar 14 04:41 GMT
+"optimise_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -122,16 +122,16 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [       OK ] Optimise.SemanticEquiv_DedupSubtrees (0 ms)
 [ RUN      ] Optimise.SemanticEquiv_Complex
 [       OK ] Optimise.SemanticEquiv_Complex (0 ms)
-[----------] 24 tests from Optimise (1 ms total)
+[----------] 24 tests from Optimise (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 24 tests from 1 test suite ran. (1 ms total)
+[==========] 24 tests from 1 test suite ran. (0 ms total)
 [  PASSED  ] 24 tests.
 <end of output>
-Test time =   0.03 sec
+Test time =   0.02 sec
 ----------------------------------------------------------
 Test Passed.
-"optimise_tests" end time: Mar 14 04:41 GMT
+"optimise_tests" end time: Mar 18 20:32 GMT
 "optimise_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -139,7 +139,7 @@ Test Passed.
 3/8 Test: ir_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/ir_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"ir_tests" start time: Mar 14 04:41 GMT
+"ir_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -189,10 +189,10 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [==========] 17 tests from 2 test suites ran. (0 ms total)
 [  PASSED  ] 17 tests.
 <end of output>
-Test time =   0.03 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"ir_tests" end time: Mar 14 04:41 GMT
+"ir_tests" end time: Mar 18 20:32 GMT
 "ir_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -200,7 +200,7 @@ Test Passed.
 4/8 Test: flat_ir_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/flat_ir_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"flat_ir_tests" start time: Mar 14 04:41 GMT
+"flat_ir_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -219,10 +219,10 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [==========] 3 tests from 1 test suite ran. (0 ms total)
 [  PASSED  ] 3 tests.
 <end of output>
-Test time =   0.02 sec
+Test time =   0.03 sec
 ----------------------------------------------------------
 Test Passed.
-"flat_ir_tests" end time: Mar 14 04:41 GMT
+"flat_ir_tests" end time: Mar 18 20:32 GMT
 "flat_ir_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -230,7 +230,7 @@ Test Passed.
 5/8 Test: lower_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/lower_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"lower_tests" start time: Mar 14 04:41 GMT
+"lower_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -287,10 +287,10 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [==========] 22 tests from 1 test suite ran. (0 ms total)
 [  PASSED  ] 22 tests.
 <end of output>
-Test time =   0.03 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"lower_tests" end time: Mar 14 04:41 GMT
+"lower_tests" end time: Mar 18 20:32 GMT
 "lower_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -298,7 +298,7 @@ Test Passed.
 6/8 Test: param_extract_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/param_extract_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"param_extract_tests" start time: Mar 14 04:41 GMT
+"param_extract_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -315,10 +315,10 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [==========] 2 tests from 1 test suite ran. (0 ms total)
 [  PASSED  ] 2 tests.
 <end of output>
-Test time =   0.03 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"param_extract_tests" end time: Mar 14 04:42 GMT
+"param_extract_tests" end time: Mar 18 20:32 GMT
 "param_extract_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -326,7 +326,7 @@ Test Passed.
 7/8 Test: pack_for_webgpu_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/pack_for_webgpu_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"pack_for_webgpu_tests" start time: Mar 14 04:42 GMT
+"pack_for_webgpu_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -346,13 +346,13 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [----------] 5 tests from PackForWebGPU (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 5 tests from 1 test suite ran. (0 ms total)
+[==========] 5 tests from 1 test suite ran. (1 ms total)
 [  PASSED  ] 5 tests.
 <end of output>
-Test time =   0.03 sec
+Test time =   0.05 sec
 ----------------------------------------------------------
 Test Passed.
-"pack_for_webgpu_tests" end time: Mar 14 04:42 GMT
+"pack_for_webgpu_tests" end time: Mar 18 20:32 GMT
 "pack_for_webgpu_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -360,7 +360,7 @@ Test Passed.
 8/8 Test: unparse_dsl_tests
 Command: "/Users/oliverpryce/Documents/AI/text-to-geometry/build/unparse_dsl_tests"
 Directory: /Users/oliverpryce/Documents/AI/text-to-geometry/build
-"unparse_dsl_tests" start time: Mar 14 04:42 GMT
+"unparse_dsl_tests" start time: Mar 18 20:32 GMT
 Output:
 ----------------------------------------------------------
 Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -380,14 +380,14 @@ Running main() from /Users/oliverpryce/Documents/AI/text-to-geometry/build/_deps
 [----------] 5 tests from UnparseDSL (0 ms total)
 
 [----------] Global test environment tear-down
-[==========] 5 tests from 1 test suite ran. (0 ms total)
+[==========] 5 tests from 1 test suite ran. (1 ms total)
 [  PASSED  ] 5 tests.
 <end of output>
-Test time =   0.02 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"unparse_dsl_tests" end time: Mar 14 04:42 GMT
+"unparse_dsl_tests" end time: Mar 18 20:32 GMT
 "unparse_dsl_tests" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Mar 14 04:42 GMT
+End testing: Mar 18 20:32 GMT

@@ -1,0 +1,8 @@
+# Choice grammar - training mode
+# Output exactly one of: edit_plan, edit_dsl, rewrite_plan, rewrite_dsl, eval_loss, optimise_dsl, submit
+
+root ::= space? choice
+
+choice ::= "edit_plan" | "edit_dsl" | "rewrite_plan" | "rewrite_dsl" | "eval_loss" | "optimise_dsl" | "submit"
+
+space ::= ( " " | "\t" )*

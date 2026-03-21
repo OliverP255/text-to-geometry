@@ -23,6 +23,7 @@ async function main(): Promise<void> {
   connectAndSubscribe((packed) => renderer.setScene(packed));
 
   const loop = () => {
+    resize();
     renderer.render();
     requestAnimationFrame(loop);
   };

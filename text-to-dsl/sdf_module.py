@@ -1,4 +1,4 @@
-"""PyTorch SDF module - primitives, transforms, CSG, FlatIR conversion."""
+"""SDF compiled from FlatIR and defined in PyTorch for Adam optimisation"""
 
 import torch
 import torch.nn as nn

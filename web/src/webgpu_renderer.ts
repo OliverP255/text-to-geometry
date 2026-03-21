@@ -133,6 +133,7 @@ export class WebGPURenderer {
   private bindGroup!: GPUBindGroup;
   private outputTexture!: GPUTexture;
   private canvasContext!: GPUCanvasContext;
+  private canvasFormat!: GPUTextureFormat;
   private scene: PackedFlatIR | null = null;
   private camera = { pos: [0, 0, 5] as [number, number, number], dir: [0, 0, -1] as [number, number, number], up: [0, 1, 0] as [number, number, number], fov: 0.8 };
 
@@ -141,13 +142,16 @@ export class WebGPURenderer {
     if (!adapter) return false;
     this.device = await adapter.requestDevice();
     if (!this.device) return false;
+    this.device.addEventListener('uncapturederror', (e) => {
+      console.error('[WebGPU]', e.error);
+    });
 
     const shaderModule = this.device.createShaderModule({ code: WGSL });
     this.canvasContext = canvas.getContext('webgpu')!;
     if (!this.canvasContext) return false;
 
-    const format = navigator.gpu.getPreferredCanvasFormat?.() ?? 'bgra8unorm';
-    this.canvasContext.configure({ device: this.device, format, alphaMode: 'opaque' });
+    this.canvasFormat = 'rgba8unorm';
+    this.canvasContext.configure({ device: this.device, format: this.canvasFormat, alphaMode: 'opaque' });
 
     this.pipeline = this.device.createComputePipeline({
       layout: 'auto',
@@ -232,7 +236,7 @@ export class WebGPURenderer {
 
     this.outputTexture = this.device.createTexture({
       size: [width, height, 1],
-      format: 'rgba8unorm',
+      format: this.canvasFormat,
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
     });
 

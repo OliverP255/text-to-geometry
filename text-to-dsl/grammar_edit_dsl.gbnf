@@ -1,0 +1,13 @@
+# Edit DSL JSON - {"tool": "edit_dsl", "edits": [{"find": "...", "replace": "..."}]}
+
+root ::= space? "{" space "\"tool\"" space ":" space "\"edit_dsl\"" space "," space "\"edits\"" space ":" space "[" space edit_list space "]" space "}"
+
+edit_list ::= edit_item | (edit_item space "," space edit_list)
+
+edit_item ::= "{" space "\"find\"" space ":" space string space "," space "\"replace\"" space ":" space string space "}"
+
+string ::= "\"" string_char* "\""
+
+string_char ::= [^"\\] | "\\" ["\\/bfnrt]
+
+space ::= ( " " | "\n" | "\t" )*

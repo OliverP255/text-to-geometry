@@ -1,4 +1,4 @@
-"""Target SDF providers for optimization."""
+"""FOR TESTING PURPOSES ONLY. Target SDF for optimization."""
 
 import torch
 from typing import Callable

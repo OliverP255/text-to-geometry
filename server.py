@@ -27,7 +27,7 @@ except ImportError:
     print("Install flask-socketio: pip install flask-socketio", file=sys.stderr)
     sys.exit(1)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="web/dist", static_url_path="")
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading", transports=["websocket"])
 
 # Default scene: compile DSL and pack for WebGPU
@@ -41,6 +41,11 @@ def get_scene():
         flatir = t2g.compile(_DEFAULT_DSL)
         _scene_cache = t2g.packForWebGPU(flatir)
     return _scene_cache
+
+
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
 
 
 @app.route("/scene", methods=["POST"])

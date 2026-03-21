@@ -1,2 +1,4 @@
 k8s/
 glm4-flash-fp8/
+build/
+startupscript.zsh
