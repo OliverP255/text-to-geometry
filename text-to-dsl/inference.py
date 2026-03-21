@@ -5,12 +5,17 @@ Uses vLLM with StructuredOutputsParams (grammar) for grammar-constrained decodin
 
 from __future__ import annotations
 
-from vllm import LLM
-from vllm.sampling_params import SamplingParams, StructuredOutputsParams
-
 import os
 import subprocess
 from pathlib import Path
+
+# Before torch/vLLM: an empty CUDA_VISIBLE_DEVICES makes vLLM's device string empty (RuntimeError).
+if not (os.environ.get("CUDA_VISIBLE_DEVICES") or "").strip():
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+import torch
+from vllm import LLM
+from vllm.sampling_params import SamplingParams, StructuredOutputsParams
 
 
 def _find_validate_dsl() -> Path | None:
@@ -67,6 +72,13 @@ def load_llm(
     **kwargs,
 ) -> LLM:
     """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading."""
+    if not torch.cuda.is_available():
+        raise RuntimeError(
+            "PyTorch does not see a GPU (torch.cuda.is_available() is False).\n"
+            "Check: nvidia-smi\n"
+            "Use the project venv (system python has no torch): "
+            "source ~/text-to-geometry/.venv/bin/activate && cd ~/text-to-geometry/text-to-dsl && python agent.py"
+        )
     cache_key = (model_id, tensor_parallel_size, max_model_len)
     if cache_key in _llm_cache:
         return _llm_cache[cache_key]

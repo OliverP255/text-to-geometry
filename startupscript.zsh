@@ -46,14 +46,20 @@ source "$VENV_DIR/bin/activate"
 python3 -m pip install -U pip
 
 export PYTHONUNBUFFERED=1
-echo "==> PyTorch (CUDA 12.1)"
-pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu121
 
-echo "==> text-to-dsl/requirements.txt (skip duplicate torch line)"
+# PyTorch first: CUDA 12.1 wheels from pytorch.org (required for agent_tools / vLLM stack)
+TORCH_INDEX="https://download.pytorch.org/whl/cu121"
+echo "==> Installing PyTorch (CUDA 12.1) from $TORCH_INDEX"
+pip install --no-cache-dir torch --index-url "$TORCH_INDEX"
+
+echo "==> text-to-dsl/requirements.txt (skip duplicate torch line — already installed above)"
 # Use repo dir, not /tmp — some GCP/OS Login setups deny writing /tmp for redirects
 REQS_TMP="${INSTALL_DIR}/.t2g-reqs-no-torch.txt"
 grep -vE '^[[:space:]]*torch[[:space:]]*(#.*)?$' text-to-dsl/requirements.txt > "$REQS_TMP"
 pip install --no-cache-dir -r "$REQS_TMP"
+
+echo "==> Verify PyTorch (vLLM may have upgraded torch; must still import)"
+python3 -c "import torch; print('torch OK:', torch.__version__)"
 
 echo "==> CMake build (C++ + pybind)"
 mkdir -p build
