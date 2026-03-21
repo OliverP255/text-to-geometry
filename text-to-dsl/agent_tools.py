@@ -6,9 +6,9 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple, Union
 
-# Add parent/build for text_to_geometry_bindings when run from text-to-dsl/
+# Add repo-root build/ for text_to_geometry_bindings (may not exist until after cmake).
 _build = Path(__file__).resolve().parent.parent / "build"
-if _build.exists() and str(_build) not in sys.path:
+if str(_build) not in sys.path:
     sys.path.insert(0, str(_build))
 
 import torch

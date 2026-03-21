@@ -1,4 +1,4 @@
 k8s/
 glm4-flash-fp8/
 build/
-startupscript.zsh
+.t2g-reqs-no-torch.txt
