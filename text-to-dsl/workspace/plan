@@ -1,1 +1,25 @@
+,\\[x^2+y^2+z^2 = 1\]\\] and find its intersection with a plane. The equation of the unit circle in \(\mathbb{R}^3\) is given by:
+\[ x(t) = (\cos t, \sin t, 0). \]
+We want to intersect this curve (the great circle on \(xy\)-plane) with another surface.
 
+The problem statement says "intersecting two surfaces". So we have one surface being the sphere $S$ defined above.
+What other surface? It might be that they intend for us to consider an arbitrary plane or perhaps something like:
+
+**Surface A:** Sphere S
+**Surface B:** Plane P
+
+But then what's the point if it's just any random plane?
+
+Wait! Maybe there are multiple parts to the question not shown here?
+Let me re-read carefully...
+
+"Find all points where these curves intersect."
+
+Ah ha!
+
+So maybe both objects described earlier were **curves**, not surfaces!
+Yes indeed: 
+Curve C_1: Great Circle $\gamma$: $(\cos t, \sin t, 0)$,
+Curve C_2: Another Curve... but which one exactly?
+
+It seems I'm missing context from previous lines...

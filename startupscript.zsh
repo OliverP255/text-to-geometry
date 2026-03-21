@@ -1,12 +1,8 @@
-#!/usr/bin/env bash
-# Clone repo, install system + Python deps (downloads only), build C++/pybind and web. No swap/disk checks/tests.
-# Use bash (Debian/GCP default); zsh is optional. Run: bash startupscript.zsh   or   ./startupscript.zsh
 set -euo pipefail
 
 REPO_URL="${REPO_URL:-https://github.com/OliverP255/text-to-geometry.git}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/text-to-geometry}"
 PYTHON="${PYTHON:-python3}"
-VENV_DIR="${VENV_DIR:-$INSTALL_DIR/.venv}"
 
 NPROC="$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)"
 
@@ -19,6 +15,8 @@ if [[ "${1:-}" == http* ]] || [[ "${1:-}" == https* ]]; then
 elif [[ "${2:-}" == http* ]] || [[ "${2:-}" == https* ]]; then
   REPO_URL="${2}"
 fi
+
+VENV_DIR="${VENV_DIR:-$INSTALL_DIR/.venv}"
 
 echo "==> Install dir: $INSTALL_DIR"
 echo "==> Repo: $REPO_URL"
@@ -46,6 +44,7 @@ cd "$INSTALL_DIR"
 if [[ ! -d "$VENV_DIR" ]]; then
   "$PYTHON" -m venv "$VENV_DIR"
 fi
+echo "==> Activate virtualenv: $VENV_DIR"
 source "$VENV_DIR/bin/activate"
 python3 -m pip install -U pip
 
@@ -81,19 +80,32 @@ fi
 echo "==> CUDA device count (PyTorch)"
 python3 -c 'import torch; print("torch.cuda.device_count():", torch.cuda.device_count())' || true
 
-echo "==> CMake build (C++ + pybind)"
+echo "==> CMake: text_to_geometry_bindings (pybind11) + other C++ targets"
 mkdir -p build
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j"$NPROC" --target text_to_geometry_bindings
 cmake --build build -j"$NPROC"
+echo "==> Verify text_to_geometry_bindings"
+PYTHONPATH="${PWD}/build${PYTHONPATH:+:$PYTHONPATH}" python3 -c 'import text_to_geometry_bindings as _t2g; print("text_to_geometry_bindings OK")'
 
 if command -v npm &>/dev/null && [[ -f web/package.json ]]; then
   echo "==> Web (npm ci + build)"
   (cd web && npm ci && npm run build)
 fi
 
+source "$VENV_DIR/bin/activate"
+echo "==> Virtualenv active: $VENV_DIR ($(command -v python3))"
+
 echo ""
 echo "Done:"
-echo "  source $VENV_DIR/bin/activate"
-echo "  cd $INSTALL_DIR/text-to-dsl && python agent.py"
+if [[ ${ZSH_EVAL_CONTEXT:-} == *:file:* ]]; then
+  echo "  This shell already has the venv active (you sourced this script)."
+  echo "  cd $INSTALL_DIR/text-to-dsl && python agent.py"
+else
+  echo "  source $VENV_DIR/bin/activate"
+  echo "  cd $INSTALL_DIR/text-to-dsl && python agent.py"
+fi
 echo ""
 echo "GPU VM without driver: bash $INSTALL_DIR/scripts/install_gpu_driver_gce.sh"
+
+source ~/text-to-geometry/.venv/bin/activate
