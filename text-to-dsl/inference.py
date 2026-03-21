@@ -99,7 +99,10 @@ def load_llm(
     gpu_memory_utilization: float = 0.95,
     **kwargs,
 ) -> LLM:
-    """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading."""
+    """Load an LLM instance. Reuse the returned object across generate_dsl calls to avoid reloading.
+
+    max_model_len caps prefill+generation; agent uses a persistent prefix plus plan/DSL text — keep headroom.
+    """
     if not torch.cuda.is_available():
         raise RuntimeError(
             "PyTorch does not see a GPU (torch.cuda.is_available() is False).\n"
@@ -126,14 +129,27 @@ def load_llm(
     return llm
 
 
-def warmup_prefix_cache(llm: LLM, dsl_context: str = DSL_CONTEXT) -> None:
-    """Run a warmup generation to populate the prefix cache for dsl_context."""
+def warmup_prefix_cache(llm: LLM, dsl_prefix: str | None = None) -> None:
+    """Run a warmup generation to populate prefix cache for agent DSL path (grammar_dsl).
+
+    Uses the same prompt shape as agent write/rewrite_dsl: guide + write preamble + short plan stub.
+    Pass dsl_prefix to override (default: agent_context.AGENT_DSL_GUIDE).
+    """
+    from agent_context import AGENT_DSL_GUIDE
+
+    prefix = dsl_prefix if dsl_prefix is not None else AGENT_DSL_GUIDE
+    # Align with production write phase so prefix KV cache matches.
+    warmup_prompt = (
+        prefix
+        + "\nWrite the DSL from the plan:\n\n"
+        + "s0 = sphere radius 1 at origin; return s0\n"
+    )
     base = Path(__file__).resolve().parent
     with open(base / "grammar_dsl.gbnf") as f:
         grammar_str = f.read()
     structured = StructuredOutputsParams(grammar=grammar_str)
     sampling = SamplingParams(structured_outputs=structured, max_tokens=16)
-    llm.generate(prompts=[dsl_context + "warmup"], sampling_params=sampling)
+    llm.generate(prompts=[warmup_prompt], sampling_params=sampling)
 
 
 def generate_dsl(
@@ -191,15 +207,21 @@ def generate_with_grammar(
     repetition_penalty: float = 1.05,
     llm: LLM | None = None,
     model_id: str = "zai-org/GLM-4.7-Flash",
+    persistent_prefix: str | None = None,
     **kwargs,
 ) -> str:
     """
-    Generate text with a specific grammar. No DSL context prefix.
-    Used for plan phase, choice phase, edit phase, etc.
+    Generate text with a specific grammar.
+
+    persistent_prefix: If set, prepended to prompt (same mechanism as generate_dsl's dsl_context).
+    Use for shared agent instructions (e.g. AGENT_DSL_GUIDE). Caller keeps phase prompts short.
     """
+    # persistent_prefix overrides dsl_context when provided; do not pass dsl_context in kwargs for agent calls.
+    kwargs.pop("dsl_context", None)
+    ctx = persistent_prefix if persistent_prefix is not None else ""
     return generate_dsl(
         prompt=prompt,
-        dsl_context="",  # No context - caller provides full prompt
+        dsl_context=ctx,
         grammar_path=grammar_path,
         max_new_tokens=max_new_tokens,
         temperature=temperature,
