@@ -1,5 +1,6 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 # Clone repo, install system + Python deps (downloads only), build C++/pybind and web. No swap/disk checks/tests.
+# Use bash (Debian/GCP default); zsh is optional. Run: bash startupscript.zsh   or   ./startupscript.zsh
 set -euo pipefail
 
 REPO_URL="${REPO_URL:-https://github.com/OliverP255/text-to-geometry.git}"
@@ -9,11 +10,14 @@ VENV_DIR="${VENV_DIR:-$INSTALL_DIR/.venv}"
 
 NPROC="$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)"
 
-if [[ "${1:-}" == -* ]] || [[ -n "${1:-}" && "${1}" != http* ]]; then
-  INSTALL_DIR="$(realpath "${1:-$INSTALL_DIR}")"
+# Args: [install_dir] [repo_url] — either order for URL (must start with http)
+if [[ -n "${1:-}" && "${1}" != -* && "${1}" != http* && "${1}" != https* ]]; then
+  INSTALL_DIR="$(realpath "${1}")"
 fi
-if [[ "${1:-}" == http* ]] || [[ "${2:-}" == http* ]]; then
-  REPO_URL="${1:-$REPO_URL}"
+if [[ "${1:-}" == http* ]] || [[ "${1:-}" == https* ]]; then
+  REPO_URL="${1}"
+elif [[ "${2:-}" == http* ]] || [[ "${2:-}" == https* ]]; then
+  REPO_URL="${2}"
 fi
 
 echo "==> Install dir: $INSTALL_DIR"
@@ -58,8 +62,24 @@ REQS_TMP="${INSTALL_DIR}/.t2g-reqs-no-torch.txt"
 grep -vE '^[[:space:]]*torch[[:space:]]*(#.*)?$' text-to-dsl/requirements.txt > "$REQS_TMP"
 pip install --no-cache-dir -r "$REQS_TMP"
 
+# GLM-4.7 / mratsim FP8 checkpoint needs transformers>=5.3; vLLM 0.18 still declares transformers<5.
+echo "==> Upgrading transformers + huggingface-hub for GLM-4.7 (agent model)"
+pip install --no-cache-dir -U 'transformers>=5.3' 'huggingface-hub>=0.28'
+
 echo "==> Verify PyTorch (vLLM may have upgraded torch; must still import)"
-python3 -c "import torch; print('torch OK:', torch.__version__)"
+python3 -c 'import torch; print("torch OK:", torch.__version__)'
+if command -v nvidia-smi &>/dev/null; then
+  echo "==> GPUs (nvidia-smi -L)"
+  nvidia-smi -L || true
+else
+  echo "WARN: nvidia-smi not found — vLLM/agent needs an NVIDIA driver + GPU on this machine."
+  if lspci 2>/dev/null | grep -qi nvidia; then
+    echo "     PCI shows NVIDIA — on GCE run once: bash $INSTALL_DIR/scripts/install_gpu_driver_gce.sh"
+    echo "     (Re-run after reboot if the installer asks.)"
+  fi
+fi
+echo "==> CUDA device count (PyTorch)"
+python3 -c 'import torch; print("torch.cuda.device_count():", torch.cuda.device_count())' || true
 
 echo "==> CMake build (C++ + pybind)"
 mkdir -p build
@@ -75,3 +95,5 @@ echo ""
 echo "Done:"
 echo "  source $VENV_DIR/bin/activate"
 echo "  cd $INSTALL_DIR/text-to-dsl && python agent.py"
+echo ""
+echo "GPU VM without driver: bash $INSTALL_DIR/scripts/install_gpu_driver_gce.sh"

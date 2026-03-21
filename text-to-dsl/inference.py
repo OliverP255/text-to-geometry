@@ -18,6 +18,34 @@ from vllm import LLM
 from vllm.sampling_params import SamplingParams, StructuredOutputsParams
 
 
+def _assert_nvml_sees_gpu() -> None:
+    """
+    vLLM picks the CUDA backend only when NVML reports GPUs; otherwise device_type is '' and
+    LLM() raises 'Device string must not be empty'. Fail early with a clear message.
+    """
+    try:
+        from vllm.utils.import_utils import import_pynvml
+
+        pynvml = import_pynvml()
+        pynvml.nvmlInit()
+        try:
+            n = int(pynvml.nvmlDeviceGetCount())
+        finally:
+            pynvml.nvmlShutdown()
+    except Exception as e:
+        raise RuntimeError(
+            "vLLM needs an NVIDIA GPU visible to the driver (NVML), same as nvidia-smi.\n"
+            "Run: nvidia-smi\n"
+            "On GCP, confirm a GPU is attached and NVIDIA drivers are installed.\n"
+            f"NVML error: {e}"
+        ) from e
+    if n < 1:
+        raise RuntimeError(
+            "NVML reports 0 GPUs — vLLM cannot use CUDA (error would be: Device string must not be empty).\n"
+            "Fix the VM/driver until `nvidia-smi` lists a GPU."
+        )
+
+
 def _find_validate_dsl() -> Path | None:
     """Locate the validate_dsl executable."""
     base = Path(__file__).resolve().parent
@@ -76,9 +104,11 @@ def load_llm(
         raise RuntimeError(
             "PyTorch does not see a GPU (torch.cuda.is_available() is False).\n"
             "Check: nvidia-smi\n"
-            "Use the project venv (system python has no torch): "
-            "source ~/text-to-geometry/.venv/bin/activate && cd ~/text-to-geometry/text-to-dsl && python agent.py"
+            "Use the project venv, or run: python3 agent.py (re-execs into .venv when present)."
         )
+    if torch.cuda.device_count() < 1:
+        raise RuntimeError("torch.cuda.device_count() is 0 — no CUDA device to run vLLM.")
+    _assert_nvml_sees_gpu()
     cache_key = (model_id, tensor_parallel_size, max_model_len)
     if cache_key in _llm_cache:
         return _llm_cache[cache_key]

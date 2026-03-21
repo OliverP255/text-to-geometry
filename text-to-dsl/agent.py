@@ -4,14 +4,37 @@ LLM Agent: plan -> write DSL -> choose-and-edit loop until submit.
 Usage: python agent.py
 
 Prompts for shape descriptions, plans, generates DSL, allows edits. Type 'quit' or 'exit' to stop.
+
+If you run `python3 agent.py` with system Python, we re-exec using repo `.venv` when present
+(so torch/vLLM import). Set T2G_NO_VENV_REEXEC=1 to disable.
 """
 
-import json
 import os
 import sys
+from pathlib import Path
+
+
+def _reexec_with_repo_venv_if_needed() -> None:
+    """Use repo .venv when launched with system Python (same as `source .venv/bin/activate`)."""
+    if os.environ.get("T2G_NO_VENV_REEXEC"):
+        return
+    root = Path(__file__).resolve().parent.parent
+    vpy = root / ".venv" / "bin" / "python"
+    if not vpy.is_file():
+        return
+    if Path(sys.executable).resolve() == vpy.resolve():
+        return
+    # Already in some virtual env — do not override conda/other layouts
+    if sys.prefix != sys.base_prefix:
+        return
+    os.execv(str(vpy.resolve()), [str(vpy.resolve()), *sys.argv])
+
+
+_reexec_with_repo_venv_if_needed()
+
+import json
 import urllib.error
 import urllib.request
-from pathlib import Path
 
 # Add build/ and text-to-dsl/ for t2g and inference
 _root = Path(__file__).resolve().parent.parent
