@@ -1,2 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libfrontend.a CMakeFiles/frontend.dir/src/frontend/lexer.cpp.o CMakeFiles/frontend.dir/src/frontend/parser.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libfrontend.a
