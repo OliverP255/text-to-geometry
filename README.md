@@ -1,9 +1,10 @@
 <div align="center">
 
 <h1>SketchCAD</h1>
+
+<h4>Text → 3D geometry via signed distance functions (SDFs)</h4>  
 </div>
 
-Text → 3D geometry via signed distance functions (SDFs)
 <p align="center">
 
 [![WebGPU](https://img.shields.io/badge/WebGPU-005A9C?style=flat-square&logo=webgpu&logoColor=white)](https://www.w3.org/TR/webgpu/)
