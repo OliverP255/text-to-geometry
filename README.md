@@ -10,18 +10,8 @@
 [![vLLM](https://img.shields.io/badge/vLLM-000000?style=flat-square&logoColor=white)](https://github.com/vllm-project/vllm)
 [![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
 
-<br/>
-
-*Sketch pad for engineers — iterate on procedural shapes before full B-rep workflows.*
-
-</div>
-
 ---
-
-## Overview
-
-SketchCAD is an **AI agent** that turns natural language into **executable 3D geometry**.  
-The model emits a single WGSL **`map()`** that ray-marches in the browser as a signed distance field.
+SketchCAD is an app that turns natural language into **executable 3D geometry**. It's a 'sketchpad for engineers' to build and iterate on specific, potentially complex parts before adding them to their B-Rep workflow.
 
 ![Chair demo](chair.gif)
 
