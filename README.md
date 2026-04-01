@@ -3,8 +3,9 @@
 <h1>SketchCAD</h1>
 
 <h4>Text → 3D geometry via signed distance functions (SDFs)</h4>  
+</div>
 
-<p>
+<p align="center">
 [![WebGPU](https://img.shields.io/badge/WebGPU-005A9C?style=flat-square&logo=webgpu&logoColor=white)](https://www.w3.org/TR/webgpu/)
 [![WGSL](https://img.shields.io/badge/WGSL-1EAEDB?style=flat-square&labelColor=0d1117)](https://www.w3.org/TR/WGSL/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
@@ -12,7 +13,6 @@
 [![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
 
 </p>
-</div>
 
 SketchCAD is a 'sketchpad for engineers' to quickly build and iterate on  parts just by using natural language. 
 It lets you use the speed and flexibility of SDFs to create potentially highly complex or procedural CAD models that can't be produced in regular B-Rep CAD software. 
