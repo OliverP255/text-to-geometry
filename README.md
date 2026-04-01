@@ -75,22 +75,31 @@ B5: Organic (SDF-friendly)
 
 The outputs were **WGSL** `map()` functions and we rated both how well each model followed syntax as well as performance on each band.
 
+<div align="center">
+
 Results:
 
-| Model | Valid WGSL % | Fidelity mean | Grade |
-|-------|-------------|---------------|-------|
-| Qwen2.5-Coder-32B-Instruct | 100.0% | 4.35 | A |
-| Qwen3-14B-FP8 | 100.0% | 4.28 | A |
-| Qwen3-32B-FP8 | 100.0% | 4.15 | A |
-| GLM-4.7-Flash-FP8 | 100.0% | 4.00 | A |
-| GLM-4-32B-0414 | 100.0% | 3.96 | A |
-| DeepSeek-R1-Distill-Qwen-32B | 100.0% | 3.87 | A |
-| GLM-Z1-32B-0414 | 67.4% | 3.02 | C |
-| llava-v1.6-mistral-7b-hf | 95.7% | 2.37 | A |
-| llava-onevision-qwen2-7b-ov-hf | 82.6% | 2.15 | B |
+<table>
+<thead>
+<tr><th>Model</th><th>Valid WGSL %</th><th>Fidelity mean</th><th>Grade</th></tr>
+</thead>
+<tbody>
+<tr><td>Qwen2.5-Coder-32B-Instruct</td><td>100.0%</td><td>4.35</td><td>A</td></tr>
+<tr><td>Qwen3-14B-FP8</td><td>100.0%</td><td>4.28</td><td>A</td></tr>
+<tr><td>Qwen3-32B-FP8</td><td>100.0%</td><td>4.15</td><td>A</td></tr>
+<tr><td>GLM-4.7-Flash-FP8</td><td>100.0%</td><td>4.00</td><td>A</td></tr>
+<tr><td>GLM-4-32B-0414</td><td>100.0%</td><td>3.96</td><td>A</td></tr>
+<tr><td>DeepSeek-R1-Distill-Qwen-32B</td><td>100.0%</td><td>3.87</td><td>A</td></tr>
+<tr><td>GLM-Z1-32B-0414</td><td>67.4%</td><td>3.02</td><td>C</td></tr>
+<tr><td>llava-v1.6-mistral-7b-hf</td><td>95.7%</td><td>2.37</td><td>A</td></tr>
+<tr><td>llava-onevision-qwen2-7b-ov-hf</td><td>82.6%</td><td>2.15</td><td>B</td></tr>
+</tbody>
+</table>
+
+</div>
 
 <div align="center">
-<img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="600">
+<img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="800">
 
 </div>
 
