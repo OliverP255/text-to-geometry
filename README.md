@@ -21,10 +21,10 @@ SketchCAD is an app that turns natural language into **executable 3D geometry**.
 
 | Step   | What happens   |
 |------|----------------|
-| **1 · Prompt** | User describes an object (dimensions, parts, style). |
-| **2 · Generate** | LLM (*default:* `Qwen3-32B-FP8` via vLLM, override with `T2G_MODEL_ID`) outputs `fn map(p: vec3f) -> f32` using the project’s **`sd*`** primitives and **`op*`** CSG helpers. |
-| **3 · Validate** | `server.py` runs WGSL validation, then pushes the scene to the viewer. |
-| **4 · Render** | WebGPU client ray-marches the field in real time. |
+| **1** | User describes an object (dimensions, parts, style). |
+| **2** | LLM (*default:* `Qwen3-32B-FP8` via vLLM, override with `T2G_MODEL_ID`) outputs `fn map(p: vec3f) -> f32` using the project’s **`sd*`** primitives and **`op*`** CSG helpers. |
+| **3** | `server.py` runs WGSL validation, then pushes the scene to the viewer. |
+| **4** | WebGPU client ray-marches the field in real time. |
 
 **Optional · constrained DSL**  
 For models that struggle with raw WGSL, a **narrow DSL** + grammar-constrained decoding can target the C++ kernel in `kernel/` instead—tighter structure, fewer syntax failures.
