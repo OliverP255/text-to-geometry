@@ -63,21 +63,16 @@ In summary: SDFs are perfect for **exploring AND quickly iterating on cool CAD d
 
 A fixed prompt suite of **46 prompts** from (`agent/experiments/test_50_prompts.py`) was run across **nine open-weight models**.
 
-I tested them on **5 categories** to see how prompting with specific length measurements or with step-by-step design instructions affected the output of the agent.
+I also tested them on **5 categories of prompts**: Classic CAD with specified dimensions + numbered steps (B1), Classic CAD with specified dimensions + no steps (B2), Classic CAD with no specified dimnensions + no steps (B3), Classic CAD with vague / short prompt (B4), Organic (SDF-friendly) (B5).
 
-**Prompt Categories:**
+The outputs were **WGSL** `map()` functions and I rated how well each model followed syntax over and used Claude Opus 4.6 to rate the accuracy of each result against the prompt, Claude even added notes for each model and prompt.
 
-B1: Classic CAD — measurements + numbered steps
-B2: Classic CAD — measurements, no steps
-B3: Classic CAD — no measurements, no steps
-B4: Classic CAD — vague / short
-B5: Organic (SDF-friendly)
+**CONCLUSION:**
 
-The outputs were **WGSL** `map()` functions and we rated both how well each model followed syntax as well as performance on each band.
+The biggest issues the top models faced were small geometry mistakes e.g. wrong half-extent values or rotations in wrong direction. This was kind of expected and can be improved by giving the agents vision capabilities.
 
 <div align="center">
 
-Results:
 
 <table>
 <thead>
@@ -96,12 +91,20 @@ Results:
 </tbody>
 </table>
 
+Qwen2.5-Coder-32B-Instruct was the best overall model. 
+
+
+Interestingly, Qwen2.5-Coder beat both sizes of Qwen3 models and even produced some genuinely creative solutions for making CAD designs with SDF primitives. The smaller Qwen3 model also beat the larger one by a noticeable amount. 
+
+
 </div>
 
 <div align="center">
 <img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="800">
 
 </div>
+
+
 
 
 ---
