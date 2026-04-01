@@ -15,7 +15,8 @@ BENCHMARK_MODELS: list[tuple[str, str]] = [
     ("GLM-4.7-Flash-FP8", "marksverdhei/GLM-4.7-Flash-FP8"),
     ("DeepSeek-R1-Distill-Qwen-32B", "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"),
     ("GLM-Z1-32B-0414", "THUDM/GLM-Z1-32B-0414"),
-    ("GLM-4-32B-0414", "THUDM/GLM-4-32B-0414"),
+    # Official THUDM id is gated (401/404 without HF token); zai-org mirror is the same weights, public.
+    ("GLM-4-32B-0414", "zai-org/GLM-4-32B-0414"),
     ("Qwen3-14B-FP8", "Qwen/Qwen3-14B-FP8"),
     ("LLaVA-1.6-Mistral-7B", "llava-hf/llava-v1.6-mistral-7b-hf"),
     ("LLaVA-OneVision-Qwen2-7B", "llava-hf/llava-onevision-qwen2-7b-ov-hf"),
