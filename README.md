@@ -76,7 +76,7 @@ The biggest issues the top models faced were small geometry mistakes e.g. wrong 
 
 <table>
 <thead>
-<tr><th>Model</th><th>Valid WGSL %</th><th>Fidelity mean</th><th>Grade</th></tr>
+<tr><th>Model</th><th>Valid WGSL %</th><th>Mean Output Quality</th><th>Grade</th></tr>
 </thead>
 <tbody>
 <tr><td>Qwen2.5-Coder-32B-Instruct</td><td>100.0%</td><td>4.35</td><td>A</td></tr>
