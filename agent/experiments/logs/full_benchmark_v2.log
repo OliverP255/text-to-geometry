@@ -38,3 +38,63 @@
   log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-Z1-32B-0414.log
 ============================================================
 
+  validation_ok: 31/46 in 6778s
+  Cleaning up model weights / caches …
+  HF cache: removed THUDM/GLM-Z1-32B-0414 (~65.2G)
+  vLLM disk cache cleared.
+
+============================================================
+[5/9] GLM-4-32B-0414
+  model_id=THUDM/GLM-4-32B-0414
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-4-32B-0414.log
+============================================================
+
+WARNING: model GLM-4-32B-0414 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-4-32B-0414.log
+  Cleaning up model weights / caches …
+  vLLM disk cache cleared.
+
+============================================================
+[6/9] Qwen3-14B-FP8
+  model_id=Qwen/Qwen3-14B-FP8
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-14B-FP8.log
+============================================================
+
+  validation_ok: 46/46 in 175s
+  Cleaning up model weights / caches …
+  HF cache: removed Qwen/Qwen3-14B-FP8 (~16.3G)
+  vLLM disk cache cleared.
+
+============================================================
+[7/9] LLaVA-1.6-Mistral-7B
+  model_id=llava-hf/llava-v1.6-mistral-7b-hf
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_llava-hf_llava-v1.6-mistral-7b-hf.log
+============================================================
+
+  validation_ok: 44/46 in 144s
+  Cleaning up model weights / caches …
+  HF cache: removed llava-hf/llava-v1.6-mistral-7b-hf (~15.1G)
+  vLLM disk cache cleared.
+
+============================================================
+[8/9] LLaVA-OneVision-Qwen2-7B
+  model_id=llava-hf/llava-onevision-qwen2-7b-ov-hf
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_llava-hf_llava-onevision-qwen2-7b-ov-hf.log
+============================================================
+
+  validation_ok: 38/46 in 192s
+  Cleaning up model weights / caches …
+  HF cache: removed llava-hf/llava-onevision-qwen2-7b-ov-hf (~16.1G)
+  vLLM disk cache cleared.
+
+============================================================
+[9/9] Qwen2.5-Coder-32B-Instruct
+  model_id=Qwen/Qwen2.5-Coder-32B-Instruct
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen2.5-Coder-32B-Instruct.log
+============================================================
+
+  validation_ok: 46/46 in 401s
+  Cleaning up model weights / caches …
+  HF cache: removed Qwen/Qwen2.5-Coder-32B-Instruct (~65.5G)
+  vLLM disk cache cleared.
+
+Wrote /home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/manifest.json
