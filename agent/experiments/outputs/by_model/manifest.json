@@ -40,12 +40,12 @@
     },
     {
       "label": "GLM-4-32B-0414",
-      "model_id": "THUDM/GLM-4-32B-0414",
-      "slug": "THUDM_GLM-4-32B-0414",
-      "returncode": 1,
-      "seconds": 4.5,
-      "results_json": "/home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/THUDM_GLM-4-32B-0414/results.json",
-      "log": "/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-4-32B-0414.log"
+      "model_id": "zai-org/GLM-4-32B-0414",
+      "slug": "zai-org_GLM-4-32B-0414",
+      "returncode": 0,
+      "seconds": 488.4,
+      "results_json": "/home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/zai-org_GLM-4-32B-0414/results.json",
+      "log": "/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_zai-org_GLM-4-32B-0414.log"
     },
     {
       "label": "Qwen3-14B-FP8",
