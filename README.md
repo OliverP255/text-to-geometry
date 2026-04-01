@@ -4,20 +4,42 @@
 
 <h3><b>Text → 3D geometry via signed distance functions (SDFs)</b></h3>
 
+<<<<<<< HEAD
 </div>
 
 SketchCAD is an AI agent that turns natural language into executable 3D geometry using WGSL signed distance functions.
 
 It acts as a *sketchpad for engineers* — enabling rapid iteration on complex procedural CAD designs before committing to full B-rep workflows.
+=======
+[![WebGPU](https://img.shields.io/badge/WebGPU-005A9C?style=flat-square&logo=webgpu&logoColor=white)](https://www.w3.org/TR/webgpu/)
+[![WGSL](https://img.shields.io/badge/WGSL-1EAEDB?style=flat-square&labelColor=0d1117)](https://www.w3.org/TR/WGSL/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![vLLM](https://img.shields.io/badge/vLLM-000000?style=flat-square&logoColor=white)](https://github.com/vllm-project/vllm)
+[![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)](https://isocpp.org/)
+
+---
+SketchCAD is an app that turns natural language into **executable 3D geometry**. It's a 'sketchpad for engineers' to build and iterate on specific, potentially complex parts before adding them to their B-Rep workflow.
+
+![Chair demo](chair.gif)
+>>>>>>> refs/remotes/origin/main
 
 ![Demo](chair.gif)
 ---
 
 ## How it works
 
+<<<<<<< HEAD
 *Prompt → Geometry spec*
 The user describes an object.
 An LLM (default: Qwen3-32B-FP8 via vLLM, configurable with T2G_MODEL_ID) generates a single WGSL function:
+=======
+| Step   | What happens   |
+|------|----------------|
+| **1** | User describes an object (dimensions, parts, style). |
+| **2** | LLM (*default:* `Qwen3-32B-FP8` via vLLM, override with `T2G_MODEL_ID`) outputs `fn map(p: vec3f) -> f32` using the project’s **`sd*`** primitives and **`op*`** CSG helpers. |
+| **3** | `server.py` runs WGSL validation, then pushes the scene to the viewer. |
+| **4** | WebGPU client ray-marches the field in real time. |
+>>>>>>> refs/remotes/origin/main
 
 `fn map(p: vec3f) -> f32`
 
