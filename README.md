@@ -14,14 +14,13 @@ Text → 3D geometry via signed distance functions (SDFs)
 
 </p>
 
----
 SketchCAD is a 'sketchpad for engineers' to quickly build and iterate on  parts just by using natural language. 
 It lets you use the speed and flexibility of SDFs to create potentially highly complex or procedural CAD models that can't be produced in regular B-Rep CAD software. 
 
 <p align="center">
 <img src="chair.gif" alt="Demo" width="480">
 </p>
----
+
 
 ## How it works
 
