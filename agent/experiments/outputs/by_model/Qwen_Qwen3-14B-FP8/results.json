@@ -1,0 +1,17 @@
+{
+  "label": "Qwen3-14B-FP8",
+  "model_id": "Qwen/Qwen3-14B-FP8",
+  "finished_utc": "2026-04-01T14:14:26.670985+00:00",
+  "prompt_count": 1,
+  "validation_passed": 1,
+  "agent_returned_code": 1,
+  "per_prompt": [
+    {
+      "n": 1,
+      "prompt": "L-bracket STEPS: 1) Vertical plate sdBox half-extents (0.055, 0.16, 0.14) center (0.075, 0, 0). 2) Horizontal plate sdBox (0.13, 0.055, 0.14) center (0, -0.075, 0). 3) opU. 4) Subtract optional fillet via sdRoundBox if desired. Units: scene meters.",
+      "ok": true,
+      "error": null,
+      "code_len": 326
+    }
+  ]
+}

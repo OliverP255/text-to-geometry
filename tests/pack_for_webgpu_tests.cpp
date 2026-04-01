@@ -17,10 +17,10 @@ TEST(PackForWebGPU, TransformLayout) {
 
   PackedFlatIR packed = packForWebGPU(ir);
 
-  // 2 transforms: identity + translate(1,2,3)
-  EXPECT_EQ(packed.transforms.size(), 2u * 8u);
+  // 2 transforms: identity + translate(1,2,3), 12 floats each
+  EXPECT_EQ(packed.transforms.size(), 2u * 12u);
 
-  // Identity: tx,ty,tz,0, sx,sy,sz,minScale
+  // Identity: tx,ty,tz,0, sx,sy,sz,minScale, qx,qy,qz,qw
   EXPECT_FLOAT_EQ(packed.transforms[0], 0.0f);
   EXPECT_FLOAT_EQ(packed.transforms[1], 0.0f);
   EXPECT_FLOAT_EQ(packed.transforms[2], 0.0f);
@@ -29,16 +29,24 @@ TEST(PackForWebGPU, TransformLayout) {
   EXPECT_FLOAT_EQ(packed.transforms[5], 1.0f);
   EXPECT_FLOAT_EQ(packed.transforms[6], 1.0f);
   EXPECT_FLOAT_EQ(packed.transforms[7], 1.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[8], 0.0f);   // qx
+  EXPECT_FLOAT_EQ(packed.transforms[9], 0.0f);   // qy
+  EXPECT_FLOAT_EQ(packed.transforms[10], 0.0f);  // qz
+  EXPECT_FLOAT_EQ(packed.transforms[11], 1.0f);  // qw
 
-  // Translate(1,2,3): tx=1,ty=2,tz=3, pad, sx=1,sy=1,sz=1, minScale=1
-  EXPECT_FLOAT_EQ(packed.transforms[8], 1.0f);
-  EXPECT_FLOAT_EQ(packed.transforms[9], 2.0f);
-  EXPECT_FLOAT_EQ(packed.transforms[10], 3.0f);
-  EXPECT_FLOAT_EQ(packed.transforms[11], 0.0f);
+  // Translate(1,2,3): tx=1,ty=2,tz=3, pad, sx=1,sy=1,sz=1, minScale=1, identity quat
   EXPECT_FLOAT_EQ(packed.transforms[12], 1.0f);
-  EXPECT_FLOAT_EQ(packed.transforms[13], 1.0f);
-  EXPECT_FLOAT_EQ(packed.transforms[14], 1.0f);
-  EXPECT_FLOAT_EQ(packed.transforms[15], 1.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[13], 2.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[14], 3.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[15], 0.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[16], 1.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[17], 1.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[18], 1.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[19], 1.0f);
+  EXPECT_FLOAT_EQ(packed.transforms[20], 0.0f);  // qx
+  EXPECT_FLOAT_EQ(packed.transforms[21], 0.0f);  // qy
+  EXPECT_FLOAT_EQ(packed.transforms[22], 0.0f);  // qz
+  EXPECT_FLOAT_EQ(packed.transforms[23], 1.0f);  // qw
 }
 
 TEST(PackForWebGPU, MinScaleComputed) {
@@ -53,7 +61,7 @@ TEST(PackForWebGPU, MinScaleComputed) {
   PackedFlatIR packed = packForWebGPU(ir);
 
   // Second transform has scale (2,3,4), minScale = 2
-  size_t idx = 8;  // second transform
+  size_t idx = 12;  // second transform (12 floats per)
   EXPECT_FLOAT_EQ(packed.transforms[idx + 4], 2.0f);
   EXPECT_FLOAT_EQ(packed.transforms[idx + 5], 3.0f);
   EXPECT_FLOAT_EQ(packed.transforms[idx + 6], 4.0f);
@@ -92,18 +100,18 @@ TEST(PackForWebGPU, BoxLayout) {
   EXPECT_FLOAT_EQ(packed.boxes[3], 0.0f);
 }
 
-TEST(PackForWebGPU, PlaneLayout) {
+TEST(PackForWebGPU, CylinderLayout) {
   Builder b;
-  ShapeH root = b.plane({0, 1, 0}, 0.5f);
+  ShapeH root = b.cylinder(0.5f, 1.0f);
   FrozenDAG dag = {};
   b.freeze(root, dag);
   FlatIR ir = lower(dag);
 
   PackedFlatIR packed = packForWebGPU(ir);
 
-  EXPECT_EQ(packed.planes.size(), 4u);
-  EXPECT_FLOAT_EQ(packed.planes[0], 0.0f);
-  EXPECT_FLOAT_EQ(packed.planes[1], 1.0f);
-  EXPECT_FLOAT_EQ(packed.planes[2], 0.0f);
-  EXPECT_FLOAT_EQ(packed.planes[3], 0.5f);
+  EXPECT_EQ(packed.cylinders.size(), 4u);
+  EXPECT_FLOAT_EQ(packed.cylinders[0], 0.5f);
+  EXPECT_FLOAT_EQ(packed.cylinders[1], 1.0f);
+  EXPECT_FLOAT_EQ(packed.cylinders[2], 0.0f);
+  EXPECT_FLOAT_EQ(packed.cylinders[3], 0.0f);
 }

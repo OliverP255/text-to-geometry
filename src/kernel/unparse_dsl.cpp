@@ -11,10 +11,16 @@ namespace {
 
 constexpr float kEps = 1e-6f;
 
-bool isIdentityTransform(float tx, float ty, float tz, float sx, float sy, float sz) {
+bool isRotationIdentity(float qx, float qy, float qz, float qw) {
+  return std::abs(qx) < kEps && std::abs(qy) < kEps && std::abs(qz) < kEps &&
+         std::abs(qw - 1.0f) < kEps;
+}
+
+bool isIdentityTransform(float tx, float ty, float tz, float sx, float sy, float sz,
+                         float qx, float qy, float qz, float qw) {
   return std::abs(tx) < kEps && std::abs(ty) < kEps && std::abs(tz) < kEps &&
          std::abs(sx - 1.0f) < kEps && std::abs(sy - 1.0f) < kEps &&
-         std::abs(sz - 1.0f) < kEps;
+         std::abs(sz - 1.0f) < kEps && isRotationIdentity(qx, qy, qz, qw);
 }
 
 bool isScaleOne(float sx, float sy, float sz) {
@@ -49,32 +55,41 @@ std::string unparseDSL(const FlatIR& ir) {
     const FlatTransform& t = ir.transforms[ti];
     float tx = t.tx, ty = t.ty, tz = t.tz;
     float sx = t.sx, sy = t.sy, sz = t.sz;
+    float qx = t.qx, qy = t.qy, qz = t.qz, qw = t.qw;
 
-    if (isIdentityTransform(tx, ty, tz, sx, sy, sz)) {
+    if (isIdentityTransform(tx, ty, tz, sx, sy, sz, qx, qy, qz, qw)) {
       transformWrap[ti] = "";
       continue;
     }
 
-    std::string inner = "%s";  // placeholder for shape
-    if (isScaleOne(sx, sy, sz)) {
+    bool hasTranslate = !isTranslateZero(tx, ty, tz);
+    bool hasScale = !isScaleOne(sx, sy, sz);
+    bool hasRotate = !isRotationIdentity(qx, qy, qz, qw);
+
+    // Build nested apply chain: apply(rotate, apply(scale, apply(translate, %s)))
+    std::string wrap = "%s";
+
+    if (hasTranslate) {
       out << "t" << tVarCount << "=translate(x=" << formatFloat(tx) << ",y="
           << formatFloat(ty) << ",z=" << formatFloat(tz) << ")\n";
-      transformWrap[ti] = "apply(t" + std::to_string(tVarCount) + ", %s)";
+      wrap = "apply(t" + std::to_string(tVarCount) + ", " + wrap + ")";
       ++tVarCount;
-    } else if (isTranslateZero(tx, ty, tz)) {
+    }
+    if (hasScale) {
       out << "t" << tVarCount << "=scale(x=" << formatFloat(sx) << ",y="
           << formatFloat(sy) << ",z=" << formatFloat(sz) << ")\n";
-      transformWrap[ti] = "apply(t" + std::to_string(tVarCount) + ", %s)";
+      wrap = "apply(t" + std::to_string(tVarCount) + ", " + wrap + ")";
       ++tVarCount;
-    } else {
-      out << "t" << tVarCount << "=translate(x=" << formatFloat(tx) << ",y="
-          << formatFloat(ty) << ",z=" << formatFloat(tz) << ")\n";
-      out << "t" << (tVarCount + 1) << "=scale(x=" << formatFloat(sx) << ",y="
-          << formatFloat(sy) << ",z=" << formatFloat(sz) << ")\n";
-      transformWrap[ti] = "apply(t" + std::to_string(tVarCount + 1) +
-                          ", apply(t" + std::to_string(tVarCount) + ", %s))";
-      tVarCount += 2;
     }
+    if (hasRotate) {
+      out << "t" << tVarCount << "=rotate(x=" << formatFloat(qx) << ",y="
+          << formatFloat(qy) << ",z=" << formatFloat(qz) << ",w="
+          << formatFloat(qw) << ")\n";
+      wrap = "apply(t" + std::to_string(tVarCount) + ", " + wrap + ")";
+      ++tVarCount;
+    }
+
+    transformWrap[ti] = wrap;
   }
 
   // resultTemp[i] = DSL temp index for result of instr i.
@@ -86,7 +101,7 @@ std::string unparseDSL(const FlatIR& ir) {
     bool hasTransform =
         (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
          instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
-         instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) &&
+         instr.op == static_cast<uint32_t>(FlatOp::EvalCylinder)) &&
         instr.arg0 < transformWrap.size() && !transformWrap[instr.arg0].empty();
     if (hasTransform) {
       ++nextTemp;  // primitive temp
@@ -121,14 +136,12 @@ std::string unparseDSL(const FlatIR& ir) {
         }
         break;
       }
-      case FlatOp::EvalPlane: {
-        if (instr.constIdx < ir.planes.size()) {
-          prim = "plane(nx=" + formatFloat(ir.planes[instr.constIdx].nx) +
-                 ",ny=" + formatFloat(ir.planes[instr.constIdx].ny) + ",nz=" +
-                 formatFloat(ir.planes[instr.constIdx].nz) + ",d=" +
-                 formatFloat(ir.planes[instr.constIdx].d) + ")";
+      case FlatOp::EvalCylinder: {
+        if (instr.constIdx < ir.cylinders.size()) {
+          prim = "cylinder(r=" + formatFloat(ir.cylinders[instr.constIdx].r) +
+                 ",h=" + formatFloat(ir.cylinders[instr.constIdx].h) + ")";
         } else {
-          prim = "plane(nx=0,ny=1,nz=0,d=0)";
+          prim = "cylinder(r=1,h=1)";
         }
         break;
       }
@@ -155,13 +168,24 @@ std::string unparseDSL(const FlatIR& ir) {
         }
         break;
       }
+      case FlatOp::CsgSmoothUnion: {
+        if (instr.arg0 < resultTemp.size() && instr.arg1 < resultTemp.size()) {
+          std::string kStr = "0.1";
+          if (instr.constIdx < ir.smoothKs.size())
+            kStr = formatFloat(ir.smoothKs[instr.constIdx]);
+          shapeExprs[i] =
+              "smooth_union(s" + std::to_string(resultTemp[instr.arg0]) + ",s" +
+              std::to_string(resultTemp[instr.arg1]) + ",k=" + kStr + ")";
+        }
+        break;
+      }
       default:
         break;
     }
 
     if (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
         instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
-        instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) {
+        instr.op == static_cast<uint32_t>(FlatOp::EvalCylinder)) {
       primitiveExprs[i] = prim;
     }
   }
@@ -172,12 +196,12 @@ std::string unparseDSL(const FlatIR& ir) {
     bool hasTransform =
         (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
          instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
-         instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) &&
+         instr.op == static_cast<uint32_t>(FlatOp::EvalCylinder)) &&
         instr.arg0 < transformWrap.size() && !transformWrap[instr.arg0].empty();
 
     if (instr.op == static_cast<uint32_t>(FlatOp::EvalSphere) ||
         instr.op == static_cast<uint32_t>(FlatOp::EvalBox) ||
-        instr.op == static_cast<uint32_t>(FlatOp::EvalPlane)) {
+        instr.op == static_cast<uint32_t>(FlatOp::EvalCylinder)) {
       if (hasTransform) {
         size_t primTemp = resultTemp[i] - 1;
         size_t resultIdx = resultTemp[i];

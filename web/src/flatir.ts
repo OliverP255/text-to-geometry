@@ -1,24 +1,23 @@
 import { io } from 'socket.io-client';
-import type { PackedFlatIR } from './types';
+import type { SceneData } from './types';
+import { sceneServerBaseUrl } from './sceneServer';
 
-/** Connect to WebSocket and subscribe to scene updates. On connect, server emits "scene" with packed data. */
-export function connectAndSubscribe(callback: (packed: PackedFlatIR) => void): void {
-  const url = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5001';
-  const socket = io(url, { path: '/socket.io', transports: ['websocket'] });
-  socket.on('connect', () => {
-    if (typeof window !== 'undefined' && 'console' in window) {
-      console.log('[flatir] socket connected');
-    }
+export function connectAndSubscribe(
+  onScene: (data: SceneData) => void,
+  onConnect?: () => void,
+  onError?: (err: Error) => void,
+): void {
+  const socket = io(sceneServerBaseUrl(), {
+    path: '/socket.io',
+    transports: ['websocket', 'polling'],
   });
-  socket.on('scene', (packed: PackedFlatIR) => {
-    if (typeof window !== 'undefined' && 'console' in window) {
-      console.log('[flatir] scene received', packed?.instrs?.length ?? 0, 'instrs');
-    }
-    callback(packed);
+  socket.on('connect', () => {
+    onConnect?.();
+  });
+  socket.on('scene', (data: SceneData) => {
+    onScene(data);
   });
   socket.on('connect_error', (err: Error) => {
-    if (typeof window !== 'undefined' && 'console' in window) {
-      console.error('[flatir] socket connect_error', err);
-    }
+    onError?.(err);
   });
 }

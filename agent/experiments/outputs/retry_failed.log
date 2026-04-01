@@ -1,0 +1,313 @@
+Retry indices: [9, 16, 18, 19, 23, 29, 30, 31, 33, 35, 39, 41, 43, 44, 45, 46]
+Loading LLM…
+INFO 03-31 21:07:30 [utils.py:233] non-default args: {'trust_remote_code': True, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.95, 'disable_log_stats': True, 'enable_chunked_prefill': True, 'async_scheduling': False, 'model': 'Qwen/Qwen3-32B-FP8'}
+INFO 03-31 21:07:31 [model.py:533] Resolved architecture: Qwen3ForCausalLM
+INFO 03-31 21:07:31 [model.py:1582] Using max model len 8192
+INFO 03-31 21:07:32 [scheduler.py:231] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 03-31 21:07:32 [vllm.py:754] Asynchronous scheduling is disabled.
+INFO 03-31 21:07:32 [compilation.py:289] Enabled custom fusions: norm_quant, act_quant
+(EngineCore pid=430524) INFO 03-31 21:07:33 [core.py:103] Initializing a V1 LLM engine (v0.18.0) with config: model='Qwen/Qwen3-32B-FP8', speculative_config=None, tokenizer='Qwen/Qwen3-32B-FP8', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=fp8, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=Qwen/Qwen3-32B-FP8, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['+quant_fp8', 'none', '+quant_fp8'], 'splitting_ops': ['vllm::unified_attention', 'vllm::unified_attention_with_output', 'vllm::unified_mla_attention', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'compile_sizes': [], 'compile_ranges_endpoints': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': True, 'static_all_moe_layers': []}
+(EngineCore pid=430524) INFO 03-31 21:07:33 [parallel_state.py:1395] world_size=1 rank=0 local_rank=0 distributed_init_method=tcp://10.132.0.19:39417 backend=nccl
+(EngineCore pid=430524) INFO 03-31 21:07:33 [parallel_state.py:1717] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=430524) INFO 03-31 21:07:34 [gpu_model_runner.py:4481] Starting to load model Qwen/Qwen3-32B-FP8...
+(EngineCore pid=430524) INFO 03-31 21:07:34 [cuda.py:317] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=430524) INFO 03-31 21:07:34 [flash_attn.py:598] Using FlashAttention version 2
+(EngineCore pid=430524) <frozen importlib._bootstrap_external>:1297: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+(EngineCore pid=430524) <frozen importlib._bootstrap_external>:1297: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+(EngineCore pid=430524) Loading safetensors checkpoint shards:   0% Completed | 0/7 [00:00<?, ?it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards:  14% Completed | 1/7 [00:00<00:01,  5.29it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards:  29% Completed | 2/7 [00:00<00:00,  5.28it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards:  43% Completed | 3/7 [00:00<00:00,  5.32it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards:  57% Completed | 4/7 [00:00<00:00,  5.33it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards:  71% Completed | 5/7 [00:00<00:00,  5.33it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards:  86% Completed | 6/7 [00:01<00:00,  5.35it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards: 100% Completed | 7/7 [00:01<00:00,  5.37it/s]
+(EngineCore pid=430524) Loading safetensors checkpoint shards: 100% Completed | 7/7 [00:01<00:00,  5.34it/s]
+(EngineCore pid=430524) 
+(EngineCore pid=430524) INFO 03-31 21:07:36 [default_loader.py:384] Loading weights took 1.31 seconds
+(EngineCore pid=430524) INFO 03-31 21:07:37 [gpu_model_runner.py:4566] Model loading took 32.04 GiB memory and 2.464169 seconds
+(EngineCore pid=430524) INFO 03-31 21:07:41 [backends.py:988] Using cache directory: /home/oliverpryce/.cache/vllm/torch_compile_cache/712f445fc7/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=430524) INFO 03-31 21:07:41 [backends.py:1048] Dynamo bytecode transform time: 4.19 s
+(EngineCore pid=430524) INFO 03-31 21:07:48 [backends.py:284] Directly load the compiled graph(s) for compile range (1, 16384) from the cache, took 6.176 s
+(EngineCore pid=430524) INFO 03-31 21:07:48 [monitor.py:48] torch.compile took 11.44 s in total
+(EngineCore pid=430524) INFO 03-31 21:07:48 [decorators.py:296] Directly load AOT compilation from path /home/oliverpryce/.cache/vllm/torch_compile_cache/torch_aot_compile/74337e985ea35c857d8d6a59e01e353aa735468c29db5aba26bdd3744dfa4026/rank_0_0/model
+(EngineCore pid=430524) INFO 03-31 21:07:49 [monitor.py:76] Initial profiling/warmup run took 0.02 s
+(EngineCore pid=430524) INFO 03-31 21:07:51 [kv_cache_utils.py:826] Overriding num_gpu_blocks=0 with num_gpu_blocks_override=512
+(EngineCore pid=430524) INFO 03-31 21:07:51 [gpu_model_runner.py:5607] Profiling CUDA graph memory: PIECEWISE=51 (largest=512), FULL=51 (largest=512)
+(EngineCore pid=430524) INFO 03-31 21:07:52 [gpu_model_runner.py:5686] Estimated CUDA graph memory: 0.86 GiB total
+(EngineCore pid=430524) INFO 03-31 21:07:53 [gpu_worker.py:456] Available KV cache memory: 54.65 GiB
+(EngineCore pid=430524) INFO 03-31 21:07:53 [gpu_worker.py:490] In v0.19, CUDA graph memory profiling will be enabled by default (VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1), which more accurately accounts for CUDA graph memory during KV cache allocation. To try it now, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1 and increase --gpu-memory-utilization from 0.9500 to 0.9591 to maintain the same effective KV cache size.
+(EngineCore pid=430524) INFO 03-31 21:07:53 [kv_cache_utils.py:1316] GPU KV cache size: 223,840 tokens
+(EngineCore pid=430524) INFO 03-31 21:07:53 [kv_cache_utils.py:1321] Maximum concurrency for 8,192 tokens per request: 27.32x
+(EngineCore pid=430524) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|▍         | 2/51 [00:00<00:03, 13.27it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   8%|▊         | 4/51 [00:00<00:03, 13.43it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:00<00:03, 13.49it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 8/51 [00:00<00:03, 13.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:00<00:02, 13.85it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:00<00:02, 14.05it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██▋       | 14/51 [00:01<00:02, 14.17it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|███▏      | 16/51 [00:01<00:02, 14.23it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:01<00:02, 14.72it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|███▉      | 20/51 [00:01<00:02, 15.09it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:01<00:01, 15.33it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 24/51 [00:01<00:01, 15.51it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  51%|█████     | 26/51 [00:01<00:01, 15.69it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  55%|█████▍    | 28/51 [00:01<00:01, 15.74it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:02<00:01, 15.83it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|██████▎   | 32/51 [00:02<00:01, 15.90it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:02<00:01, 16.10it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  71%|███████   | 36/51 [00:02<00:00, 16.18it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|███████▍  | 38/51 [00:02<00:00, 16.24it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 40/51 [00:02<00:00, 16.30it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|████████▏ | 42/51 [00:02<00:00, 16.34it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  86%|████████▋ | 44/51 [00:02<00:00, 16.40it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|█████████ | 46/51 [00:03<00:00, 16.36it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|█████████▍| 48/51 [00:03<00:00, 16.06it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  98%|█████████▊| 50/51 [00:03<00:00, 15.86it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:03<00:00, 15.33it/s]
+(EngineCore pid=430524) Capturing CUDA graphs (decode, FULL):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   4%|▍         | 2/51 [00:00<00:03, 12.69it/s]Capturing CUDA graphs (decode, FULL):   8%|▊         | 4/51 [00:00<00:03, 12.89it/s]Capturing CUDA graphs (decode, FULL):  12%|█▏        | 6/51 [00:00<00:03, 13.03it/s]Capturing CUDA graphs (decode, FULL):  16%|█▌        | 8/51 [00:00<00:03, 13.12it/s]Capturing CUDA graphs (decode, FULL):  20%|█▉        | 10/51 [00:00<00:03, 13.62it/s]Capturing CUDA graphs (decode, FULL):  24%|██▎       | 12/51 [00:00<00:02, 13.95it/s]Capturing CUDA graphs (decode, FULL):  27%|██▋       | 14/51 [00:01<00:02, 14.22it/s]Capturing CUDA graphs (decode, FULL):  31%|███▏      | 16/51 [00:01<00:02, 14.51it/s]Capturing CUDA graphs (decode, FULL):  35%|███▌      | 18/51 [00:01<00:02, 15.12it/s]Capturing CUDA graphs (decode, FULL):  39%|███▉      | 20/51 [00:01<00:01, 15.61it/s]Capturing CUDA graphs (decode, FULL):  43%|████▎     | 22/51 [00:01<00:01, 16.03it/s]Capturing CUDA graphs (decode, FULL):  47%|████▋     | 24/51 [00:01<00:01, 16.35it/s]Capturing CUDA graphs (decode, FULL):  51%|█████     | 26/51 [00:01<00:01, 16.64it/s]Capturing CUDA graphs (decode, FULL):  55%|█████▍    | 28/51 [00:01<00:01, 16.84it/s]Capturing CUDA graphs (decode, FULL):  59%|█████▉    | 30/51 [00:01<00:01, 17.09it/s]Capturing CUDA graphs (decode, FULL):  63%|██████▎   | 32/51 [00:02<00:01, 17.34it/s]Capturing CUDA graphs (decode, FULL):  67%|██████▋   | 34/51 [00:02<00:00, 17.64it/s]Capturing CUDA graphs (decode, FULL):  71%|███████   | 36/51 [00:02<00:00, 17.92it/s]Capturing CUDA graphs (decode, FULL):  75%|███████▍  | 38/51 [00:02<00:00, 18.14it/s]Capturing CUDA graphs (decode, FULL):  78%|███████▊  | 40/51 [00:02<00:00, 18.34it/s]Capturing CUDA graphs (decode, FULL):  82%|████████▏ | 42/51 [00:02<00:00, 18.53it/s]Capturing CUDA graphs (decode, FULL):  86%|████████▋ | 44/51 [00:02<00:00, 18.64it/s]Capturing CUDA graphs (decode, FULL):  90%|█████████ | 46/51 [00:02<00:00, 18.67it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████▍| 48/51 [00:02<00:00, 18.56it/s]Capturing CUDA graphs (decode, FULL):  98%|█████████▊| 50/51 [00:03<00:00, 18.27it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 51/51 [00:03<00:00, 16.41it/s]
+(EngineCore pid=430524) INFO 03-31 21:08:00 [gpu_model_runner.py:5746] Graph capturing finished in 7 secs, took 0.81 GiB
+(EngineCore pid=430524) INFO 03-31 21:08:00 [gpu_worker.py:617] CUDA graph pool memory: 0.81 GiB (actual), 0.86 GiB (estimated), difference: 0.06 GiB (7.0%).
+(EngineCore pid=430524) INFO 03-31 21:08:00 [core.py:281] init engine (profile, create kv cache, warmup model) took 23.10 seconds
+INFO 03-31 21:08:01 [llm.py:391] Supported tasks: ['generate']
+Loaded.
+
+
+[9/50] Triangular prism: A long solid shape with an equilateral triangle base…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]INFO 03-31 21:08:03 [hf.py:320] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+Rendering conversations: 100%|██████████| 1/1 [00:01<00:00,  1.91s/it]Rendering conversations: 100%|██████████| 1/1 [00:01<00:00,  1.91s/it]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.45s/it, est. speed input: 318.51 toks/s, output: 23.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.45s/it, est. speed input: 318.51 toks/s, output: 23.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.45s/it, est. speed input: 318.51 toks/s, output: 23.62 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let h = 0.5;
+  let r = 0.4;
+  let q = vec3f(p.x, p.z, p.y);
+  let t = abs(q.x) - (r * sqrt(3.0) / 2.0);
+  let d = max(abs(q.z) - (r / 2.0), t);
+  return max(d, abs(q.y) - h);
+}
+--------------------------------
+  -> wrote 09_Triangular_prism.wgsl (204 chars)
+
+[16/50] Countersunk hole plate: A flat square plate with a hole that has a con…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 442.16it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.19s/it, est. speed input: 198.13 toks/s, output: 24.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.19s/it, est. speed input: 198.13 toks/s, output: 24.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.19s/it, est. speed input: 198.13 toks/s, output: 24.77 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 404.93it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.49s/it, est. speed input: 284.11 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.49s/it, est. speed input: 284.11 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.49s/it, est. speed input: 284.11 toks/s, output: 24.66 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 414.62it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.95s/it, est. speed input: 279.83 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.95s/it, est. speed input: 279.83 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.95s/it, est. speed input: 279.83 toks/s, output: 24.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 341.08it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.06s/it, est. speed input: 333.03 toks/s, output: 24.58 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.06s/it, est. speed input: 333.03 toks/s, output: 24.58 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.06s/it, est. speed input: 333.03 toks/s, output: 24.58 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 302.68it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.08s/it, est. speed input: 388.97 toks/s, output: 24.50 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.08s/it, est. speed input: 388.97 toks/s, output: 24.50 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.08s/it, est. speed input: 388.97 toks/s, output: 24.50 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 280.54it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.17s/it, est. speed input: 441.01 toks/s, output: 24.47 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.17s/it, est. speed input: 441.01 toks/s, output: 24.47 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.17s/it, est. speed input: 441.01 toks/s, output: 24.47 toks/s]
+  -> still failed
+
+[18/50] Keyhole slot: A rectangular plate with a hole made of a circle combine…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 547.13it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:05<00:00,  5.16s/it, est. speed input: 275.27 toks/s, output: 24.80 toks/s]Processed prompts: 100%|██████████| 1/1 [00:05<00:00,  5.16s/it, est. speed input: 275.27 toks/s, output: 24.80 toks/s]Processed prompts: 100%|██████████| 1/1 [00:05<00:00,  5.16s/it, est. speed input: 275.27 toks/s, output: 24.80 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let plate = sdBox(p, vec3f(0.5, 0.02, 0.1));
+  let circle = sdSphere(p, 0.06);
+  let rect = sdBox(p - vec3f(0.0, -0.08, 0.0), vec3f(0.06, 0.04, 0.06));
+  let hole = opU(circle, rect);
+  return opS(plate, hole);
+}
+--------------------------------
+  -> wrote 18_Keyhole_slot.wgsl (240 chars)
+
+[19/50] V-groove block: A rectangular block with a triangular trench cut along…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 440.81it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.61s/it, est. speed input: 214.69 toks/s, output: 24.80 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.61s/it, est. speed input: 214.69 toks/s, output: 24.80 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.61s/it, est. speed input: 214.69 toks/s, output: 24.80 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let block = sdBox(p, vec3f(0.4, 0.2, 0.2));
+  let trench = sdCone(p - vec3f(0.0, 0.19, 0.0), vec2f(0.0, 0.3), 0.01);
+  let q = opRotateY(p - vec3f(0.0, 0.19, 0.0), 1.5708);
+  trench = sdCone(q, vec2f(0.2, 0.3), 0.01);
+  return opS(block, trench);
+}
+--------------------------------
+  -> wrote 19_V-groove_block.wgsl (276 chars)
+
+[23/50] Wedge: A triangular block, like a doorstop, formed by slicing a box.…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 469.84it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.08s/it, est. speed input: 348.16 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.08s/it, est. speed input: 348.16 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.08s/it, est. speed input: 348.16 toks/s, output: 24.78 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let wedge = sdBox(p, vec3f(0.3, 0.15, 0.1));
+  let cut = sdBox(p - vec3f(0.3, 0.0, 0.0), vec3f(0.0, 0.15, 0.1));
+  return opI(wedge, cut);
+}
+--------------------------------
+  -> wrote 23_Wedge.wgsl (168 chars)
+
+[29/50] Domed cylinder: A short cylinder with a smoothly rounded hemispherical…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 461.17it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.62s/it, est. speed input: 540.31 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.62s/it, est. speed input: 540.31 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.62s/it, est. speed input: 540.31 toks/s, output: 24.78 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let cylinder = sdCylinder(p, 0.15, 0.3);
+  let sphere = sdSphere(p.yz, 0.15);
+  return opU(cylinder, sphere);
+}
+--------------------------------
+  -> wrote 29_Domed_cylinder.wgsl (139 chars)
+
+[30/50] Tapered nozzle: A hollow cone attached to a hollow cylinder of the sam…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 461.01it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.64s/it, est. speed input: 164.51 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.64s/it, est. speed input: 164.51 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.64s/it, est. speed input: 164.51 toks/s, output: 24.78 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let outerCone = sdCone(p, vec2f(0.6, 0.8), 0.4);
+  let innerCone = sdCone(p, vec2f(0.55, 0.75), 0.35);
+  let cone = opS(outerCone, innerCone);
+
+  let outerCylinder = sdCylinder(p - vec3f(0.0, 0.35 + 0.01, 0.0), 0.3, 0.35);
+  let innerCylinder = sdCylinder(p - vec3f(0.0, 0.35 + 0.01, 0.0), 0.25, 0.3);
+  let cylinder = opS(outerCylinder, innerCylinder);
+
+  return opU(cone, cylinder);
+}
+--------------------------------
+  -> wrote 30_Tapered_nozzle.wgsl (414 chars)
+
+[31/50] Star profile: A central cylinder with five pointed triangular wedges a…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 460.10it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.60s/it, est. speed input: 308.28 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.60s/it, est. speed input: 308.28 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.60s/it, est. speed input: 308.28 toks/s, output: 24.78 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 432.18it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:09<00:00,  9.22s/it, est. speed input: 185.68 toks/s, output: 24.73 toks/s]Processed prompts: 100%|██████████| 1/1 [00:09<00:00,  9.22s/it, est. speed input: 185.68 toks/s, output: 24.73 toks/s]Processed prompts: 100%|██████████| 1/1 [00:09<00:00,  9.22s/it, est. speed input: 185.68 toks/s, output: 24.73 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 372.93it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:15<00:00, 15.69s/it, est. speed input: 142.18 toks/s, output: 24.60 toks/s]Processed prompts: 100%|██████████| 1/1 [00:15<00:00, 15.69s/it, est. speed input: 142.18 toks/s, output: 24.60 toks/s]Processed prompts: 100%|██████████| 1/1 [00:15<00:00, 15.69s/it, est. speed input: 142.18 toks/s, output: 24.60 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let center = sdCylinder(p, 0.05, 0.4);
+
+  let arm1 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 0.0), vec3f(0.01, 0.2, 0.05));
+  let arm2 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 2.51327412), vec3f(0.01, 0.2, 0.05));
+  let arm3 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 5.02654824), vec3f(0.01, 0.2, 0.05));
+  let arm4 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 7.53982237), vec3f(0.01, 0.2, 0.05));
+  let arm5 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 10.05309649), vec3f(0.01, 0.2, 0.05));
+
+  let arms = opU(opU(opU(opU(arm1, arm2), arm3), arm4), arm5);
+  
+  return opU(center, arms);
+}
+--------------------------------
+  -> wrote 31_Star_profile.wgsl (628 chars)
+
+[33/50] L-shaped bracket: Two flat rectangular plates meeting at a 90-degree a…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 468.69it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:05<00:00,  5.37s/it, est. speed input: 265.23 toks/s, output: 24.79 toks/s]Processed prompts: 100%|██████████| 1/1 [00:05<00:00,  5.37s/it, est. speed input: 265.23 toks/s, output: 24.79 toks/s]Processed prompts: 100%|██████████| 1/1 [00:05<00:00,  5.37s/it, est. speed input: 265.23 toks/s, output: 24.79 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let vert = sdRoundBox(p - vec3f(0.0, 0.4, 0.0), vec3f(0.1, 0.2, 0.1), 0.02);
+  let horiz = sdRoundBox(p - vec3f(0.3, 0.0, 0.0), vec3f(0.3, 0.1, 0.1), 0.02);
+  return opU(vert, horiz);
+}
+--------------------------------
+  -> wrote 33_L-shaped_bracket.wgsl (213 chars)
+
+[35/50] Gusset plate: A triangular plate with three circular holes cut near th…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 476.25it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.19s/it, est. speed input: 338.05 toks/s, output: 24.79 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.19s/it, est. speed input: 338.05 toks/s, output: 24.79 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.19s/it, est. speed input: 338.05 toks/s, output: 24.79 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 447.58it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.24s/it, est. speed input: 233.74 toks/s, output: 24.73 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.24s/it, est. speed input: 233.74 toks/s, output: 24.73 toks/s]Processed prompts: 100%|██████████| 1/1 [00:07<00:00,  7.24s/it, est. speed input: 233.74 toks/s, output: 24.73 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let plate = sdBox(p, vec3f(0.3, 0.2, 0.02));
+  let hole1 = sdSphere(p - vec3f(-0.25, 0.15, 0.0), 0.03);
+  let hole2 = sdSphere(p - vec3f(0.15, -0.15, 0.0), 0.03);
+  let hole3 = sdSphere(p - vec3f(0.25, 0.15, 0.0), 0.03);
+  let holes = opU(opU(hole1, hole2), hole3);
+  return opS(plate, holes);
+}
+--------------------------------
+  -> wrote 35_Gusset_plate.wgsl (323 chars)
+
+[39/50] Threaded rod blank: A long thin cylinder with a small chamfer on one e…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 460.31it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.19s/it, est. speed input: 338.52 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.19s/it, est. speed input: 338.52 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.19s/it, est. speed input: 338.52 toks/s, output: 24.81 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let rod = sdCylinder(p, 0.5, 1.0);
+  let chamfer = sdRoundBox(p - vec3f(0.0, -1.0, 0.0), vec3f(0.05, 0.05, 0.05), 0.05);
+  return opU(rod, chamfer);
+}
+--------------------------------
+  -> wrote 39_Threaded_rod_blank.wgsl (178 chars)
+
+[41/50] Cam lobe: A teardrop-shaped extruded profile used for a camshaft.…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 455.26it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:03<00:00,  3.55s/it, est. speed input: 400.06 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:03<00:00,  3.55s/it, est. speed input: 400.06 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:03<00:00,  3.55s/it, est. speed input: 400.06 toks/s, output: 24.81 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let q = opRotateZ(p, 1.5708); // orient along X
+  let profile = sdRoundBox(p.xy, vec3f(0.2, 0.05, 0.0), 0.03); // teardrop cross-section
+  return profile;
+}
+--------------------------------
+  -> wrote 41_Cam_lobe.wgsl (184 chars)
+
+[43/50] Hex wrench: A long thin hexagonal rod bent at a 90-degree angle.…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 468.58it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.57s/it, est. speed input: 215.98 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.57s/it, est. speed input: 215.98 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.57s/it, est. speed input: 215.98 toks/s, output: 24.81 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 420.19it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.75s/it, est. speed input: 381.42 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.75s/it, est. speed input: 381.42 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.75s/it, est. speed input: 381.42 toks/s, output: 24.64 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let hex1 = sdHexPrism(p, vec2f(0.08, 0.4));
+  let q = opRotateZ(p - vec3f(0.0, 0.45, 0.0), 1.5708);
+  let hex2 = sdHexPrism(q, vec2f(0.08, 0.15));
+  return opU(hex1, hex2);
+}
+--------------------------------
+  -> wrote 43_Hex_wrench.wgsl (202 chars)
+
+[44/50] Chain link side: A flat plate shaped like an oval or capsule with two …
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 446.01it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.73s/it, est. speed input: 210.76 toks/s, output: 24.80 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.73s/it, est. speed input: 210.76 toks/s, output: 24.80 toks/s]Processed prompts: 100%|██████████| 1/1 [00:06<00:00,  6.73s/it, est. speed input: 210.76 toks/s, output: 24.80 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 415.07it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:09<00:00,  9.64s/it, est. speed input: 188.78 toks/s, output: 24.70 toks/s]Processed prompts: 100%|██████████| 1/1 [00:09<00:00,  9.64s/it, est. speed input: 188.78 toks/s, output: 24.70 toks/s]Processed prompts: 100%|██████████| 1/1 [00:09<00:00,  9.64s/it, est. speed input: 188.78 toks/s, output: 24.70 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let plate = sdCapsule(p, vec3f(0.0, 0.0, 0.0), vec3f(0.0, 0.05, 0.0), 0.05);
+  let hole1 = sdCapsule(p - vec3f(0.0, 0.0, 0.04), vec3f(0.0, 0.0, 0.0), vec3f(0.0, 0.0, 0.0), 0.015);
+  let hole2 = sdCapsule(p - vec3f(0.0, 0.0, -0.04), vec3f(0.0, 0.0, 0.0), vec3f(0.0, 0.0, 0.0), 0.015);
+  let holes = opU(hole1, hole2);
+  return opS(plate, holes);
+}
+--------------------------------
+  -> wrote 44_Chain_link_side.wgsl (374 chars)
+
+[45/50] Rivet head: A very short cylinder acting as a shank with a large smoot…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 461.17it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:03<00:00,  3.31s/it, est. speed input: 430.19 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:03<00:00,  3.31s/it, est. speed input: 430.19 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:03<00:00,  3.31s/it, est. speed input: 430.19 toks/s, output: 24.81 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let shank = sdCylinder(p, 0.1, 0.05);
+  let dome = sdSphere(p - vec3f(0.0, 0.05, 0.0), 0.1);
+  return opU(shank, dome);
+}
+--------------------------------
+  -> wrote 45_Rivet_head.wgsl (149 chars)
+
+[46/50] Signet ring: A torus that thickens significantly on one side to form a…
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 449.55it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.43s/it, est. speed input: 320.74 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.43s/it, est. speed input: 320.74 toks/s, output: 24.81 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.43s/it, est. speed input: 320.74 toks/s, output: 24.81 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let torus = sdTorus(p, vec2f(0.3, 0.08));
+  let thickened = sdRoundBox(p - vec3f(0.0, 0.0, 0.12), vec3f(0.08, 0.08, 0.12), 0.01);
+  return opU(torus, thickened);
+}
+--------------------------------
+  -> wrote 46_Signet_ring.wgsl (191 chars)
+
+Retry summary: 15/16 succeeded
+(EngineCore pid=430524) INFO 03-31 21:10:50 [core.py:1201] Shutdown initiated (timeout=0)
+(EngineCore pid=430524) INFO 03-31 21:10:50 [core.py:1224] Shutdown complete
+ERROR 03-31 21:10:50 [core_client.py:704] Engine core proc EngineCore died unexpectedly, shutting down client.

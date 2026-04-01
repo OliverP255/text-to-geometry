@@ -1,6 +1,0 @@
-s0 = sphere(r=1.0)
-s1 = box(x=0.5, y=0.5, z=0.5)
-t0 = translate(x=-1, y=0, z=0)
-s2 = apply(t0, s1)
-s3 = union(s0, s2)
-return s3

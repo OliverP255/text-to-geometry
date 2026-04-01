@@ -1,0 +1,402 @@
+[
+  {
+    "i": 1,
+    "prompt": "Simple sphere: A perfectly round sphere with a radius of 1.0.",
+    "safe": "Simple_sphere",
+    "code": "fn map(p: vec3f) -> f32 {\n  let d = sdSphere(p, 1.0);\n  return d;\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 2,
+    "prompt": "Simple box: A basic cube with dimensions 1.0 on all sides.",
+    "safe": "Simple_box",
+    "code": "fn map(p: vec3f) -> f32 {\n  return sdBox(p, vec3f(0.5, 0.5, 0.5));\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 3,
+    "prompt": "Simple cylinder: A solid cylinder with radius 0.5 and height 2.0.",
+    "safe": "Simple_cylinder",
+    "code": "fn map(p: vec3f) -> f32 {\n  return sdCylinder(p, 1.0, 0.5);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 4,
+    "prompt": "Simple torus: A ring shape (donut) with major radius 1.0 and minor radius 0.2.",
+    "safe": "Simple_torus",
+    "code": "fn map(p: vec3f) -> f32 {\n  return sdTorus(p, vec2f(1.0, 0.2));\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 5,
+    "prompt": "Simple cone: A standard cone with base radius 1.0 and height 2.0.",
+    "safe": "Simple_cone",
+    "code": "fn map(p: vec3f) -> f32 {\n  let angle = atan(1.0 / 2.0);\n  let sin_a = sin(angle);\n  let cos_a = cos(angle);\n  return sdCone(p, vec2f(sin_a, cos_a), 2.0);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 6,
+    "prompt": "Simple capsule: A cylinder with hemispherical caps on both ends.",
+    "safe": "Simple_capsule",
+    "code": "fn map(p: vec3f) -> f32 {\n  return sdCapsule(p, vec3f(0.0, -0.3, 0.0), vec3f(0.0, 0.3, 0.0), 0.2);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 7,
+    "prompt": "Rounded box: A cube where all sharp edges and corners are rounded with a small radius.",
+    "safe": "Rounded_box",
+    "code": "fn map(p: vec3f) -> f32 {\n  let size = vec3f(0.2, 0.2, 0.2);\n  let radius = 0.05;\n  return sdRoundBox(p, size, radius);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 8,
+    "prompt": "Hexagonal prism: A solid block with a regular hexagon cross-section.",
+    "safe": "Hexagonal_prism",
+    "code": "fn map(p: vec3f) -> f32 {\n  let hexRadius = 0.5;\n  let halfHeight = 0.5;\n  return sdHexPrism(p, vec2f(hexRadius, halfHeight));\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 9,
+    "prompt": "Triangular prism: A long solid shape with an equilateral triangle base.",
+    "safe": "Triangular_prism",
+    "code": "fn map(p: vec3f) -> f32 {\n  let h = 0.5;\n  let r = 0.4;\n  let q = vec3f(p.x, p.z, p.y);\n  let t = abs(q.x) - (r * sqrt(3.0) / 2.0);\n  let d = max(abs(q.z) - (r / 2.0), t);\n  return max(d, abs(q.y) - h);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 10,
+    "prompt": "Thin sheet: A very thin rectangular plate, much wider and longer than it is thick.",
+    "safe": "Thin_sheet",
+    "code": "fn map(p: vec3f) -> f32 {\n  let size = vec3f(0.5, 0.01, 0.5);\n  return sdBox(p, size);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 11,
+    "prompt": "Hollow pipe: A long cylinder with a slightly smaller cylinder subtracted from its center.",
+    "safe": "Hollow_pipe",
+    "code": "fn map(p: vec3f) -> f32 {\n  let outer = sdCylinder(p, 1.0, 0.3);\n  let inner = sdCylinder(p, 1.05, 0.28);\n  return opS(outer, inner);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 12,
+    "prompt": "Bowl shape: A hemisphere with a slightly smaller hemisphere subtracted from the inside.",
+    "safe": "Bowl_shape",
+    "code": "fn map(p: vec3f) -> f32 {\n  let R = 0.5;\n  let r = 0.4;\n  let outer_sphere = sdSphere(p - vec3f(0.0, R, 0.0), R);\n  let outer_hemisphere = opI(outer_sphere, -p.y);\n  let inner_sphere = sdSphere(p - vec3f(0.0, r, 0.0), r);\n  return opS(outer_hemisphere, inner_sphere);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 13,
+    "prompt": "Square frame: A square profile hollowed out in the middle to form a picture frame.",
+    "safe": "Square_frame",
+    "code": "fn map(p: vec3f) -> f32 {\n  let outer = sdBox(p, vec3f(0.5, 0.5, 0.5));\n  let inner = sdBox(p, vec3f(0.3, 0.51, 0.3));\n  return opS(outer, inner);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 14,
+    "prompt": "Swiss cheese block: A solid cube with multiple spherical holes subtracted from different faces.",
+    "safe": "Swiss_cheese_block",
+    "code": "fn map(p: vec3f) -> f32 {\n  let cube = sdBox(p, vec3f(0.5, 0.5, 0.5));\n  let s1 = sdSphere(p - vec3f(0.5, 0.0, 0.0), 0.2);\n  let s2 = sdSphere(p - vec3f(-0.5, 0.0, 0.0), 0.2);\n  let s3 = sdSphere(p - vec3f(0.0, 0.5, 0.0), 0.2);\n  let s4 = sdSphere(p - vec3f(0.0, -0.5, 0.0), 0.2);\n  let s5 = sdSphere(p - vec3f(0.0, 0.0, 0.5), 0.2);\n  let s6 = sdSphere(p - vec3f(0.0, 0.0, -0.5), 0.2);\n  let res1 = opS(cube, s1);\n  let res2 = opS(res1, s2);\n  let res3 = opS(res2, s3);\n  let res4 = opS(res3, s4);\n  let res5 = opS(res4, s5);\n  let res6 = opS(res5, s6);\n  return res6;\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 15,
+    "prompt": "Stepped bore: A solid block containing a hole that changes diameter halfway through.",
+    "safe": "Stepped_bore",
+    "code": "fn map(p: vec3f) -> f32 {\n  let box = sdBox(p, vec3f(0.5, 0.5, 0.5));\n  let h_cyl = 0.255;\n  let r1 = 0.3;\n  let cyl1_p = p - vec3f(0.0, -0.25, 0.0);\n  let cyl1 = sdCylinder(cyl1_p, h_cyl, r1);\n  let r2 = 0.2;\n  let cyl2_p = p - vec3f(0.0, 0.25, 0.0);\n  let cyl2 = sdCylinder(cyl2_p, h_cyl, r2);\n  let holes = opU(cyl1, cyl2);\n  return opS(box, holes);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 16,
+    "prompt": "Countersunk hole plate: A flat square plate with a hole that has a conical top and cylindrical bottom.",
+    "safe": "Countersunk_hole_plate",
+    "code": "fn map(p: vec3f) -> f32 {\n  let plate = sdBox(p, vec3f(0.5, 0.01, 0.5));\n  let hole_pos = p - vec3f(0.0, 0.0, 0.0);\n  let hole_depth = 0.05;\n  let hole_radius = 0.07;\n  let hole = sdCylinder(hole_pos, hole_depth, hole_radius);\n  let countersink_angle = vec2f(0.1, 0.2);\n  let countersink = sdCone(hole_pos, countersink_angle, 0.1);\n  let total_hole = opS(hole, countersink, 0.001);\n  return opS(plate, total_hole);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 17,
+    "prompt": "Counterbored hole plate: A flat plate with a hole that has a wide cylindrical recess at the top and a narrower hole through.",
+    "safe": "Counterbored_hole_plate",
+    "code": "fn map(p: vec3f) -> f32 {\n  let plate = sdBox(p, vec3f(0.5, 0.2, 0.5));\n  \n  let q_cb = p - vec3f(0.0, 0.15, 0.0);\n  let cb = sdCylinder(q_cb, 0.3, 0.05);\n  \n  let q_th = p - vec3f(0.0, -0.05, 0.0);\n  let th = sdCylinder(q_th, 0.15, 0.15);\n  \n  let hole = opU(cb, th);\n  return opS(plate, hole);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 18,
+    "prompt": "Keyhole slot: A rectangular plate with a hole made of a circle combined with a downward rectangle.",
+    "safe": "Keyhole_slot",
+    "code": "fn map(p: vec3f) -> f32 {\n  let plate = sdBox(p, vec3f(0.5, 0.02, 0.1));\n  let circle = sdSphere(p, 0.06);\n  let rect = sdBox(p - vec3f(0.0, -0.08, 0.0), vec3f(0.06, 0.04, 0.06));\n  let hole = opU(circle, rect);\n  return opS(plate, hole);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 19,
+    "prompt": "V-groove block: A rectangular block with a triangular trench cut along its top surface.",
+    "safe": "V-groove_block",
+    "code": "fn map(p: vec3f) -> f32 {\n  let block = sdBox(p, vec3f(0.4, 0.2, 0.2));\n  let trench = sdCone(p - vec3f(0.0, 0.19, 0.0), vec2f(0.0, 0.3), 0.01);\n  let q = opRotateY(p - vec3f(0.0, 0.19, 0.0), 1.5708);\n  trench = sdCone(q, vec2f(0.2, 0.3), 0.01);\n  return opS(block, trench);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 20,
+    "prompt": "U-channel: A long rectangular block with a deep rectangular channel running along its length.",
+    "safe": "U-channel",
+    "code": "fn map(p: vec3f) -> f32 {\n  let main = sdBox(p, vec3f(0.4, 1.0, 0.2));\n  let channel = sdBox(p, vec3f(0.3, 1.0, 0.2));\n  return opS(main, channel);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 21,
+    "prompt": "Crossed pipes: Two hollow cylinders intersecting at exactly 90 degrees.",
+    "safe": "Crossed_pipes",
+    "code": "fn map(p: vec3f) -> f32 {\n    let q = opRotateZ(p, 1.5708);\n    let outer1 = sdCylinder(p, 0.5, 0.4);\n    let inner1 = sdCylinder(p, 0.6, 0.3);\n    let pipe1 = opS(outer1, inner1);\n    let outer2 = sdCylinder(q, 0.5, 0.4);\n    let inner2 = sdCylinder(q, 0.6, 0.3);\n    let pipe2 = opS(outer2, inner2);\n    return opU(pipe1, pipe2);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 22,
+    "prompt": "Lens shape: The intersection of two slightly overlapping spheres.",
+    "safe": "Lens_shape",
+    "code": "fn map(p: vec3f) -> f32 {\n  let d1 = sdSphere(p + vec3f(0.4, 0.0, 0.0), 0.5);\n  let d2 = sdSphere(p - vec3f(0.4, 0.0, 0.0), 0.5);\n  return opI(d1, d2);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 23,
+    "prompt": "Wedge: A triangular block, like a doorstop, formed by slicing a box.",
+    "safe": "Wedge",
+    "code": "fn map(p: vec3f) -> f32 {\n  let wedge = sdBox(p, vec3f(0.3, 0.15, 0.1));\n  let cut = sdBox(p - vec3f(0.3, 0.0, 0.0), vec3f(0.0, 0.15, 0.1));\n  return opI(wedge, cut);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 24,
+    "prompt": "Dice block: A cube with slightly rounded corners and small shallow spherical indentations on the faces.",
+    "safe": "Dice_block",
+    "code": "fn map(p: vec3f) -> f32 {\n    let corner_radius = 0.1;\n    let cube = sdRoundBox(p, vec3f(0.5, 0.5, 0.5), corner_radius);\n    \n    let indent_radius = 0.1;\n    let indent_pos = 0.5 - indent_radius;\n    \n    let d = cube;\n    \n    let sphere_pos_x = sdSphere(p - vec3f(indent_pos, 0.0, 0.0), indent_radius);\n    d = opS(d, sphere_pos_x);\n    \n    let sphere_neg_x = sdSphere(p - vec3f(-indent_pos, 0.0, 0.0), indent_radius);\n    d = opS(d, sphere_neg_x);\n    \n    let sphere_pos_y = sdSphere(p - vec3f(0.0, indent_pos, 0.0), indent_radius);\n    d = opS(d, sphere_pos_y);\n    \n    let sphere_neg_y = sdSphere(p - vec3f(0.0, -indent_pos, 0.0), indent_radius);\n    d = opS(d, sphere_neg_y);\n    \n    let sphere_pos_z = sdSphere(p - vec3f(0.0, 0.0, indent_pos), indent_radius);\n    d = opS(d, sphere_pos_z);\n    \n    let sphere_neg_z = sdSphere(p - vec3f(0.0, 0.0, -indent_pos), indent_radius);\n    d = opS(d, sphere_neg_z);\n    \n    return d;\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 25,
+    "prompt": "Crescent moon: A 2D crescent profile extruded into a 3D block, made by subtracting a shifted cylinder.",
+    "safe": "Crescent_moon",
+    "code": "fn map(p: vec3f) -> f32 {\n  let main = sdCylinder(p, 0.5, 0.5);\n  let shifted = sdCylinder(p - vec3f(0.5, 0.0, 0.0), 0.5, 0.3);\n  return opS(main, shifted);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 26,
+    "prompt": "Step pyramid: Three stacked rectangular blocks decreasing in size from bottom to top.",
+    "safe": "Step_pyramid",
+    "code": "fn map(p: vec3f) -> f32 {\n  let b1 = sdBox(p - vec3f(0.0, -0.4, 0.0), vec3f(0.4, 0.2, 0.4));\n  let b2 = sdBox(p, vec3f(0.3, 0.2, 0.3));\n  let b3 = sdBox(p - vec3f(0.0, 0.4, 0.0), vec3f(0.2, 0.2, 0.2));\n  return opU(opU(b1, b2), b3);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 27,
+    "prompt": "Hourglass: Two cones meeting at their tips.",
+    "safe": "Hourglass",
+    "code": "fn map(p: vec3f) -> f32 {\n  let angle = vec2f(0.5, 0.8660254);\n  let h = 0.5;\n  let d1 = sdCone(p, angle, h);\n  let q = vec3f(p.x, -p.y, p.z);\n  let d2 = sdCone(q, angle, h);\n  return min(d1, d2);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 28,
+    "prompt": "Dumbbell profile: A long cylinder with a sphere attached to each end.",
+    "safe": "Dumbbell_profile",
+    "code": "fn map(p: vec3f) -> f32 {\n  let cyl = sdCylinder(p, 0.4, 0.1);\n  let top = sdSphere(p - vec3f(0.0, 0.5, 0.0), 0.1);\n  let bot = sdSphere(p - vec3f(0.0, -0.5, 0.0), 0.1);\n  return opU(cyl, opU(top, bot));\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 29,
+    "prompt": "Domed cylinder: A short cylinder with a smoothly rounded hemispherical top.",
+    "safe": "Domed_cylinder",
+    "code": "fn map(p: vec3f) -> f32 {\n  let cylinder = sdCylinder(p, 0.15, 0.3);\n  let sphere = sdSphere(p.yz, 0.15);\n  return opU(cylinder, sphere);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 30,
+    "prompt": "Tapered nozzle: A hollow cone attached to a hollow cylinder of the same outer base diameter.",
+    "safe": "Tapered_nozzle",
+    "code": "fn map(p: vec3f) -> f32 {\n  let outerCone = sdCone(p, vec2f(0.6, 0.8), 0.4);\n  let innerCone = sdCone(p, vec2f(0.55, 0.75), 0.35);\n  let cone = opS(outerCone, innerCone);\n\n  let outerCylinder = sdCylinder(p - vec3f(0.0, 0.35 + 0.01, 0.0), 0.3, 0.35);\n  let innerCylinder = sdCylinder(p - vec3f(0.0, 0.35 + 0.01, 0.0), 0.25, 0.3);\n  let cylinder = opS(outerCylinder, innerCylinder);\n\n  return opU(cone, cylinder);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 31,
+    "prompt": "Star profile: A central cylinder with five pointed triangular wedges arrayed around it.",
+    "safe": "Star_profile",
+    "code": "fn map(p: vec3f) -> f32 {\n  let center = sdCylinder(p, 0.05, 0.4);\n\n  let arm1 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 0.0), vec3f(0.01, 0.2, 0.05));\n  let arm2 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 2.51327412), vec3f(0.01, 0.2, 0.05));\n  let arm3 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 5.02654824), vec3f(0.01, 0.2, 0.05));\n  let arm4 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 7.53982237), vec3f(0.01, 0.2, 0.05));\n  let arm5 = sdBox(opRotateZ(p - vec3f(0.25, 0.0, 0.0), 10.05309649), vec3f(0.01, 0.2, 0.05));\n\n  let arms = opU(opU(opU(opU(arm1, arm2), arm3), arm4), arm5);\n  \n  return opU(center, arms);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 32,
+    "prompt": "Pill shape: A short wide cylinder with shallow spherical domes on top and bottom.",
+    "safe": "Pill_shape",
+    "code": "fn map(p: vec3f) -> f32 {\n  let h = 0.2;\n  let r = 0.3;\n  let a = vec3f(0.0, -h, 0.0);\n  let b = vec3f(0.0, h, 0.0);\n  return sdCapsule(p, a, b, r);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 33,
+    "prompt": "L-shaped bracket: Two flat rectangular plates meeting at a 90-degree angle, with rounded outer corner.",
+    "safe": "L-shaped_bracket",
+    "code": "fn map(p: vec3f) -> f32 {\n  let vert = sdRoundBox(p - vec3f(0.0, 0.4, 0.0), vec3f(0.1, 0.2, 0.1), 0.02);\n  let horiz = sdRoundBox(p - vec3f(0.3, 0.0, 0.0), vec3f(0.3, 0.1, 0.1), 0.02);\n  return opU(vert, horiz);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 34,
+    "prompt": "T-shaped bracket: Two flat plates meeting to form a T, uniform thickness.",
+    "safe": "T-shaped_bracket",
+    "code": "fn map(p: vec3f) -> f32 {\n  let vertical = sdBox(p, vec3f(0.1, 0.5, 0.1));\n  let horizontal = sdBox(p - vec3f(0.0, 0.59, 0.0), vec3f(0.5, 0.1, 0.1));\n  return opU(vertical, horizontal);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 35,
+    "prompt": "Gusset plate: A triangular plate with three circular holes cut near the corners.",
+    "safe": "Gusset_plate",
+    "code": "fn map(p: vec3f) -> f32 {\n  let plate = sdBox(p, vec3f(0.3, 0.2, 0.02));\n  let hole1 = sdSphere(p - vec3f(-0.25, 0.15, 0.0), 0.03);\n  let hole2 = sdSphere(p - vec3f(0.15, -0.15, 0.0), 0.03);\n  let hole3 = sdSphere(p - vec3f(0.25, 0.15, 0.0), 0.03);\n  let holes = opU(opU(hole1, hole2), hole3);\n  return opS(plate, holes);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 36,
+    "prompt": "I-beam: A long structural beam with an I-shaped cross-section.",
+    "safe": "I-beam",
+    "code": "fn map(p: vec3f) -> f32 {\n  let web = sdBox(p, vec3f(0.05, 0.3, 0.2));\n  let topFlange = sdBox(p - vec3f(0.0, 0.315, 0.0), vec3f(0.1, 0.025, 0.2));\n  let bottomFlange = sdBox(p - vec3f(0.0, -0.315, 0.0), vec3f(0.1, 0.025, 0.2));\n  return opU(opU(web, topFlange), bottomFlange);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 37,
+    "prompt": "C-clamp body: A thick C-shaped block used as the main frame of a clamp.",
+    "safe": "C-clamp_body",
+    "code": "fn map(p: vec3f) -> f32 {\n  let body = sdRoundBox(p, vec3f(0.4, 0.3, 0.2), 0.05);\n  let cutout = sdBox(p - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.3, 0.2));\n  return opS(body, cutout);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 38,
+    "prompt": "Gear blank: A thick disc with a large central hole and a smaller hole offset from the center.",
+    "safe": "Gear_blank",
+    "code": "fn map(p: vec3f) -> f32 {\n  let disc = sdCylinder(p, 0.1, 0.5);\n  let centralHole = sdCylinder(p, 0.12, 0.2);\n  let offsetHole = sdCylinder(p - vec3f(0.3, 0.0, 0.0), 0.12, 0.08);\n  let shape = opS(disc, centralHole);\n  return opS(shape, offsetHole);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 39,
+    "prompt": "Threaded rod blank: A long thin cylinder with a small chamfer on one end.",
+    "safe": "Threaded_rod_blank",
+    "code": "fn map(p: vec3f) -> f32 {\n  let rod = sdCylinder(p, 0.5, 1.0);\n  let chamfer = sdRoundBox(p - vec3f(0.0, -1.0, 0.0), vec3f(0.05, 0.05, 0.05), 0.05);\n  return opU(rod, chamfer);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 40,
+    "prompt": "Splined shaft blank: A central cylinder with four smaller cylinders evenly spaced around its perimeter.",
+    "safe": "Splined_shaft_blank",
+    "code": "fn map(p: vec3f) -> f32 {\n  let central = sdCylinder(p, 0.5, 0.2);\n  let a0 = 0.0;\n  let q0 = opRotateY(p, a0);\n  let s0 = sdCylinder(q0 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);\n  \n  let a1 = 1.5708;\n  let q1 = opRotateY(p, a1);\n  let s1 = sdCylinder(q1 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);\n  \n  let a2 = 3.1416;\n  let q2 = opRotateY(p, a2);\n  let s2 = sdCylinder(q2 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);\n  \n  let a3 = 4.7124;\n  let q3 = opRotateY(p, a3);\n  let s3 = sdCylinder(q3 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);\n  \n  let splines = opU(opU(opU(s0, s1), s2), s3);\n  return opU(central, splines);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 41,
+    "prompt": "Cam lobe: A teardrop-shaped extruded profile used for a camshaft.",
+    "safe": "Cam_lobe",
+    "code": "fn map(p: vec3f) -> f32 {\n  let q = opRotateZ(p, 1.5708); // orient along X\n  let profile = sdRoundBox(p.xy, vec3f(0.2, 0.05, 0.0), 0.03); // teardrop cross-section\n  return profile;\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 42,
+    "prompt": "Flanged bearing: A hollow cylinder with a wide flat ring around one of its ends.",
+    "safe": "Flanged_bearing",
+    "code": "fn map(p: vec3f) -> f32 {\n  let outer_main = sdCylinder(p, 0.5, 0.3);\n  let inner_main = sdCylinder(p, 0.6, 0.2);\n  let main = opS(outer_main, inner_main);\n\n  let p_flange = p - vec3f(0.0, -0.6, 0.0);\n  let outer_flange = sdCylinder(p_flange, 0.1, 0.6);\n  let inner_flange = sdCylinder(p_flange, 0.1, 0.3);\n  let flange = opS(outer_flange, inner_flange);\n\n  return opU(main, flange);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 43,
+    "prompt": "Hex wrench: A long thin hexagonal rod bent at a 90-degree angle.",
+    "safe": "Hex_wrench",
+    "code": "fn map(p: vec3f) -> f32 {\n  let hex1 = sdHexPrism(p, vec2f(0.08, 0.4));\n  let q = opRotateZ(p - vec3f(0.0, 0.45, 0.0), 1.5708);\n  let hex2 = sdHexPrism(q, vec2f(0.08, 0.15));\n  return opU(hex1, hex2);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 44,
+    "prompt": "Chain link side: A flat plate shaped like an oval or capsule with two circular holes.",
+    "safe": "Chain_link_side",
+    "code": "fn map(p: vec3f) -> f32 {\n  let plate = sdCapsule(p, vec3f(0.0, 0.0, 0.0), vec3f(0.0, 0.05, 0.0), 0.05);\n  let hole1 = sdCapsule(p - vec3f(0.0, 0.0, 0.04), vec3f(0.0, 0.0, 0.0), vec3f(0.0, 0.0, 0.0), 0.015);\n  let hole2 = sdCapsule(p - vec3f(0.0, 0.0, -0.04), vec3f(0.0, 0.0, 0.0), vec3f(0.0, 0.0, 0.0), 0.015);\n  let holes = opU(hole1, hole2);\n  return opS(plate, holes);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 45,
+    "prompt": "Rivet head: A very short cylinder acting as a shank with a large smooth dome on top.",
+    "safe": "Rivet_head",
+    "code": "fn map(p: vec3f) -> f32 {\n  let shank = sdCylinder(p, 0.1, 0.05);\n  let dome = sdSphere(p - vec3f(0.0, 0.05, 0.0), 0.1);\n  return opU(shank, dome);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 46,
+    "prompt": "Signet ring: A torus that thickens significantly on one side to form a flat square face.",
+    "safe": "Signet_ring",
+    "code": "fn map(p: vec3f) -> f32 {\n  let torus = sdTorus(p, vec2f(0.3, 0.08));\n  let thickened = sdRoundBox(p - vec3f(0.0, 0.0, 0.12), vec3f(0.08, 0.08, 0.12), 0.01);\n  return opU(torus, thickened);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 47,
+    "prompt": "Wheel rim: A torus connected to a central smaller cylinder via four rectangular spokes.",
+    "safe": "Wheel_rim",
+    "code": "fn map(p: vec3f) -> f32 {\n    let torus = sdTorus(p, vec2f(0.5, 0.1));\n    let cylinder = sdCylinder(p, 0.1, 0.2);\n    \n    let s0 = sdBox(opRotateY(p, 0.0) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));\n    let s1 = sdBox(opRotateY(p, 1.5708) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));\n    let s2 = sdBox(opRotateY(p, 3.1416) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));\n    let s3 = sdBox(opRotateY(p, 4.7124) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));\n    \n    let spokes = opU(opU(opU(s0, s1), s2), s3);\n    return opU(opU(torus, cylinder), spokes);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 48,
+    "prompt": "Propeller blade blank: A thin twisted rectangular plate attached to a central spherical hub.",
+    "safe": "Propeller_blade_blank",
+    "code": "fn map(p: vec3f) -> f32 {\n  let hub = sdSphere(p, 0.15);\n  let blade_p = p;\n  let twist_factor = 2.0;\n  let angle = blade_p.y * twist_factor;\n  let c = cos(angle);\n  let s = sin(angle);\n  let x = blade_p.x;\n  let y = blade_p.y * c - blade_p.z * s;\n  let z = blade_p.y * s + blade_p.z * c;\n  let p_rot = vec3f(x, y, z);\n  let blade = sdBox(p_rot - vec3f(0.0, 0.15, 0.0), vec3f(0.05, 0.15, 0.02));\n  return opU(hub, blade);\n}\n\nHmm, I need to check the parentheses. Let's count them. The function starts with {, then there are let declarations. Each line ends with a semicolon. The last line is return opU(...); and then the closing }.\n\nWait, the error says 64 open and 63 close. That seems like a lot. Maybe there's a missing closing parenthesis somewhere. Let me look again.\n\nLooking at the line:\n\nlet p_rot = vec3f(x, y, z);\n\nThe variables x, y, z are assigned from the previous lines. Then, the sdBox call:\n\nlet blade = sdBox(p_rot - vec3f(0.0, 0.15, 0.0), vec3f(0.05, 0.15, 0.02));\n\nThe vec3f and sdBox functions are correctly closed. The opU function is called with two arguments, hub and blade. So the parentheses here are balanced.\n\nWait, maybe the issue is with the use of vec3f. In WGSL, the syntax is correct, but maybe the user forgot a closing parenthesis in one of the vec3f calls. Let me check each vec3f:\n\nvec3f(0.0, 0.15, 0.0) \u2192 correct.\nvec3f(0.05, 0.15, 0.02) \u2192 correct.\n\nNo, those are fine. The problem might be in the angle calculation. Let's see:\n\nangle is calculated as blade_p.y * twist_factor. Then c and s are cos(angle) and sin(angle). That's okay",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 49,
+    "prompt": "Cone with flat top: A frustum of a cone, where the pointy tip has been cut off flat.",
+    "safe": "Cone_with_flat_top",
+    "code": "fn map(p: vec3f) -> f32 {\n  let sin_a = 0.4;\n  let cos_a = 0.9165;\n  let h = 0.5;\n  let y_cut = 0.2;\n  let cone = sdCone(p, vec2f(sin_a, cos_a), h);\n  let halfSpace = -(p.y - y_cut);\n  return max(cone, halfSpace);\n}",
+    "valid": true,
+    "err": ""
+  },
+  {
+    "i": 50,
+    "prompt": "Half pipe: A hollow cylinder sliced perfectly in half down its length.",
+    "safe": "Half_pipe",
+    "code": "fn map(p: vec3f) -> f32 {\n  let outer = sdCylinder(p, 0.5, 0.4);\n  let inner = sdCylinder(p, 0.5, 0.35);\n  let tube = opS(outer, inner);\n  let halfSpace = -p.x;\n  return opI(tube, halfSpace);\n}",
+    "valid": true,
+    "err": ""
+  }
+]

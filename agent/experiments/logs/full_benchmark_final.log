@@ -1,0 +1,18 @@
+
+============================================================
+[1/9] Qwen3-32B-FP8
+  model_id=Qwen/Qwen3-32B-FP8
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-32B-FP8.log
+============================================================
+
+WARNING: model Qwen3-32B-FP8 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-32B-FP8.log
+  Cleaning up model weights / caches …
+  HF cache: removed Qwen/Qwen3-32B-FP8 (~29.5G)
+  vLLM disk cache cleared.
+
+============================================================
+[2/9] GLM-4.7-Flash-FP8
+  model_id=marksverdhei/GLM-4.7-Flash-FP8
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_marksverdhei_GLM-4.7-Flash-FP8.log
+============================================================
+

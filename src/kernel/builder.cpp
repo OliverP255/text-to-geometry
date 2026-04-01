@@ -71,7 +71,7 @@ TransformH Builder::internTransform(TransformOp op, const void* payload,
 ShapeH Builder::internShape(ShapeOp op, uint32_t child0, uint32_t child1,
                            const void* payload, size_t payloadSize) {
   // Canonicalize: sort children for commutative ops
-  if (op == ShapeOp::Union || op == ShapeOp::Intersect) {
+  if (op == ShapeOp::Union || op == ShapeOp::Intersect || op == ShapeOp::SmoothUnion) {
     if (child0 > child1) std::swap(child0, child1);
   }
 
@@ -103,12 +103,12 @@ ShapeH Builder::box(Vec3 halfExtents) {
   return internShape(ShapeOp::Box, 0, 0, &p, sizeof(p));
 }
 
-ShapeH Builder::plane(Vec3 normal, float d) {
+ShapeH Builder::cylinder(float r, float h) {
   if (frozen_) return ShapeH{};
-  PlanePayload p;
-  p.normal = normal;
-  p.d = d;
-  return internShape(ShapeOp::Plane, 0, 0, &p, sizeof(p));
+  CylinderPayload p;
+  p.r = r;
+  p.h = h;
+  return internShape(ShapeOp::Cylinder, 0, 0, &p, sizeof(p));
 }
 
 TransformH Builder::translate(Vec3 t) {
@@ -123,6 +123,13 @@ TransformH Builder::scale(Vec3 s) {
   ScalePayload p;
   p.s = s;
   return internTransform(TransformOp::Scale, &p, sizeof(p));
+}
+
+TransformH Builder::rotate(float x, float y, float z, float w) {
+  if (frozen_) return TransformH{};
+  RotatePayload p;
+  p.x = x; p.y = y; p.z = z; p.w = w;
+  return internTransform(TransformOp::Rotate, &p, sizeof(p));
 }
 
 ShapeH Builder::apply(TransformH t, ShapeH s) {
@@ -143,6 +150,13 @@ ShapeH Builder::intersect(ShapeH a, ShapeH b) {
 ShapeH Builder::subtract(ShapeH a, ShapeH b) {
   if (frozen_ || !a.valid() || !b.valid()) return ShapeH{};
   return internShape(ShapeOp::Subtract, a.id, b.id, nullptr, 0);
+}
+
+ShapeH Builder::smoothUnite(ShapeH a, ShapeH b, float k) {
+  if (frozen_ || !a.valid() || !b.valid()) return ShapeH{};
+  SmoothUnionPayload p;
+  p.k = k;
+  return internShape(ShapeOp::SmoothUnion, a.id, b.id, &p, sizeof(p));
 }
 
 ShapeH Builder::uniteBalanced(const ShapeH* shapes, size_t lo, size_t hi) {

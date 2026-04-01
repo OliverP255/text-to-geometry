@@ -29,11 +29,12 @@ class Builder {
   // Primitives
   ShapeH sphere(float r);
   ShapeH box(Vec3 halfExtents);
-  ShapeH plane(Vec3 normal, float d);
+  ShapeH cylinder(float r, float h);
 
   // Transforms
   TransformH translate(Vec3 t);
   TransformH scale(Vec3 s);
+  TransformH rotate(float x, float y, float z, float w);
 
   // Composition
   ShapeH apply(TransformH t, ShapeH s);
@@ -42,6 +43,7 @@ class Builder {
   ShapeH intersect(ShapeH a, ShapeH b);
   ShapeH intersect(const std::vector<ShapeH>& shapes);
   ShapeH subtract(ShapeH a, ShapeH b);
+  ShapeH smoothUnite(ShapeH a, ShapeH b, float k);
 
   // Freeze: seal builder, return root handles and read-only DAG view.
   // After freeze(), no further construction is allowed.

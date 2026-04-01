@@ -41,6 +41,10 @@ bool isIdentityTransform(const FrozenDAG& dag, uint32_t transformId) {
     const auto* p = reinterpret_cast<const ScalePayload*>(payload);
     return p->s.x == 1 && p->s.y == 1 && p->s.z == 1;
   }
+  if (h.opcode == static_cast<uint8_t>(TransformOp::Rotate)) {
+    const auto* p = reinterpret_cast<const RotatePayload*>(payload);
+    return p->x == 0 && p->y == 0 && p->z == 0 && p->w == 1;
+  }
   return false;
 }
 
@@ -104,13 +108,17 @@ OptimisedDAG optimise(const FrozenDAG& in) {
           payloadSize = sizeof(SpherePayload);
         else if (h.opcode == static_cast<uint8_t>(ShapeOp::Box))
           payloadSize = sizeof(BoxPayload);
-        else if (h.opcode == static_cast<uint8_t>(ShapeOp::Plane))
-          payloadSize = sizeof(PlanePayload);
+        else if (h.opcode == static_cast<uint8_t>(ShapeOp::Cylinder))
+          payloadSize = sizeof(CylinderPayload);
+        else if (h.opcode == static_cast<uint8_t>(ShapeOp::SmoothUnion))
+          payloadSize = sizeof(SmoothUnionPayload);
       } else if (h.category == NodeCategory::Transform) {
         if (h.opcode == static_cast<uint8_t>(TransformOp::Translate))
           payloadSize = sizeof(TranslatePayload);
         else if (h.opcode == static_cast<uint8_t>(TransformOp::Scale))
           payloadSize = sizeof(ScalePayload);
+        else if (h.opcode == static_cast<uint8_t>(TransformOp::Rotate))
+          payloadSize = sizeof(RotatePayload);
       }
     }
 
@@ -163,7 +171,8 @@ OptimisedDAG optimise(const FrozenDAG& in) {
     uint32_t canon1 = canon[h.in1 != kUnusedChild ? h.in1 : 0];
 
     if (h.opcode == static_cast<uint8_t>(ShapeOp::Union) ||
-        h.opcode == static_cast<uint8_t>(ShapeOp::Intersect)) {
+        h.opcode == static_cast<uint8_t>(ShapeOp::Intersect) ||
+        h.opcode == static_cast<uint8_t>(ShapeOp::SmoothUnion)) {
       if (canon0 > canon1) std::swap(canon0, canon1);
     }
 
@@ -176,13 +185,17 @@ OptimisedDAG optimise(const FrozenDAG& in) {
           payloadSize = sizeof(SpherePayload);
         else if (h.opcode == static_cast<uint8_t>(ShapeOp::Box))
           payloadSize = sizeof(BoxPayload);
-        else if (h.opcode == static_cast<uint8_t>(ShapeOp::Plane))
-          payloadSize = sizeof(PlanePayload);
+        else if (h.opcode == static_cast<uint8_t>(ShapeOp::Cylinder))
+          payloadSize = sizeof(CylinderPayload);
+        else if (h.opcode == static_cast<uint8_t>(ShapeOp::SmoothUnion))
+          payloadSize = sizeof(SmoothUnionPayload);
       } else if (h.category == NodeCategory::Transform) {
         if (h.opcode == static_cast<uint8_t>(TransformOp::Translate))
           payloadSize = sizeof(TranslatePayload);
         else if (h.opcode == static_cast<uint8_t>(TransformOp::Scale))
           payloadSize = sizeof(ScalePayload);
+        else if (h.opcode == static_cast<uint8_t>(TransformOp::Rotate))
+          payloadSize = sizeof(RotatePayload);
       }
     }
 

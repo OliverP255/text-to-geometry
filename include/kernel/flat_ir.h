@@ -8,7 +8,7 @@ namespace kernel {
 struct FlatTransform {
   float tx = 0, ty = 0, tz = 0;
   float sx = 1, sy = 1, sz = 1;
-  // NO minScale - derived only in packForWebGPU()
+  float qx = 0, qy = 0, qz = 0, qw = 1;
 };
 
 struct FlatSphere {
@@ -19,17 +19,19 @@ struct FlatBox {
   float hx = 1, hy = 1, hz = 1;
 };
 
-struct FlatPlane {
-  float nx = 0, ny = 1, nz = 0, d = 0;
+struct FlatCylinder {
+  float r = 1.0f;
+  float h = 1.0f;
 };
 
 enum class FlatOp : uint8_t {
   EvalSphere,
   EvalBox,
-  EvalPlane,
   CsgUnion,
   CsgIntersect,
   CsgSubtract,
+  EvalCylinder,
+  CsgSmoothUnion,
 };
 
 struct FlatInstr {
@@ -44,7 +46,8 @@ struct FlatIR {
   std::vector<FlatTransform> transforms;
   std::vector<FlatSphere> spheres;
   std::vector<FlatBox> boxes;
-  std::vector<FlatPlane> planes;
+  std::vector<FlatCylinder> cylinders;
+  std::vector<float> smoothKs;
   uint32_t rootTemp = 0;
 };
 

@@ -1,0 +1,1009 @@
+=== 2026-03-31T18:29:51+00:00 start ===
+T2G_QWEN_THINKING=1
+Loading LLM...
+INFO 03-31 18:29:55 [utils.py:233] non-default args: {'trust_remote_code': True, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.95, 'disable_log_stats': True, 'enable_chunked_prefill': True, 'async_scheduling': False, 'model': 'Qwen/Qwen3-32B-FP8'}
+INFO 03-31 18:29:56 [model.py:533] Resolved architecture: Qwen3ForCausalLM
+INFO 03-31 18:29:56 [model.py:1582] Using max model len 8192
+INFO 03-31 18:29:57 [scheduler.py:231] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 03-31 18:29:57 [vllm.py:754] Asynchronous scheduling is disabled.
+INFO 03-31 18:29:57 [compilation.py:289] Enabled custom fusions: norm_quant, act_quant
+(EngineCore pid=403106) INFO 03-31 18:29:58 [core.py:103] Initializing a V1 LLM engine (v0.18.0) with config: model='Qwen/Qwen3-32B-FP8', speculative_config=None, tokenizer='Qwen/Qwen3-32B-FP8', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=fp8, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=Qwen/Qwen3-32B-FP8, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['+quant_fp8', 'none', '+quant_fp8'], 'splitting_ops': ['vllm::unified_attention', 'vllm::unified_attention_with_output', 'vllm::unified_mla_attention', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'compile_sizes': [], 'compile_ranges_endpoints': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': True, 'static_all_moe_layers': []}
+(EngineCore pid=403106) INFO 03-31 18:29:58 [parallel_state.py:1395] world_size=1 rank=0 local_rank=0 distributed_init_method=tcp://10.132.0.19:59071 backend=nccl
+(EngineCore pid=403106) INFO 03-31 18:29:58 [parallel_state.py:1717] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=403106) INFO 03-31 18:29:59 [gpu_model_runner.py:4481] Starting to load model Qwen/Qwen3-32B-FP8...
+(EngineCore pid=403106) INFO 03-31 18:29:59 [cuda.py:317] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=403106) INFO 03-31 18:29:59 [flash_attn.py:598] Using FlashAttention version 2
+(EngineCore pid=403106) <frozen importlib._bootstrap_external>:1297: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+(EngineCore pid=403106) <frozen importlib._bootstrap_external>:1297: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+(EngineCore pid=403106) Loading safetensors checkpoint shards:   0% Completed | 0/7 [00:00<?, ?it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards:  14% Completed | 1/7 [00:00<00:01,  5.28it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards:  29% Completed | 2/7 [00:00<00:00,  5.25it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards:  43% Completed | 3/7 [00:00<00:00,  5.30it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards:  57% Completed | 4/7 [00:00<00:00,  5.32it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards:  71% Completed | 5/7 [00:00<00:00,  5.33it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards:  86% Completed | 6/7 [00:01<00:00,  5.34it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards: 100% Completed | 7/7 [00:01<00:00,  5.36it/s]
+(EngineCore pid=403106) Loading safetensors checkpoint shards: 100% Completed | 7/7 [00:01<00:00,  5.33it/s]
+(EngineCore pid=403106) 
+(EngineCore pid=403106) INFO 03-31 18:30:01 [default_loader.py:384] Loading weights took 1.31 seconds
+(EngineCore pid=403106) INFO 03-31 18:30:02 [gpu_model_runner.py:4566] Model loading took 32.04 GiB memory and 2.394395 seconds
+(EngineCore pid=403106) INFO 03-31 18:30:06 [backends.py:988] Using cache directory: /home/oliverpryce/.cache/vllm/torch_compile_cache/712f445fc7/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=403106) INFO 03-31 18:30:06 [backends.py:1048] Dynamo bytecode transform time: 4.26 s
+(EngineCore pid=403106) INFO 03-31 18:30:14 [backends.py:284] Directly load the compiled graph(s) for compile range (1, 16384) from the cache, took 6.144 s
+(EngineCore pid=403106) INFO 03-31 18:30:14 [monitor.py:48] torch.compile took 11.50 s in total
+(EngineCore pid=403106) INFO 03-31 18:30:14 [decorators.py:296] Directly load AOT compilation from path /home/oliverpryce/.cache/vllm/torch_compile_cache/torch_aot_compile/74337e985ea35c857d8d6a59e01e353aa735468c29db5aba26bdd3744dfa4026/rank_0_0/model
+(EngineCore pid=403106) INFO 03-31 18:30:14 [monitor.py:76] Initial profiling/warmup run took 0.02 s
+(EngineCore pid=403106) INFO 03-31 18:30:16 [kv_cache_utils.py:826] Overriding num_gpu_blocks=0 with num_gpu_blocks_override=512
+(EngineCore pid=403106) INFO 03-31 18:30:16 [gpu_model_runner.py:5607] Profiling CUDA graph memory: PIECEWISE=51 (largest=512), FULL=51 (largest=512)
+(EngineCore pid=403106) INFO 03-31 18:30:17 [gpu_model_runner.py:5686] Estimated CUDA graph memory: 0.86 GiB total
+(EngineCore pid=403106) INFO 03-31 18:30:18 [gpu_worker.py:456] Available KV cache memory: 54.65 GiB
+(EngineCore pid=403106) INFO 03-31 18:30:18 [gpu_worker.py:490] In v0.19, CUDA graph memory profiling will be enabled by default (VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1), which more accurately accounts for CUDA graph memory during KV cache allocation. To try it now, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1 and increase --gpu-memory-utilization from 0.9500 to 0.9591 to maintain the same effective KV cache size.
+(EngineCore pid=403106) INFO 03-31 18:30:18 [kv_cache_utils.py:1316] GPU KV cache size: 223,840 tokens
+(EngineCore pid=403106) INFO 03-31 18:30:18 [kv_cache_utils.py:1321] Maximum concurrency for 8,192 tokens per request: 27.32x
+(EngineCore pid=403106) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|▍         | 2/51 [00:00<00:03, 13.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   8%|▊         | 4/51 [00:00<00:03, 13.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:00<00:03, 13.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 8/51 [00:00<00:03, 13.58it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:00<00:02, 13.92it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:00<00:02, 14.08it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██▋       | 14/51 [00:01<00:02, 14.22it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|███▏      | 16/51 [00:01<00:02, 14.37it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:01<00:02, 14.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|███▉      | 20/51 [00:01<00:02, 15.23it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:01<00:01, 15.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 24/51 [00:01<00:01, 15.68it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  51%|█████     | 26/51 [00:01<00:01, 15.81it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  55%|█████▍    | 28/51 [00:01<00:01, 15.89it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:02<00:01, 16.02it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|██████▎   | 32/51 [00:02<00:01, 16.12it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:02<00:01, 16.35it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  71%|███████   | 36/51 [00:02<00:00, 16.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|███████▍  | 38/51 [00:02<00:00, 16.60it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 40/51 [00:02<00:00, 16.65it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|████████▏ | 42/51 [00:02<00:00, 16.68it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  86%|████████▋ | 44/51 [00:02<00:00, 16.71it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|█████████ | 46/51 [00:02<00:00, 16.63it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|█████████▍| 48/51 [00:03<00:00, 16.34it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  98%|█████████▊| 50/51 [00:03<00:00, 16.16it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:03<00:00, 15.52it/s]
+(EngineCore pid=403106) Capturing CUDA graphs (decode, FULL):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   4%|▍         | 2/51 [00:00<00:03, 12.69it/s]Capturing CUDA graphs (decode, FULL):   8%|▊         | 4/51 [00:00<00:03, 12.89it/s]Capturing CUDA graphs (decode, FULL):  12%|█▏        | 6/51 [00:00<00:03, 12.92it/s]Capturing CUDA graphs (decode, FULL):  16%|█▌        | 8/51 [00:00<00:03, 13.01it/s]Capturing CUDA graphs (decode, FULL):  20%|█▉        | 10/51 [00:00<00:03, 13.54it/s]Capturing CUDA graphs (decode, FULL):  24%|██▎       | 12/51 [00:00<00:02, 13.90it/s]Capturing CUDA graphs (decode, FULL):  27%|██▋       | 14/51 [00:01<00:02, 14.20it/s]Capturing CUDA graphs (decode, FULL):  31%|███▏      | 16/51 [00:01<00:02, 14.49it/s]Capturing CUDA graphs (decode, FULL):  35%|███▌      | 18/51 [00:01<00:02, 15.10it/s]Capturing CUDA graphs (decode, FULL):  39%|███▉      | 20/51 [00:01<00:01, 15.59it/s]Capturing CUDA graphs (decode, FULL):  43%|████▎     | 22/51 [00:01<00:01, 16.00it/s]Capturing CUDA graphs (decode, FULL):  47%|████▋     | 24/51 [00:01<00:01, 16.31it/s]Capturing CUDA graphs (decode, FULL):  51%|█████     | 26/51 [00:01<00:01, 16.61it/s]Capturing CUDA graphs (decode, FULL):  55%|█████▍    | 28/51 [00:01<00:01, 16.81it/s]Capturing CUDA graphs (decode, FULL):  59%|█████▉    | 30/51 [00:01<00:01, 17.07it/s]Capturing CUDA graphs (decode, FULL):  63%|██████▎   | 32/51 [00:02<00:01, 17.32it/s]Capturing CUDA graphs (decode, FULL):  67%|██████▋   | 34/51 [00:02<00:00, 17.63it/s]Capturing CUDA graphs (decode, FULL):  71%|███████   | 36/51 [00:02<00:00, 17.91it/s]Capturing CUDA graphs (decode, FULL):  75%|███████▍  | 38/51 [00:02<00:00, 18.16it/s]Capturing CUDA graphs (decode, FULL):  78%|███████▊  | 40/51 [00:02<00:00, 18.35it/s]Capturing CUDA graphs (decode, FULL):  82%|████████▏ | 42/51 [00:02<00:00, 18.57it/s]Capturing CUDA graphs (decode, FULL):  86%|████████▋ | 44/51 [00:02<00:00, 18.71it/s]Capturing CUDA graphs (decode, FULL):  90%|█████████ | 46/51 [00:02<00:00, 18.78it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████▍| 48/51 [00:02<00:00, 18.68it/s]Capturing CUDA graphs (decode, FULL):  98%|█████████▊| 50/51 [00:03<00:00, 18.51it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 51/51 [00:03<00:00, 16.43it/s]
+(EngineCore pid=403106) INFO 03-31 18:30:25 [gpu_model_runner.py:5746] Graph capturing finished in 7 secs, took 0.81 GiB
+(EngineCore pid=403106) INFO 03-31 18:30:25 [gpu_worker.py:617] CUDA graph pool memory: 0.81 GiB (actual), 0.86 GiB (estimated), difference: 0.06 GiB (7.0%).
+(EngineCore pid=403106) INFO 03-31 18:30:25 [core.py:281] init engine (profile, create kv cache, warmup model) took 23.25 seconds
+INFO 03-31 18:30:26 [llm.py:391] Supported tasks: ['generate']
+LLM loaded!
+
+POST to scene server: enabled
+
+[ 1/50] Testing: Simple sphere: A perfectly round sphere with a radius of 1.0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]INFO 03-31 18:30:28 [hf.py:320] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+Rendering conversations: 100%|██████████| 1/1 [00:01<00:00,  1.92s/it]Rendering conversations: 100%|██████████| 1/1 [00:01<00:00,  1.92s/it]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.29s/it, est. speed input: 170.39 toks/s, output: 24.12 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.29s/it, est. speed input: 170.39 toks/s, output: 24.12 toks/s]Processed prompts: 100%|██████████| 1/1 [00:08<00:00,  8.29s/it, est. speed input: 170.39 toks/s, output: 24.12 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let d = sdSphere(p, 1.0);
+  return d;
+}
+--------------------------------
+        PASSED (67 chars)
+[ 2/50] Testing: Simple box: A basic cube with dimensions 1.0 on all sides....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 470.27it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:46<00:00, 46.63s/it, est. speed input: 30.30 toks/s, output: 24.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:46<00:00, 46.63s/it, est. speed input: 30.30 toks/s, output: 24.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:46<00:00, 46.63s/it, est. speed input: 30.30 toks/s, output: 24.71 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  return sdBox(p, vec3f(0.5, 0.5, 0.5));
+}
+--------------------------------
+        PASSED (68 chars)
+[ 3/50] Testing: Simple cylinder: A solid cylinder with radius 0.5 and height...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 487.94it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:12<00:00, 12.16s/it, est. speed input: 116.42 toks/s, output: 24.75 toks/s]Processed prompts: 100%|██████████| 1/1 [00:12<00:00, 12.16s/it, est. speed input: 116.42 toks/s, output: 24.75 toks/s]Processed prompts: 100%|██████████| 1/1 [00:12<00:00, 12.16s/it, est. speed input: 116.42 toks/s, output: 24.75 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  return sdCylinder(p, 1.0, 0.5);
+}
+--------------------------------
+        PASSED (61 chars)
+[ 4/50] Testing: Simple torus: A ring shape (donut) with major radius 1.0 and...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 481.11it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:13<00:00, 13.86s/it, est. speed input: 102.69 toks/s, output: 24.75 toks/s]Processed prompts: 100%|██████████| 1/1 [00:13<00:00, 13.86s/it, est. speed input: 102.69 toks/s, output: 24.75 toks/s]Processed prompts: 100%|██████████| 1/1 [00:13<00:00, 13.86s/it, est. speed input: 102.69 toks/s, output: 24.75 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  return sdTorus(p, vec2f(1.0, 0.2));
+}
+--------------------------------
+        PASSED (65 chars)
+[ 5/50] Testing: Simple cone: A standard cone with base radius 1.0 and height...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 486.24it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:25<00:00, 25.04s/it, est. speed input: 56.59 toks/s, output: 24.76 toks/s]Processed prompts: 100%|██████████| 1/1 [00:25<00:00, 25.04s/it, est. speed input: 56.59 toks/s, output: 24.76 toks/s]Processed prompts: 100%|██████████| 1/1 [00:25<00:00, 25.04s/it, est. speed input: 56.59 toks/s, output: 24.76 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let angle = atan(1.0 / 2.0);
+  let sin_a = sin(angle);
+  let cos_a = cos(angle);
+  return sdCone(p, vec2f(sin_a, cos_a), 2.0);
+}
+--------------------------------
+        PASSED (156 chars)
+[ 6/50] Testing: Simple capsule: A cylinder with hemispherical caps on both e...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 475.22it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.31 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.31 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.31 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 171.49it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:30<00:00, 30.53s/it, est. speed input: 167.92 toks/s, output: 24.30 toks/s]Processed prompts: 100%|██████████| 1/1 [00:30<00:00, 30.53s/it, est. speed input: 167.92 toks/s, output: 24.30 toks/s]Processed prompts: 100%|██████████| 1/1 [00:30<00:00, 30.53s/it, est. speed input: 167.92 toks/s, output: 24.30 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  return sdCapsule(p, vec3f(0.0, -0.3, 0.0), vec3f(0.0, 0.3, 0.0), 0.2);
+}
+--------------------------------
+        PASSED (100 chars)
+[ 7/50] Testing: Rounded box: A cube where all sharp edges and corners are ro...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 457.29it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:20<00:00, 20.19s/it, est. speed input: 70.13 toks/s, output: 24.76 toks/s]Processed prompts: 100%|██████████| 1/1 [00:20<00:00, 20.19s/it, est. speed input: 70.13 toks/s, output: 24.76 toks/s]Processed prompts: 100%|██████████| 1/1 [00:20<00:00, 20.19s/it, est. speed input: 70.13 toks/s, output: 24.76 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let size = vec3f(0.2, 0.2, 0.2);
+  let radius = 0.05;
+  return sdRoundBox(p, size, radius);
+}
+--------------------------------
+        PASSED (121 chars)
+[ 8/50] Testing: Hexagonal prism: A solid block with a regular hexagon cross-...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 457.05it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.77s/it, est. speed input: 64.87 toks/s, output: 24.76 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.77s/it, est. speed input: 64.87 toks/s, output: 24.76 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.77s/it, est. speed input: 64.87 toks/s, output: 24.76 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let hexRadius = 0.5;
+  let halfHeight = 0.5;
+  return sdHexPrism(p, vec2f(hexRadius, halfHeight));
+}
+--------------------------------
+        PASSED (128 chars)
+[ 9/50] Testing: Triangular prism: A long solid shape with an equilateral tri...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 465.57it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.32 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.32 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.32 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 117.74it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.76s/it, est. speed input: 336.23 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.76s/it, est. speed input: 336.23 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.76s/it, est. speed input: 336.23 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[10/50] Testing: Thin sheet: A very thin rectangular plate, much wider and lo...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 623.22it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.13s/it, est. speed input: 63.95 toks/s, output: 24.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.13s/it, est. speed input: 63.95 toks/s, output: 24.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.13s/it, est. speed input: 63.95 toks/s, output: 24.77 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let size = vec3f(0.5, 0.01, 0.5);
+  return sdBox(p, size);
+}
+--------------------------------
+        PASSED (88 chars)
+[11/50] Testing: Hollow pipe: A long cylinder with a slightly smaller cylinde...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 434.37it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:15<00:00, 75.72s/it, est. speed input: 18.69 toks/s, output: 24.69 toks/s]Processed prompts: 100%|██████████| 1/1 [01:15<00:00, 75.72s/it, est. speed input: 18.69 toks/s, output: 24.69 toks/s]Processed prompts: 100%|██████████| 1/1 [01:15<00:00, 75.72s/it, est. speed input: 18.69 toks/s, output: 24.69 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let outer = sdCylinder(p, 1.0, 0.3);
+  let inner = sdCylinder(p, 1.05, 0.28);
+  return opS(outer, inner);
+}
+--------------------------------
+        PASSED (135 chars)
+[12/50] Testing: Bowl shape: A hemisphere with a slightly smaller hemisphere ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 444.88it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 188.04it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.17s/it, est. speed input: 199.18 toks/s, output: 24.42 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.17s/it, est. speed input: 199.18 toks/s, output: 24.42 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.17s/it, est. speed input: 199.18 toks/s, output: 24.42 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let R = 0.5;
+  let r = 0.4;
+  let outer_sphere = sdSphere(p - vec3f(0.0, R, 0.0), R);
+  let outer_hemisphere = opI(outer_sphere, -p.y);
+  let inner_sphere = sdSphere(p - vec3f(0.0, r, 0.0), r);
+  return opS(outer_hemisphere, inner_sphere);
+}
+--------------------------------
+        PASSED (269 chars)
+[13/50] Testing: Square frame: A square profile hollowed out in the middle to...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 471.64it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.35 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.35 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.35 toks/s, output: 24.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 127.24it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.60s/it, est. speed input: 354.52 toks/s, output: 23.61 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.60s/it, est. speed input: 354.52 toks/s, output: 23.61 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.60s/it, est. speed input: 354.52 toks/s, output: 23.61 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let outer = sdBox(p, vec3f(0.5, 0.5, 0.5));
+  let inner = sdBox(p, vec3f(0.3, 0.51, 0.3));
+  return opS(outer, inner);
+}
+--------------------------------
+        PASSED (148 chars)
+[14/50] Testing: Swiss cheese block: A solid cube with multiple spherical hol...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 427.03it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:57<00:00, 117.44s/it, est. speed input: 12.05 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [01:57<00:00, 117.44s/it, est. speed input: 12.05 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [01:57<00:00, 117.44s/it, est. speed input: 12.05 toks/s, output: 24.64 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let cube = sdBox(p, vec3f(0.5, 0.5, 0.5));
+  let s1 = sdSphere(p - vec3f(0.5, 0.0, 0.0), 0.2);
+  let s2 = sdSphere(p - vec3f(-0.5, 0.0, 0.0), 0.2);
+  let s3 = sdSphere(p - vec3f(0.0, 0.5, 0.0), 0.2);
+  let s4 = sdSphere(p - vec3f(0.0, -0.5, 0.0), 0.2);
+  let s5 = sdSphere(p - vec3f(0.0, 0.0, 0.5), 0.2);
+  let s6 = sdSphere(p - vec3f(0.0, 0.0, -0.5), 0.2);
+  let res1 = opS(cube, s1);
+  let res2 = opS(res1, s2);
+  let res3 = opS(res2, s3);
+  let res4 = opS(res3, s4);
+  let res5 = opS(res4, s5);
+  let res6 = opS(res5, s6);
+  return res6;
+}
+--------------------------------
+        PASSED (570 chars)
+[15/50] Testing: Stepped bore: A solid block containing a hole that changes d...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 434.78it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.14s/it, est. speed input: 11.76 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.14s/it, est. speed input: 11.76 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.14s/it, est. speed input: 11.76 toks/s, output: 24.64 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let box = sdBox(p, vec3f(0.5, 0.5, 0.5));
+  let h_cyl = 0.255;
+  let r1 = 0.3;
+  let cyl1_p = p - vec3f(0.0, -0.25, 0.0);
+  let cyl1 = sdCylinder(cyl1_p, h_cyl, r1);
+  let r2 = 0.2;
+  let cyl2_p = p - vec3f(0.0, 0.25, 0.0);
+  let cyl2 = sdCylinder(cyl2_p, h_cyl, r2);
+  let holes = opU(cyl1, cyl2);
+  return opS(box, holes);
+}
+--------------------------------
+        PASSED (354 chars)
+[16/50] Testing: Countersunk hole plate: A flat square plate with a hole that...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 434.78it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.68s/it, est. speed input: 11.39 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.68s/it, est. speed input: 11.39 toks/s, output: 24.64 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.68s/it, est. speed input: 11.39 toks/s, output: 24.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 130.99it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.42s/it, est. speed input: 341.68 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.42s/it, est. speed input: 341.68 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.42s/it, est. speed input: 341.68 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[17/50] Testing: Counterbored hole plate: A flat plate with a hole that has a...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 630.34it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.73s/it, est. speed input: 11.42 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.73s/it, est. speed input: 11.42 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.73s/it, est. speed input: 11.42 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 176.35it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:26<00:00, 26.26s/it, est. speed input: 203.90 toks/s, output: 24.26 toks/s]Processed prompts: 100%|██████████| 1/1 [00:26<00:00, 26.26s/it, est. speed input: 203.90 toks/s, output: 24.26 toks/s]Processed prompts: 100%|██████████| 1/1 [00:26<00:00, 26.26s/it, est. speed input: 203.90 toks/s, output: 24.26 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let plate = sdBox(p, vec3f(0.5, 0.2, 0.5));
+  
+  let q_cb = p - vec3f(0.0, 0.15, 0.0);
+  let cb = sdCylinder(q_cb, 0.3, 0.05);
+  
+  let q_th = p - vec3f(0.0, -0.05, 0.0);
+  let th = sdCylinder(q_th, 0.15, 0.15);
+  
+  let hole = opU(cb, th);
+  return opS(plate, hole);
+}
+--------------------------------
+        PASSED (297 chars)
+[18/50] Testing: Keyhole slot: A rectangular plate with a hole made of a circ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 435.23it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.36 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.36 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.36 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 132.13it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.55s/it, est. speed input: 339.60 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.55s/it, est. speed input: 339.60 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.55s/it, est. speed input: 339.60 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[19/50] Testing: V-groove block: A rectangular block with a triangular trench...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 632.34it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.36 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.36 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.70s/it, est. speed input: 11.36 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 129.20it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.59s/it, est. speed input: 338.95 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.59s/it, est. speed input: 338.95 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.59s/it, est. speed input: 338.95 toks/s, output: 23.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[20/50] Testing: U-channel: A long rectangular block with a deep rectangular ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 626.20it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 182.35it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:50<00:00, 110.49s/it, est. speed input: 44.35 toks/s, output: 24.26 toks/s]Processed prompts: 100%|██████████| 1/1 [01:50<00:00, 110.49s/it, est. speed input: 44.35 toks/s, output: 24.26 toks/s]Processed prompts: 100%|██████████| 1/1 [01:50<00:00, 110.49s/it, est. speed input: 44.35 toks/s, output: 24.26 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let main = sdBox(p, vec3f(0.4, 1.0, 0.2));
+  let channel = sdBox(p, vec3f(0.3, 1.0, 0.2));
+  return opS(main, channel);
+}
+--------------------------------
+        PASSED (149 chars)
+[21/50] Testing: Crossed pipes: Two hollow cylinders intersecting at exactly ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 441.74it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:55<00:00, 115.42s/it, est. speed input: 12.24 toks/s, output: 24.67 toks/s]Processed prompts: 100%|██████████| 1/1 [01:55<00:00, 115.42s/it, est. speed input: 12.24 toks/s, output: 24.67 toks/s]Processed prompts: 100%|██████████| 1/1 [01:55<00:00, 115.42s/it, est. speed input: 12.24 toks/s, output: 24.67 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+    let q = opRotateZ(p, 1.5708);
+    let outer1 = sdCylinder(p, 0.5, 0.4);
+    let inner1 = sdCylinder(p, 0.6, 0.3);
+    let pipe1 = opS(outer1, inner1);
+    let outer2 = sdCylinder(q, 0.5, 0.4);
+    let inner2 = sdCylinder(q, 0.6, 0.3);
+    let pipe2 = opS(outer2, inner2);
+    return opU(pipe1, pipe2);
+}
+--------------------------------
+        PASSED (333 chars)
+[22/50] Testing: Lens shape: The intersection of two slightly overlapping sph...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 445.35it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:31<00:00, 31.23s/it, est. speed input: 45.08 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:31<00:00, 31.23s/it, est. speed input: 45.08 toks/s, output: 24.78 toks/s]Processed prompts: 100%|██████████| 1/1 [00:31<00:00, 31.23s/it, est. speed input: 45.08 toks/s, output: 24.78 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let d1 = sdSphere(p + vec3f(0.4, 0.0, 0.0), 0.5);
+  let d2 = sdSphere(p - vec3f(0.4, 0.0, 0.0), 0.5);
+  return opI(d1, d2);
+}
+--------------------------------
+        PASSED (153 chars)
+[23/50] Testing: Wedge: A triangular block, like a doorstop, formed by slicin...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 436.82it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.55s/it, est. speed input: 11.36 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.55s/it, est. speed input: 11.36 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.55s/it, est. speed input: 11.36 toks/s, output: 24.66 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 125.15it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.63s/it, est. speed input: 338.31 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.63s/it, est. speed input: 338.31 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.63s/it, est. speed input: 338.31 toks/s, output: 23.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[24/50] Testing: Dice block: A cube with slightly rounded corners and small s...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 607.17it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.35 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.35 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.35 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 153.03it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:45<00:00, 45.63s/it, est. speed input: 130.28 toks/s, output: 24.06 toks/s]Processed prompts: 100%|██████████| 1/1 [00:45<00:00, 45.63s/it, est. speed input: 130.28 toks/s, output: 24.06 toks/s]Processed prompts: 100%|██████████| 1/1 [00:45<00:00, 45.63s/it, est. speed input: 130.28 toks/s, output: 24.06 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+    let corner_radius = 0.1;
+    let cube = sdRoundBox(p, vec3f(0.5, 0.5, 0.5), corner_radius);
+    
+    let indent_radius = 0.1;
+    let indent_pos = 0.5 - indent_radius;
+    
+    let d = cube;
+    
+    let sphere_pos_x = sdSphere(p - vec3f(indent_pos, 0.0, 0.0), indent_radius);
+    d = opS(d, sphere_pos_x);
+    
+    let sphere_neg_x = sdSphere(p - vec3f(-indent_pos, 0.0, 0.0), indent_radius);
+    d = opS(d, sphere_neg_x);
+    
+    let sphere_pos_y = sdSphere(p - vec3f(0.0, indent_pos, 0.0), indent_radius);
+    d = opS(d, sphere_pos_y);
+    
+    let sphere_neg_y = sdSphere(p - vec3f(0.0, -indent_pos, 0.0), indent_radius);
+    d = opS(d, sphere_neg_y);
+    
+    let sphere_pos_z = sdSphere(p - vec3f(0.0, 0.0, indent_pos), indent_radius);
+    d = opS(d, sphere_pos_z);
+    
+    let sphere_neg_z = sdSphere(p - vec3f(0.0, 0.0, -indent_pos), indent_radius);
+    d = opS(d, sphere_neg_z);
+    
+    return d;
+}
+--------------------------------
+        PASSED (940 chars)
+[25/50] Testing: Crescent moon: A 2D crescent profile extruded into a 3D bloc...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 426.51it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:54<00:00, 114.48s/it, est. speed input: 12.46 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [01:54<00:00, 114.48s/it, est. speed input: 12.46 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [01:54<00:00, 114.48s/it, est. speed input: 12.46 toks/s, output: 24.63 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let main = sdCylinder(p, 0.5, 0.5);
+  let shifted = sdCylinder(p - vec3f(0.5, 0.0, 0.0), 0.5, 0.3);
+  return opS(main, shifted);
+}
+--------------------------------
+        PASSED (158 chars)
+[26/50] Testing: Step pyramid: Three stacked rectangular blocks decreasing in...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 451.05it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.49s/it, est. speed input: 11.72 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.49s/it, est. speed input: 11.72 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.49s/it, est. speed input: 11.72 toks/s, output: 24.62 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let b1 = sdBox(p - vec3f(0.0, -0.4, 0.0), vec3f(0.4, 0.2, 0.4));
+  let b2 = sdBox(p, vec3f(0.3, 0.2, 0.3));
+  let b3 = sdBox(p - vec3f(0.0, 0.4, 0.0), vec3f(0.2, 0.2, 0.2));
+  return opU(opU(b1, b2), b3);
+}
+--------------------------------
+        PASSED (234 chars)
+[27/50] Testing: Hourglass: Two cones meeting at their tips....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 439.61it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:03<00:00, 123.96s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:03<00:00, 123.96s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:03<00:00, 123.96s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let angle = vec2f(0.5, 0.8660254);
+  let h = 0.5;
+  let d1 = sdCone(p, angle, h);
+  let q = vec3f(p.x, -p.y, p.z);
+  let d2 = sdCone(q, angle, h);
+  return min(d1, d2);
+}
+--------------------------------
+        PASSED (198 chars)
+[28/50] Testing: Dumbbell profile: A long cylinder with a sphere attached to ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 439.70it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:39<00:00, 99.11s/it, est. speed input: 14.26 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [01:39<00:00, 99.11s/it, est. speed input: 14.26 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [01:39<00:00, 99.11s/it, est. speed input: 14.26 toks/s, output: 24.66 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let cyl = sdCylinder(p, 0.4, 0.1);
+  let top = sdSphere(p - vec3f(0.0, 0.5, 0.0), 0.1);
+  let bot = sdSphere(p - vec3f(0.0, -0.5, 0.0), 0.1);
+  return opU(cyl, opU(top, bot));
+}
+--------------------------------
+        PASSED (205 chars)
+[29/50] Testing: Domed cylinder: A short cylinder with a smoothly rounded hem...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 438.28it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.33 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.33 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.33 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 124.43it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.77s/it, est. speed input: 336.21 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.77s/it, est. speed input: 336.21 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.77s/it, est. speed input: 336.21 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[30/50] Testing: Tapered nozzle: A hollow cone attached to a hollow cylinder ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 611.68it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.36 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.36 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.36 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 128.82it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.56s/it, est. speed input: 339.54 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.56s/it, est. speed input: 339.54 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.56s/it, est. speed input: 339.54 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[31/50] Testing: Star profile: A central cylinder with five pointed triangula...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 605.33it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.76s/it, est. speed input: 11.33 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.76s/it, est. speed input: 11.33 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.76s/it, est. speed input: 11.33 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 124.99it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:24<00:00, 24.02s/it, est. speed input: 317.43 toks/s, output: 23.65 toks/s]Processed prompts: 100%|██████████| 1/1 [00:24<00:00, 24.02s/it, est. speed input: 317.43 toks/s, output: 23.65 toks/s]Processed prompts: 100%|██████████| 1/1 [00:24<00:00, 24.02s/it, est. speed input: 317.43 toks/s, output: 23.65 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[32/50] Testing: Pill shape: A short wide cylinder with shallow spherical dom...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 624.90it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.34 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.34 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.34 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 145.38it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:33<00:00, 33.46s/it, est. speed input: 187.28 toks/s, output: 24.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:33<00:00, 33.46s/it, est. speed input: 187.28 toks/s, output: 24.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:33<00:00, 33.46s/it, est. speed input: 187.28 toks/s, output: 24.00 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let h = 0.2;
+  let r = 0.3;
+  let a = vec3f(0.0, -h, 0.0);
+  let b = vec3f(0.0, h, 0.0);
+  return sdCapsule(p, a, b, r);
+}
+--------------------------------
+        PASSED (150 chars)
+[33/50] Testing: L-shaped bracket: Two flat rectangular plates meeting at a 9...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 435.05it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.37 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.37 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.37 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 124.01it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.48s/it, est. speed input: 340.84 toks/s, output: 23.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.48s/it, est. speed input: 340.84 toks/s, output: 23.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.48s/it, est. speed input: 340.84 toks/s, output: 23.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[34/50] Testing: T-shaped bracket: Two flat plates meeting to form a T, unifo...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 623.41it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.23s/it, est. speed input: 11.75 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.23s/it, est. speed input: 11.75 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:00<00:00, 120.23s/it, est. speed input: 11.75 toks/s, output: 24.63 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let vertical = sdBox(p, vec3f(0.1, 0.5, 0.1));
+  let horizontal = sdBox(p - vec3f(0.0, 0.59, 0.0), vec3f(0.5, 0.1, 0.1));
+  return opU(vertical, horizontal);
+}
+--------------------------------
+        PASSED (187 chars)
+[35/50] Testing: Gusset plate: A triangular plate with three circular holes c...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 433.25it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.33 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.33 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.75s/it, est. speed input: 11.33 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 115.38it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it, est. speed input: 337.49 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it, est. speed input: 337.49 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.69s/it, est. speed input: 337.49 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[36/50] Testing: I-beam: A long structural beam with an I-shaped cross-sectio...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 620.28it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.32 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.32 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.32 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 175.20it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:26<00:00, 26.32s/it, est. speed input: 198.11 toks/s, output: 24.28 toks/s]Processed prompts: 100%|██████████| 1/1 [00:26<00:00, 26.32s/it, est. speed input: 198.11 toks/s, output: 24.28 toks/s]Processed prompts: 100%|██████████| 1/1 [00:26<00:00, 26.32s/it, est. speed input: 198.11 toks/s, output: 24.28 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let web = sdBox(p, vec3f(0.05, 0.3, 0.2));
+  let topFlange = sdBox(p - vec3f(0.0, 0.315, 0.0), vec3f(0.1, 0.025, 0.2));
+  let bottomFlange = sdBox(p - vec3f(0.0, -0.315, 0.0), vec3f(0.1, 0.025, 0.2));
+  return opU(opU(web, topFlange), bottomFlange);
+}
+--------------------------------
+        PASSED (279 chars)
+[37/50] Testing: C-clamp body: A thick C-shaped block used as the main frame ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 425.60it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.35 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.35 toks/s, output: 24.62 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.77s/it, est. speed input: 11.35 toks/s, output: 24.62 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 157.69it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:33<00:00, 33.33s/it, est. speed input: 172.78 toks/s, output: 24.09 toks/s]Processed prompts: 100%|██████████| 1/1 [00:33<00:00, 33.33s/it, est. speed input: 172.78 toks/s, output: 24.09 toks/s]Processed prompts: 100%|██████████| 1/1 [00:33<00:00, 33.33s/it, est. speed input: 172.78 toks/s, output: 24.09 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let body = sdRoundBox(p, vec3f(0.4, 0.3, 0.2), 0.05);
+  let cutout = sdBox(p - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.3, 0.2));
+  return opS(body, cutout);
+}
+--------------------------------
+        PASSED (181 chars)
+[38/50] Testing: Gear blank: A thick disc with a large central hole and a sma...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 424.48it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:18<00:00, 78.91s/it, est. speed input: 17.96 toks/s, output: 24.68 toks/s]Processed prompts: 100%|██████████| 1/1 [01:18<00:00, 78.91s/it, est. speed input: 17.96 toks/s, output: 24.68 toks/s]Processed prompts: 100%|██████████| 1/1 [01:18<00:00, 78.91s/it, est. speed input: 17.96 toks/s, output: 24.68 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let disc = sdCylinder(p, 0.1, 0.5);
+  let centralHole = sdCylinder(p, 0.12, 0.2);
+  let offsetHole = sdCylinder(p - vec3f(0.3, 0.0, 0.0), 0.12, 0.08);
+  let shape = opS(disc, centralHole);
+  return opS(shape, offsetHole);
+}
+--------------------------------
+        PASSED (251 chars)
+[39/50] Testing: Threaded rod blank: A long thin cylinder with a small chamfe...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 428.87it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.74s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 126.07it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.97s/it, est. speed input: 318.14 toks/s, output: 23.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.97s/it, est. speed input: 318.14 toks/s, output: 23.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.97s/it, est. speed input: 318.14 toks/s, output: 23.66 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[40/50] Testing: Splined shaft blank: A central cylinder with four smaller cy...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 617.54it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:57<00:00, 117.98s/it, est. speed input: 11.99 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [01:57<00:00, 117.98s/it, est. speed input: 11.99 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [01:57<00:00, 117.98s/it, est. speed input: 11.99 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 400.03it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:07<00:00, 67.76s/it, est. speed input: 24.76 toks/s, output: 24.69 toks/s]Processed prompts: 100%|██████████| 1/1 [01:07<00:00, 67.76s/it, est. speed input: 24.76 toks/s, output: 24.69 toks/s]Processed prompts: 100%|██████████| 1/1 [01:07<00:00, 67.76s/it, est. speed input: 24.76 toks/s, output: 24.69 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let central = sdCylinder(p, 0.5, 0.2);
+  let a0 = 0.0;
+  let q0 = opRotateY(p, a0);
+  let s0 = sdCylinder(q0 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);
+  
+  let a1 = 1.5708;
+  let q1 = opRotateY(p, a1);
+  let s1 = sdCylinder(q1 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);
+  
+  let a2 = 3.1416;
+  let q2 = opRotateY(p, a2);
+  let s2 = sdCylinder(q2 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);
+  
+  let a3 = 4.7124;
+  let q3 = opRotateY(p, a3);
+  let s3 = sdCylinder(q3 - vec3f(0.29, 0.0, 0.0), 0.5, 0.1);
+  
+  let splines = opU(opU(opU(s0, s1), s2), s3);
+  return opU(central, splines);
+}
+--------------------------------
+        PASSED (592 chars)
+[41/50] Testing: Cam lobe: A teardrop-shaped extruded profile used for a cams...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 431.96it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.60s/it, est. speed input: 11.36 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.60s/it, est. speed input: 11.36 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.60s/it, est. speed input: 11.36 toks/s, output: 24.66 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 126.25it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it, est. speed input: 337.63 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it, est. speed input: 337.63 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.68s/it, est. speed input: 337.63 toks/s, output: 23.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[42/50] Testing: Flanged bearing: A hollow cylinder with a wide flat ring aro...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 621.56it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.72s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.72s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.72s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 172.82it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:47<00:00, 47.83s/it, est. speed input: 107.36 toks/s, output: 24.27 toks/s]Processed prompts: 100%|██████████| 1/1 [00:47<00:00, 47.83s/it, est. speed input: 107.36 toks/s, output: 24.27 toks/s]Processed prompts: 100%|██████████| 1/1 [00:47<00:00, 47.83s/it, est. speed input: 107.36 toks/s, output: 24.27 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let outer_main = sdCylinder(p, 0.5, 0.3);
+  let inner_main = sdCylinder(p, 0.6, 0.2);
+  let main = opS(outer_main, inner_main);
+
+  let p_flange = p - vec3f(0.0, -0.6, 0.0);
+  let outer_flange = sdCylinder(p_flange, 0.1, 0.6);
+  let inner_flange = sdCylinder(p_flange, 0.1, 0.3);
+  let flange = opS(outer_flange, inner_flange);
+
+  return opU(main, flange);
+}
+--------------------------------
+        PASSED (385 chars)
+[43/50] Testing: Hex wrench: A long thin hexagonal rod bent at a 90-degree an...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 427.86it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 123.11it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.64s/it, est. speed input: 338.28 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.64s/it, est. speed input: 338.28 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.64s/it, est. speed input: 338.28 toks/s, output: 23.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[44/50] Testing: Chain link side: A flat plate shaped like an oval or capsule...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 615.18it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.35 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 125.40it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.63s/it, est. speed input: 338.33 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.63s/it, est. speed input: 338.33 toks/s, output: 23.64 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.63s/it, est. speed input: 338.33 toks/s, output: 23.64 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[45/50] Testing: Rivet head: A very short cylinder acting as a shank with a l...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 602.46it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.37 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.37 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.37 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 123.96it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.51s/it, est. speed input: 340.31 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.51s/it, est. speed input: 340.31 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.51s/it, est. speed input: 340.31 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[46/50] Testing: Signet ring: A torus that thickens significantly on one side...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 614.46it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.37 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.37 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.37 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 122.67it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.51s/it, est. speed input: 340.31 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.51s/it, est. speed input: 340.31 toks/s, output: 23.63 toks/s]Processed prompts: 100%|██████████| 1/1 [00:22<00:00, 22.51s/it, est. speed input: 340.31 toks/s, output: 23.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[47/50] Testing: Wheel rim: A torus connected to a central smaller cylinder v...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 632.05it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.71s/it, est. speed input: 11.34 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 158.07it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:35<00:00, 35.62s/it, est. speed input: 163.03 toks/s, output: 24.09 toks/s]Processed prompts: 100%|██████████| 1/1 [00:35<00:00, 35.62s/it, est. speed input: 163.03 toks/s, output: 24.09 toks/s]Processed prompts: 100%|██████████| 1/1 [00:35<00:00, 35.62s/it, est. speed input: 163.03 toks/s, output: 24.09 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 153.19it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:08<00:00, 68.35s/it, est. speed input: 89.91 toks/s, output: 24.17 toks/s]Processed prompts: 100%|██████████| 1/1 [01:08<00:00, 68.35s/it, est. speed input: 89.91 toks/s, output: 24.17 toks/s]Processed prompts: 100%|██████████| 1/1 [01:08<00:00, 68.35s/it, est. speed input: 89.91 toks/s, output: 24.17 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+    let torus = sdTorus(p, vec2f(0.5, 0.1));
+    let cylinder = sdCylinder(p, 0.1, 0.2);
+    
+    let s0 = sdBox(opRotateY(p, 0.0) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));
+    let s1 = sdBox(opRotateY(p, 1.5708) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));
+    let s2 = sdBox(opRotateY(p, 3.1416) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));
+    let s3 = sdBox(opRotateY(p, 4.7124) - vec3f(0.3, 0.0, 0.0), vec3f(0.1, 0.02, 0.02));
+    
+    let spokes = opU(opU(opU(s0, s1), s2), s3);
+    return opU(opU(torus, cylinder), spokes);
+}
+--------------------------------
+        PASSED (573 chars)
+[48/50] Testing: Propeller blade blank: A thin twisted rectangular plate atta...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 426.94it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.58s/it, est. speed input: 11.35 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.58s/it, est. speed input: 11.35 toks/s, output: 24.66 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.58s/it, est. speed input: 11.35 toks/s, output: 24.66 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 124.53it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:24<00:00, 24.05s/it, est. speed input: 317.03 toks/s, output: 23.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:24<00:00, 24.05s/it, est. speed input: 317.03 toks/s, output: 23.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:24<00:00, 24.05s/it, est. speed input: 317.03 toks/s, output: 23.66 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let hub = sdSphere(p, 0.15);
+  let blade_p = p;
+  let twist_factor = 2.0;
+  let angle = blade_p.y * twist_factor;
+  let c = cos(angle);
+  let s = sin(angle);
+  let x = blade_p.x;
+  let y = blade_p.y * c - blade_p.z * s;
+  let z = blade_p.y * s + blade_p.z * c;
+  let p_rot = vec3f(x, y, z);
+  let blade = sdBox(p_rot - vec3f(0.0, 0.15, 0.0), vec3f(0.05, 0.15, 0.02));
+  return opU(hub, blade);
+}
+
+Hmm, I need to check the parentheses. Let's count them. The function starts with {, then there are let declarations. Each line ends with a semicolon. The last line is return opU(...); and then the closing }.
+
+Wait, the error says 64 open and 63 close. That seems like a lot. Maybe there's a missing closing parenthesis somewhere. Let me look again.
+
+Looking at the line:
+
+let p_rot = vec3f(x, y, z);
+
+The variables x, y, z are assigned from the previous lines. Then, the sdBox call:
+
+let blade = sdBox(p_rot - vec3f(0.0, 0.15, 0.0), vec3f(0.05, 0.15, 0.02));
+
+The vec3f and sdBox functions are correctly closed. The opU function is called with two arguments, hub and blade. So the parentheses here are balanced.
+
+Wait, maybe the issue is with the use of vec3f. In WGSL, the syntax is correct, but maybe the user forgot a closing parenthesis in one of the vec3f calls. Let me check each vec3f:
+
+vec3f(0.0, 0.15, 0.0) → correct.
+vec3f(0.05, 0.15, 0.02) → correct.
+
+No, those are fine. The problem might be in the angle calculation. Let's see:
+
+angle is calculated as blade_p.y * twist_factor. Then c and s are cos(angle) and sin(angle). That's okay
+--------------------------------
+        PASSED (1571 chars)
+[49/50] Testing: Cone with flat top: A frustum of a cone, where the pointy ti...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 412.10it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.73s/it, est. speed input: 11.39 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.73s/it, est. speed input: 11.39 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.73s/it, est. speed input: 11.39 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 123.50it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.93s/it, est. speed input: 347.99 toks/s, output: 23.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.93s/it, est. speed input: 347.99 toks/s, output: 23.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:21<00:00, 21.93s/it, est. speed input: 347.99 toks/s, output: 23.62 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let sin_a = 0.4;
+  let cos_a = 0.9165;
+  let h = 0.5;
+  let y_cut = 0.2;
+  let cone = sdCone(p, vec2f(sin_a, cos_a), h);
+  let halfSpace = -(p.y - y_cut);
+  return max(cone, halfSpace);
+}
+--------------------------------
+        PASSED (215 chars)
+[50/50] Testing: Half pipe: A hollow cylinder sliced perfectly in half down i...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 426.55it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.72s/it, est. speed input: 11.31 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.72s/it, est. speed input: 11.31 toks/s, output: 24.63 toks/s]Processed prompts: 100%|██████████| 1/1 [02:04<00:00, 124.72s/it, est. speed input: 11.31 toks/s, output: 24.63 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 174.14it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:18<00:00, 18.19s/it, est. speed input: 264.98 toks/s, output: 24.40 toks/s]Processed prompts: 100%|██████████| 1/1 [00:18<00:00, 18.19s/it, est. speed input: 264.98 toks/s, output: 24.40 toks/s]Processed prompts: 100%|██████████| 1/1 [00:18<00:00, 18.19s/it, est. speed input: 264.98 toks/s, output: 24.40 toks/s]
+--------------------------------
+My generated code:  fn map(p: vec3f) -> f32 {
+  let outer = sdCylinder(p, 0.5, 0.4);
+  let inner = sdCylinder(p, 0.5, 0.35);
+  let tube = opS(outer, inner);
+  let halfSpace = -p.x;
+  return opI(tube, halfSpace);
+}
+--------------------------------
+        PASSED (193 chars)
+
+============================================================
+RESULTS: 34/50 passed, 16/50 failed
+============================================================
+
+Failed prompts:
+  [9] Triangular prism: A long solid shape with an equil...
+      Error: Agent returned None
+
+  [16] Countersunk hole plate: A flat square plate with a...
+      Error: Agent returned None
+
+  [18] Keyhole slot: A rectangular plate with a hole made...
+      Error: Agent returned None
+
+  [19] V-groove block: A rectangular block with a triangu...
+      Error: Agent returned None
+
+  [23] Wedge: A triangular block, like a doorstop, formed...
+      Error: Agent returned None
+
+  [29] Domed cylinder: A short cylinder with a smoothly r...
+      Error: Agent returned None
+
+  [30] Tapered nozzle: A hollow cone attached to a hollow...
+      Error: Agent returned None
+
+  [31] Star profile: A central cylinder with five pointed...
+      Error: Agent returned None
+
+  [33] L-shaped bracket: Two flat rectangular plates meet...
+      Error: Agent returned None
+
+  [35] Gusset plate: A triangular plate with three circul...
+      Error: Agent returned None
+
+  [39] Threaded rod blank: A long thin cylinder with a sm...
+      Error: Agent returned None
+
+  [41] Cam lobe: A teardrop-shaped extruded profile used ...
+      Error: Agent returned None
+
+  [43] Hex wrench: A long thin hexagonal rod bent at a 90...
+      Error: Agent returned None
+
+  [44] Chain link side: A flat plate shaped like an oval ...
+      Error: Agent returned None
+
+  [45] Rivet head: A very short cylinder acting as a shan...
+      Error: Agent returned None
+
+  [46] Signet ring: A torus that thickens significantly o...
+      Error: Agent returned None
+
+Generated files saved to /home/oliverpryce/text-to-geometry/agent/experiments/outputs
+(EngineCore pid=403106) INFO 03-31 20:12:54 [core.py:1201] Shutdown initiated (timeout=0)
+(EngineCore pid=403106) INFO 03-31 20:12:54 [core.py:1224] Shutdown complete
+ERROR 03-31 20:12:55 [core_client.py:704] Engine core proc EngineCore died unexpectedly, shutting down client.
+=== screenshots ===
+
+--- [ 1/50] Simple_sphere ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/01_Simple_sphere.png
+
+--- [ 2/50] Simple_box ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/02_Simple_box.png
+
+--- [ 3/50] Simple_cylinder ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/03_Simple_cylinder.png
+
+--- [ 4/50] Simple_torus ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/04_Simple_torus.png
+
+--- [ 5/50] Simple_cone ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/05_Simple_cone.png
+
+--- [ 6/50] Simple_capsule ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/06_Simple_capsule.png
+
+--- [ 7/50] Rounded_box ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/07_Rounded_box.png
+
+--- [ 8/50] Hexagonal_prism ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/08_Hexagonal_prism.png
+
+--- [ 9/50] Triangular_prism ---
+  SKIP: no fn map in file after stripping comments
+
+--- [10/50] Thin_sheet ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/10_Thin_sheet.png
+
+--- [11/50] Hollow_pipe ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/11_Hollow_pipe.png
+
+--- [12/50] Bowl_shape ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/12_Bowl_shape.png
+
+--- [13/50] Square_frame ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/13_Square_frame.png
+
+--- [14/50] Swiss_cheese_block ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/14_Swiss_cheese_block.png
+
+--- [15/50] Stepped_bore ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/15_Stepped_bore.png
+
+--- [16/50] Countersunk_hole_plate ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/16_Countersunk_hole_plate.png
+
+--- [17/50] Counterbored_hole_plate ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/17_Counterbored_hole_plate.png
+
+--- [18/50] Keyhole_slot ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/18_Keyhole_slot.png
+
+--- [19/50] V-groove_block ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/19_V-groove_block.png
+
+--- [20/50] U-channel ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/20_U-channel.png
+
+--- [21/50] Crossed_pipes ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/21_Crossed_pipes.png
+
+--- [22/50] Lens_shape ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/22_Lens_shape.png
+
+--- [23/50] Wedge ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/23_Wedge.png
+
+--- [24/50] Dice_block ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/24_Dice_block.png
+
+--- [25/50] Crescent_moon ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/25_Crescent_moon.png
+
+--- [26/50] Step_pyramid ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/26_Step_pyramid.png
+
+--- [27/50] Hourglass ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/27_Hourglass.png
+
+--- [28/50] Dumbbell_profile ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/28_Dumbbell_profile.png
+
+--- [29/50] Domed_cylinder ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/29_Domed_cylinder.png
+
+--- [30/50] Tapered_nozzle ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/30_Tapered_nozzle.png
+
+--- [31/50] Star_profile ---
+  SKIP: no fn map in file after stripping comments
+
+--- [32/50] Pill_shape ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/32_Pill_shape.png
+
+--- [33/50] L-shaped_bracket ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/33_L-shaped_bracket.png
+
+--- [34/50] T-shaped_bracket ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/34_T-shaped_bracket.png
+
+--- [35/50] Gusset_plate ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/35_Gusset_plate.png
+
+--- [36/50] I-beam ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/36_I-beam.png
+
+--- [37/50] C-clamp_body ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/37_C-clamp_body.png
+
+--- [38/50] Gear_blank ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/38_Gear_blank.png
+
+--- [39/50] Threaded_rod_blank ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/39_Threaded_rod_blank.png
+
+--- [40/50] Splined_shaft_blank ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/40_Splined_shaft_blank.png
+
+--- [41/50] Cam_lobe ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/41_Cam_lobe.png
+
+--- [42/50] Flanged_bearing ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/42_Flanged_bearing.png
+
+--- [43/50] Hex_wrench ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/43_Hex_wrench.png
+
+--- [44/50] Chain_link_side ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/44_Chain_link_side.png
+
+--- [45/50] Rivet_head ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/45_Rivet_head.png
+
+--- [46/50] Signet_ring ---
+  SKIP: no fn map in file after stripping comments
+
+--- [47/50] Wheel_rim ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/47_Wheel_rim.png
+
+--- [48/50] Propeller_blade_blank ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/48_Propeller_blade_blank.png
+
+--- [49/50] Cone_with_flat_top ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/49_Cone_with_flat_top.png
+
+--- [50/50] Half_pipe ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/50_Half_pipe.png
+
+Done. Screenshots in /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots
+=== report ===
+Wrote /home/oliverpryce/text-to-geometry/agent/experiments/VISUAL_REPORT.md
+=== 2026-03-31T20:25:52+00:00 done ===

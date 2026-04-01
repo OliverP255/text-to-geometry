@@ -22,17 +22,19 @@ enum class NodeCategory : uint8_t {
 enum class ShapeOp : uint8_t {
   Sphere,
   Box,
-  Plane,
   Union,
   Intersect,
   Subtract,
   ApplyTransform,
+  Cylinder,
+  SmoothUnion,
 };
 
 // Transform opcodes
 enum class TransformOp : uint8_t {
   Translate,
   Scale,
+  Rotate,
 };
 
 // Float opcodes (minimal; for future scalar params)
@@ -49,17 +51,25 @@ struct BoxPayload {
   Vec3 halfExtents{1, 1, 1};
 };
 
-struct PlanePayload {
-  Vec3 normal{0, 1, 0};
-  float d = 0;
-};
-
 struct TranslatePayload {
   Vec3 t{0, 0, 0};
 };
 
 struct ScalePayload {
   Vec3 s{1, 1, 1};
+};
+
+struct RotatePayload {
+  float x = 0, y = 0, z = 0, w = 1;  // quaternion (identity)
+};
+
+struct CylinderPayload {
+  float r = 1.0f;
+  float h = 1.0f;
+};
+
+struct SmoothUnionPayload {
+  float k = 0.1f;
 };
 
 // Compact node header for arena storage. Children stored inline.

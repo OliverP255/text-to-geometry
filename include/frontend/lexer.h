@@ -9,7 +9,7 @@ namespace frontend {
 enum class TokenType {
   ShapeVar,     // s0, s1, s2, ...
   TransformVar, // t0, t1, t2, ...
-  Ident,        // sphere, box, plane, translate, scale, union, intersect, subtract, apply, return
+  Ident,        // sphere, box, cylinder, translate, scale, rotate, union, intersect, subtract, smooth_union, apply, return
   Num,          // float literal
   Lparen,
   Rparen,

@@ -1,0 +1,59 @@
+
+--- [ 1/50] Simple_sphere ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/01_Simple_sphere.png
+
+--- [ 2/50] Simple_box ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/02_Simple_box.png
+
+--- [ 3/50] Simple_cylinder ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/03_Simple_cylinder.png
+
+--- [ 4/50] Simple_torus ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/04_Simple_torus.png
+
+--- [ 5/50] Simple_cone ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/05_Simple_cone.png
+
+--- [ 6/50] Simple_capsule ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/06_Simple_capsule.png
+
+--- [ 7/50] Rounded_box ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/07_Rounded_box.png
+
+--- [ 8/50] Hexagonal_prism ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/08_Hexagonal_prism.png
+
+--- [ 9/50] Triangular_prism ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/09_Triangular_prism.png
+
+--- [10/50] Thin_sheet ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/10_Thin_sheet.png
+
+--- [11/50] Hollow_pipe ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/11_Hollow_pipe.png
+
+--- [12/50] Bowl_shape ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/12_Bowl_shape.png
+
+--- [13/50] Square_frame ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/13_Square_frame.png
+
+--- [14/50] Swiss_cheese_block ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/14_Swiss_cheese_block.png
+
+--- [15/50] Stepped_bore ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/15_Stepped_bore.png
+
+--- [16/50] Countersunk_hole_plate ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/16_Countersunk_hole_plate.png
+
+--- [17/50] Counterbored_hole_plate ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/17_Counterbored_hole_plate.png
+
+--- [18/50] Keyhole_slot ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/18_Keyhole_slot.png
+
+--- [19/50] V-groove_block ---
+  -> /home/oliverpryce/text-to-geometry/agent/experiments/outputs/screenshots/19_V-groove_block.png
+
+--- [20/50] U-channel ---

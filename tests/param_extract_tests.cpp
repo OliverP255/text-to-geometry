@@ -19,9 +19,9 @@ TEST(ParamExtract, ExtractAndApplyRoundTrip) {
   std::vector<float> params = extractParams(ir);
   EXPECT_FALSE(params.empty());
 
-  // Modify sphere radius slightly (params[6] is first sphere r for single sphere + identity)
-  if (params.size() > 6) {
-    params[6] *= 1.1f;  // scale sphere r
+  // Modify sphere radius slightly (params[10] is first sphere r with 10-float transforms)
+  if (params.size() > 10) {
+    params[10] *= 1.1f;
   }
   applyParams(ir, params);
 
@@ -41,12 +41,12 @@ TEST(ParamExtract, NoMinScaleInIR) {
   b.freeze(root, dag);
   FlatIR ir = lower(dag);
 
-  // FlatTransform has 6 fields (tx,ty,tz,sx,sy,sz), no minScale
+  // FlatTransform has 10 fields (tx,ty,tz,sx,sy,sz,qx,qy,qz,qw), no minScale
   EXPECT_GE(ir.transforms.size(), 1u);
   for (const auto& t : ir.transforms) {
-    (void)t;  // Struct has no minScale field
+    (void)t;
   }
   std::vector<float> params = extractParams(ir);
-  // 6 per transform + 1 per sphere
-  EXPECT_GE(params.size(), 7u);
+  // 10 per transform + 1 per sphere
+  EXPECT_GE(params.size(), 11u);
 }

@@ -38,6 +38,10 @@ py::dict flatIRToDict(const kernel::FlatIR& ir) {
     item["sx"] = t.sx;
     item["sy"] = t.sy;
     item["sz"] = t.sz;
+    item["qx"] = t.qx;
+    item["qy"] = t.qy;
+    item["qz"] = t.qz;
+    item["qw"] = t.qw;
     transforms.append(item);
   }
   d["transforms"] = transforms;
@@ -60,16 +64,20 @@ py::dict flatIRToDict(const kernel::FlatIR& ir) {
   }
   d["boxes"] = boxes;
 
-  py::list planes;
-  for (const auto& p : ir.planes) {
+  py::list cylinders;
+  for (const auto& c : ir.cylinders) {
     py::dict item;
-    item["nx"] = p.nx;
-    item["ny"] = p.ny;
-    item["nz"] = p.nz;
-    item["d"] = p.d;
-    planes.append(item);
+    item["r"] = c.r;
+    item["h"] = c.h;
+    cylinders.append(item);
   }
-  d["planes"] = planes;
+  d["cylinders"] = cylinders;
+
+  py::list smoothKs;
+  for (float k : ir.smoothKs) {
+    smoothKs.append(k);
+  }
+  d["smoothKs"] = smoothKs;
 
   d["rootTemp"] = static_cast<int>(ir.rootTemp);
 
@@ -101,6 +109,10 @@ kernel::FlatIR dictToFlatIR(const py::dict& d) {
     t.sx = item["sx"].cast<float>();
     t.sy = item["sy"].cast<float>();
     t.sz = item["sz"].cast<float>();
+    t.qx = item.contains("qx") ? item["qx"].cast<float>() : 0.0f;
+    t.qy = item.contains("qy") ? item["qy"].cast<float>() : 0.0f;
+    t.qz = item.contains("qz") ? item["qz"].cast<float>() : 0.0f;
+    t.qw = item.contains("qw") ? item["qw"].cast<float>() : 1.0f;
     ir.transforms.push_back(t);
   }
 
@@ -117,11 +129,19 @@ kernel::FlatIR dictToFlatIR(const py::dict& d) {
         {item["hx"].cast<float>(), item["hy"].cast<float>(), item["hz"].cast<float>()});
   }
 
-  py::list planes = d["planes"];
-  for (py::handle h : planes) {
-    py::dict item = h.cast<py::dict>();
-    ir.planes.push_back({item["nx"].cast<float>(), item["ny"].cast<float>(),
-                         item["nz"].cast<float>(), item["d"].cast<float>()});
+  if (d.contains("cylinders")) {
+    py::list cylinders = d["cylinders"];
+    for (py::handle h : cylinders) {
+      py::dict item = h.cast<py::dict>();
+      ir.cylinders.push_back({item["r"].cast<float>(), item["h"].cast<float>()});
+    }
+  }
+
+  if (d.contains("smoothKs")) {
+    py::list smoothKs = d["smoothKs"];
+    for (py::handle h : smoothKs) {
+      ir.smoothKs.push_back(h.cast<float>());
+    }
   }
 
   ir.rootTemp = static_cast<uint32_t>(d["rootTemp"].cast<int>());
@@ -144,7 +164,8 @@ py::dict packedFlatIRToDict(const kernel::PackedFlatIR& packed) {
   d["transforms"] = packed.transforms;
   d["spheres"] = packed.spheres;
   d["boxes"] = packed.boxes;
-  d["planes"] = packed.planes;
+  d["cylinders"] = packed.cylinders;
+  d["smoothKs"] = packed.smoothKs;
   d["rootTemp"] = static_cast<int>(packed.rootTemp);
   return d;
 }
@@ -181,7 +202,8 @@ PYBIND11_MODULE(text_to_geometry_bindings, m) {
     flatir_dict["transforms"] = updated["transforms"];
     flatir_dict["spheres"] = updated["spheres"];
     flatir_dict["boxes"] = updated["boxes"];
-    flatir_dict["planes"] = updated["planes"];
+    flatir_dict["cylinders"] = updated["cylinders"];
+    flatir_dict["smoothKs"] = updated["smoothKs"];
   }, py::arg("flatir_dict"), py::arg("params"), "Write optimized params back into FlatIR dict");
 
   m.def("extractParams", [](const py::dict& flatir_dict) {

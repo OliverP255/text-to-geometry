@@ -88,7 +88,7 @@ TEST(IR, NaryUnite) {
   auto r = compileIR(
       "s0 = sphere(r=1.0)\n"
       "s1 = box(x=1.0, y=1.0, z=1.0)\n"
-      "s2 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\n"
+      "s2 = cylinder(r=0.5, h=1.0)\n"
       "s3 = union(s0, s1, s2)\n"
       "return s3");
   ASSERT_TRUE(r.ok) << r.error;
@@ -96,15 +96,6 @@ TEST(IR, NaryUnite) {
       reinterpret_cast<const NodeHeader*>(r.dag.headers);
   const NodeHeader& root = headers[r.dag.rootId - 1];
   EXPECT_EQ(root.opcode, static_cast<uint8_t>(ShapeOp::Union));
-}
-
-TEST(IR, Plane) {
-  auto r = compileIR("s0 = plane(nx=0.0, ny=1.0, nz=0.0, d=0.0)\nreturn s0");
-  ASSERT_TRUE(r.ok) << r.error;
-  const NodeHeader* headers =
-      reinterpret_cast<const NodeHeader*>(r.dag.headers);
-  EXPECT_EQ(headers[r.dag.rootId - 1].opcode,
-            static_cast<uint8_t>(ShapeOp::Plane));
 }
 
 TEST(IR, Scale) {
@@ -156,13 +147,15 @@ TEST(IRParseErrors, TrailingContent) {
 
 TEST(IR, NegativeNum) {
   auto r = compileIR(
-      "s0 = plane(nx=0.0, ny=-1.0, nz=0.0, d=0.0)\n"
-      "return s0");
+      "s0 = sphere(r=1.0)\n"
+      "t0 = translate(x=0.0, y=-1.0, z=0.0)\n"
+      "s1 = apply(t0, s0)\n"
+      "return s1");
   ASSERT_TRUE(r.ok) << r.error;
   const NodeHeader* headers =
       reinterpret_cast<const NodeHeader*>(r.dag.headers);
   EXPECT_EQ(headers[r.dag.rootId - 1].opcode,
-            static_cast<uint8_t>(ShapeOp::Plane));
+            static_cast<uint8_t>(ShapeOp::ApplyTransform));
 }
 
 TEST(IRParseErrors, InfRejected) {
@@ -175,4 +168,39 @@ TEST(IRParseErrors, NanRejected) {
   auto r = compileIR("s0 = sphere(r=nan)\nreturn s0");
   EXPECT_FALSE(r.ok);
   EXPECT_NE(r.error.find("number"), std::string::npos);
+}
+
+TEST(IR, Rotate) {
+  auto r = compileIR(
+      "s0 = sphere(r=1.0)\n"
+      "t0 = rotate(x=0.0, y=0.707, z=0.0, w=0.707)\n"
+      "s1 = apply(t0, s0)\n"
+      "return s1");
+  ASSERT_TRUE(r.ok) << r.error;
+  const NodeHeader* headers =
+      reinterpret_cast<const NodeHeader*>(r.dag.headers);
+  EXPECT_EQ(headers[r.dag.rootId - 1].opcode,
+            static_cast<uint8_t>(ShapeOp::ApplyTransform));
+}
+
+TEST(IR, Cylinder) {
+  auto r = compileIR("s0 = cylinder(r=0.2, h=1.0)\nreturn s0");
+  ASSERT_TRUE(r.ok) << r.error;
+  const NodeHeader* headers =
+      reinterpret_cast<const NodeHeader*>(r.dag.headers);
+  EXPECT_EQ(headers[r.dag.rootId - 1].opcode,
+            static_cast<uint8_t>(ShapeOp::Cylinder));
+}
+
+TEST(IR, SmoothUnion) {
+  auto r = compileIR(
+      "s0 = sphere(r=1.0)\n"
+      "s1 = box(x=1.0, y=1.0, z=1.0)\n"
+      "s2 = smooth_union(s0, s1, k=0.3)\n"
+      "return s2");
+  ASSERT_TRUE(r.ok) << r.error;
+  const NodeHeader* headers =
+      reinterpret_cast<const NodeHeader*>(r.dag.headers);
+  EXPECT_EQ(headers[r.dag.rootId - 1].opcode,
+            static_cast<uint8_t>(ShapeOp::SmoothUnion));
 }

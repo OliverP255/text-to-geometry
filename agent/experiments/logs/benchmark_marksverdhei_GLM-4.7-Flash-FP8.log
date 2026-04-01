@@ -1,0 +1,303 @@
+cmd: /home/oliverpryce/text-to-geometry/.venv/bin/python3 /home/oliverpryce/text-to-geometry/agent/experiments/test_50_prompts.py --model marksverdhei/GLM-4.7-Flash-FP8 --output-dir /home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/marksverdhei_GLM-4.7-Flash-FP8 --results-json /home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/marksverdhei_GLM-4.7-Flash-FP8/results.json
+
+Loading LLM: marksverdhei/GLM-4.7-Flash-FP8 …
+INFO 04-01 14:28:24 [utils.py:233] non-default args: {'trust_remote_code': True, 'max_model_len': 8192, 'enable_prefix_caching': True, 'gpu_memory_utilization': 0.95, 'disable_log_stats': True, 'enable_chunked_prefill': True, 'model': 'marksverdhei/GLM-4.7-Flash-FP8'}
+INFO 04-01 14:28:30 [model.py:533] Resolved architecture: Glm4MoeLiteForCausalLM
+INFO 04-01 14:28:30 [model.py:1582] Using max model len 8192
+INFO 04-01 14:28:30 [scheduler.py:231] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 04-01 14:28:30 [vllm.py:754] Asynchronous scheduling is enabled.
+(EngineCore pid=688690) INFO 04-01 14:28:34 [core.py:103] Initializing a V1 LLM engine (v0.18.0) with config: model='marksverdhei/GLM-4.7-Flash-FP8', speculative_config=None, tokenizer='marksverdhei/GLM-4.7-Flash-FP8', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=8192, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=fp8, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=marksverdhei/GLM-4.7-Flash-FP8, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'splitting_ops': ['vllm::unified_attention', 'vllm::unified_attention_with_output', 'vllm::unified_mla_attention', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'compile_sizes': [], 'compile_ranges_endpoints': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': True, 'static_all_moe_layers': []}
+(EngineCore pid=688690) INFO 04-01 14:28:34 [parallel_state.py:1395] world_size=1 rank=0 local_rank=0 distributed_init_method=tcp://10.132.0.19:32847 backend=nccl
+(EngineCore pid=688690) INFO 04-01 14:28:34 [parallel_state.py:1717] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank 0, EPLB rank N/A
+(EngineCore pid=688690) INFO 04-01 14:28:34 [gpu_model_runner.py:4481] Starting to load model marksverdhei/GLM-4.7-Flash-FP8...
+(EngineCore pid=688690) INFO 04-01 14:28:35 [__init__.py:255] Selected CutlassFP8ScaledMMLinearKernel for Fp8LinearMethod
+(EngineCore pid=688690) INFO 04-01 14:28:35 [cuda.py:317] Using TRITON_MLA attention backend out of potential backends: ['TRITON_MLA'].
+(EngineCore pid=688690) INFO 04-01 14:28:35 [mla_attention.py:2139] Using FlashAttention prefill for MLA
+(EngineCore pid=688690) INFO 04-01 14:28:35 [fp8.py:396] Using TRITON Fp8 MoE backend out of potential backends: ['AITER', 'FLASHINFER_TRTLLM', 'FLASHINFER_CUTLASS', 'DEEPGEMM', 'TRITON', 'MARLIN', 'BATCHED_DEEPGEMM', 'BATCHED_TRITON', 'XPU'].
+(EngineCore pid=688690) <frozen importlib._bootstrap_external>:1297: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+(EngineCore pid=688690) <frozen importlib._bootstrap_external>:1297: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+(EngineCore pid=688690) INFO 04-01 14:28:48 [weight_utils.py:574] Time spent downloading weights for marksverdhei/GLM-4.7-Flash-FP8: 12.023613 seconds
+(EngineCore pid=688690) INFO 04-01 14:28:48 [weight_utils.py:618] No model.safetensors.index.json found in remote.
+(EngineCore pid=688690) Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+(EngineCore pid=688690) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.84s/it]
+(EngineCore pid=688690) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.84s/it]
+(EngineCore pid=688690) 
+(EngineCore pid=688690) INFO 04-01 14:28:50 [default_loader.py:384] Loading weights took 1.84 seconds
+(EngineCore pid=688690) INFO 04-01 14:28:50 [fp8.py:545] Using MoEPrepareAndFinalizeNoDPEPModular
+(EngineCore pid=688690) INFO 04-01 14:28:51 [gpu_model_runner.py:4566] Model loading took 29.07 GiB memory and 15.412272 seconds
+(EngineCore pid=688690) INFO 04-01 14:29:00 [backends.py:988] Using cache directory: /home/oliverpryce/.cache/vllm/torch_compile_cache/4ef6434dde/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=688690) INFO 04-01 14:29:00 [backends.py:1048] Dynamo bytecode transform time: 9.08 s
+(EngineCore pid=688690) [rank0]:W0401 14:29:00.848000 688690 torch/_inductor/codecache.py:1040] fx graph cache unable to load compiled graph
+(EngineCore pid=688690) [rank0]:W0401 14:29:00.848000 688690 torch/_inductor/codecache.py:1040] Traceback (most recent call last):
+(EngineCore pid=688690) [rank0]:W0401 14:29:00.848000 688690 torch/_inductor/codecache.py:1040]   File "/home/oliverpryce/text-to-geometry/.venv/lib/python3.12/site-packages/torch/_inductor/codecache.py", line 1038, in iterate_over_candidates
+(EngineCore pid=688690) [rank0]:W0401 14:29:00.848000 688690 torch/_inductor/codecache.py:1040]     yield pickle.loads(content), content
+(EngineCore pid=688690) [rank0]:W0401 14:29:00.848000 688690 torch/_inductor/codecache.py:1040]           ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=688690) [rank0]:W0401 14:29:00.848000 688690 torch/_inductor/codecache.py:1040] EOFError: Ran out of input
+(EngineCore pid=688690) INFO 04-01 14:29:00 [backends.py:371] Cache the graph of compile range (1, 16384) for later use
+(EngineCore pid=688690) INFO 04-01 14:29:02 [backends.py:387] Compiling a graph for compile range (1, 16384) takes 1.61 s
+(EngineCore pid=688690) INFO 04-01 14:29:05 [decorators.py:627] saved AOT compiled function to /home/oliverpryce/.cache/vllm/torch_compile_cache/torch_aot_compile/38e5bb1b809fe1b019a678b9311df7f8996ef19e6ab8ab0fca7e087bba0943f2/rank_0_0/model
+(EngineCore pid=688690) INFO 04-01 14:29:05 [monitor.py:48] torch.compile took 13.92 s in total
+(EngineCore pid=688690) WARNING 04-01 14:29:06 [fused_moe.py:1093] Using default MoE config. Performance might be sub-optimal! Config file not found at /home/oliverpryce/text-to-geometry/.venv/lib/python3.12/site-packages/vllm/model_executor/layers/fused_moe/configs/E=64,N=1536,device_name=NVIDIA_RTX_PRO_6000_Blackwell_Server_Edition,dtype=fp8_w8a8.json
+(EngineCore pid=688690) INFO 04-01 14:29:07 [monitor.py:76] Initial profiling/warmup run took 1.78 s
+(EngineCore pid=688690) INFO 04-01 14:29:07 [kv_cache_utils.py:826] Overriding num_gpu_blocks=0 with num_gpu_blocks_override=512
+(EngineCore pid=688690) WARNING 04-01 14:29:07 [gpu_model_runner.py:6039] CUDAGraphMode.FULL_AND_PIECEWISE is not supported with TritonMLABackend backend (support: AttentionCGSupport.NEVER); setting cudagraph_mode=PIECEWISE because attention is compiled piecewise
+(EngineCore pid=688690) INFO 04-01 14:29:07 [gpu_model_runner.py:5607] Profiling CUDA graph memory: PIECEWISE=51 (largest=512)
+(EngineCore pid=688690) INFO 04-01 14:29:09 [gpu_model_runner.py:5686] Estimated CUDA graph memory: 1.44 GiB total
+(EngineCore pid=688690) INFO 04-01 14:29:09 [gpu_worker.py:456] Available KV cache memory: 58.09 GiB
+(EngineCore pid=688690) INFO 04-01 14:29:09 [gpu_worker.py:490] In v0.19, CUDA graph memory profiling will be enabled by default (VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1), which more accurately accounts for CUDA graph memory during KV cache allocation. To try it now, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1 and increase --gpu-memory-utilization from 0.9500 to 0.9651 to maintain the same effective KV cache size.
+(EngineCore pid=688690) INFO 04-01 14:29:09 [kv_cache_utils.py:1316] GPU KV cache size: 1,151,984 tokens
+(EngineCore pid=688690) INFO 04-01 14:29:09 [kv_cache_utils.py:1321] Maximum concurrency for 8,192 tokens per request: 140.62x
+(EngineCore pid=688690) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   2%|▏         | 1/51 [00:00<00:09,  5.55it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|▍         | 2/51 [00:00<00:08,  5.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   6%|▌         | 3/51 [00:00<00:08,  5.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   8%|▊         | 4/51 [00:00<00:08,  5.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  10%|▉         | 5/51 [00:00<00:08,  5.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:01<00:08,  5.51it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  14%|█▎        | 7/51 [00:01<00:07,  5.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 8/51 [00:01<00:07,  5.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█▊        | 9/51 [00:01<00:07,  5.46it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:01<00:07,  5.49it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|██▏       | 11/51 [00:02<00:07,  5.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:02<00:07,  5.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  25%|██▌       | 13/51 [00:02<00:06,  5.44it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██▋       | 14/51 [00:02<00:06,  5.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  29%|██▉       | 15/51 [00:02<00:06,  5.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|███▏      | 16/51 [00:02<00:06,  5.49it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  33%|███▎      | 17/51 [00:03<00:06,  5.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:03<00:06,  5.33it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  37%|███▋      | 19/51 [00:03<00:06,  5.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|███▉      | 20/51 [00:03<00:06,  5.13it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  41%|████      | 21/51 [00:03<00:05,  5.13it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:04<00:05,  5.12it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|████▌     | 23/51 [00:04<00:05,  5.11it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 24/51 [00:04<00:05,  5.08it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|████▉     | 25/51 [00:04<00:05,  5.06it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  51%|█████     | 26/51 [00:04<00:04,  5.05it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  53%|█████▎    | 27/51 [00:05<00:04,  5.04it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  55%|█████▍    | 28/51 [00:05<00:04,  5.04it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  57%|█████▋    | 29/51 [00:05<00:04,  4.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:05<00:04,  4.96it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  61%|██████    | 31/51 [00:05<00:04,  4.82it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|██████▎   | 32/51 [00:06<00:03,  4.91it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  65%|██████▍   | 33/51 [00:06<00:03,  4.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:06<00:03,  4.99it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  69%|██████▊   | 35/51 [00:06<00:03,  4.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  71%|███████   | 36/51 [00:06<00:03,  4.76it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  73%|███████▎  | 37/51 [00:07<00:02,  4.68it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|███████▍  | 38/51 [00:07<00:02,  4.69it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|███████▋  | 39/51 [00:07<00:02,  4.62it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 40/51 [00:07<00:02,  4.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  80%|████████  | 41/51 [00:08<00:02,  4.53it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|████████▏ | 42/51 [00:08<00:01,  4.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  84%|████████▍ | 43/51 [00:08<00:01,  4.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  86%|████████▋ | 44/51 [00:08<00:01,  4.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  88%|████████▊ | 45/51 [00:08<00:01,  4.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|█████████ | 46/51 [00:09<00:01,  4.44it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  92%|█████████▏| 47/51 [00:09<00:00,  4.42it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|█████████▍| 48/51 [00:09<00:00,  4.42it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  96%|█████████▌| 49/51 [00:09<00:00,  4.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  98%|█████████▊| 50/51 [00:10<00:00,  4.39it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:10<00:00,  2.94it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:10<00:00,  4.77it/s]
+(EngineCore pid=688690) INFO 04-01 14:29:21 [gpu_model_runner.py:5746] Graph capturing finished in 12 secs, took 1.75 GiB
+(EngineCore pid=688690) INFO 04-01 14:29:21 [gpu_worker.py:617] CUDA graph pool memory: 1.75 GiB (actual), 1.44 GiB (estimated), difference: 0.31 GiB (17.8%).
+(EngineCore pid=688690) INFO 04-01 14:29:21 [core.py:281] init engine (profile, create kv cache, warmup model) took 30.38 seconds
+INFO 04-01 14:29:23 [llm.py:391] Supported tasks: ['generate']
+LLM loaded.
+
+[ 1/46] Testing: L-bracket STEPS: 1) Vertical plate sdBox half-extents (0.055...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]INFO 04-01 14:29:25 [hf.py:320] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+Rendering conversations: 100%|██████████| 1/1 [00:02<00:00,  2.42s/it]Rendering conversations: 100%|██████████| 1/1 [00:02<00:00,  2.42s/it]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.69s/it, est. speed input: 863.84 toks/s, output: 105.69 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.69s/it, est. speed input: 863.84 toks/s, output: 105.69 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.69s/it, est. speed input: 863.84 toks/s, output: 105.69 toks/s]
+        PASSED (319 chars)
+[ 2/46] Testing: I-beam STEPS: 1) Web: sdBox (0.04, 0.2, 0.14) at origin. 2) ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 438.87it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.42s/it, est. speed input: 1021.07 toks/s, output: 100.13 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.42s/it, est. speed input: 1021.07 toks/s, output: 100.13 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.42s/it, est. speed input: 1021.07 toks/s, output: 100.13 toks/s]
+        PASSED (254 chars)
+[ 3/46] Testing: Gear blank STEPS: 1) Main disc sdCylinder radius 0.28 half-h...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 462.59it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.01s/it, est. speed input: 1410.23 toks/s, output: 110.08 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.01s/it, est. speed input: 1410.23 toks/s, output: 110.08 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.01s/it, est. speed input: 1410.23 toks/s, output: 110.08 toks/s]
+        PASSED (216 chars)
+[ 4/46] Testing: Flanged bearing STEPS: 1) Hollow main tube outer r=0.12 inne...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 549.57it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.54s/it, est. speed input: 927.96 toks/s, output: 110.70 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.54s/it, est. speed input: 927.96 toks/s, output: 110.70 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.54s/it, est. speed input: 927.96 toks/s, output: 110.70 toks/s]
+        PASSED (369 chars)
+[ 5/46] Testing: Rivet STEPS: 1) Shank sdCylinder r=0.045 half-h=0.05 along Y...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 469.63it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.45it/s, est. speed input: 2052.27 toks/s, output: 108.55 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.45it/s, est. speed input: 2052.27 toks/s, output: 108.55 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.45it/s, est. speed input: 2052.27 toks/s, output: 108.55 toks/s]
+        PASSED (152 chars)
+[ 6/46] Testing: D-pull handle STEPS: 1) Bar sdCylinder radius 0.032, half-le...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 411.45it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.33s/it, est. speed input: 1078.97 toks/s, output: 110.45 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.33s/it, est. speed input: 1078.97 toks/s, output: 110.45 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.33s/it, est. speed input: 1078.97 toks/s, output: 110.45 toks/s]
+        PASSED (265 chars)
+[ 7/46] Testing: Eccentric cam STEPS: 1) Base disc sdCylinder r=0.21 half-h=0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 425.82it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s, est. speed input: 1915.15 toks/s, output: 109.01 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s, est. speed input: 1915.15 toks/s, output: 109.01 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s, est. speed input: 1915.15 toks/s, output: 109.01 toks/s]
+        PASSED (161 chars)
+[ 8/46] Testing: Four-blade fan hub STEPS: 1) Hub sdCylinder r=0.095 half-h=0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 447.92it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.51s/it, est. speed input: 577.74 toks/s, output: 110.61 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.51s/it, est. speed input: 577.74 toks/s, output: 110.61 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.51s/it, est. speed input: 577.74 toks/s, output: 110.61 toks/s]
+        PASSED (499 chars)
+[ 9/46] Testing: Hollow square tube STEPS: 1) Outer sdBox (0.095, 0.26, 0.095...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 395.47it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.38it/s, est. speed input: 1949.71 toks/s, output: 108.93 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.38it/s, est. speed input: 1949.71 toks/s, output: 108.93 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.38it/s, est. speed input: 1949.71 toks/s, output: 108.93 toks/s]
+        PASSED (157 chars)
+[10/46] Testing: Grille plate STEPS: 1) Plate sdBox (0.26, 0.032, 0.18). 2) F...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 496.19it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s, est. speed input: 1574.69 toks/s, output: 109.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s, est. speed input: 1574.69 toks/s, output: 109.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.10it/s, est. speed input: 1574.69 toks/s, output: 109.66 toks/s]
+        PASSED (190 chars)
+[11/46] Testing: L-bracket: Vertical plate half-extents (0.055, 0.16, 0.14) c...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 407.45it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it, est. speed input: 1370.62 toks/s, output: 110.15 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it, est. speed input: 1370.62 toks/s, output: 110.15 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it, est. speed input: 1370.62 toks/s, output: 110.15 toks/s]
+        PASSED (206 chars)
+[12/46] Testing: I-beam: Web box (0.04, 0.2, 0.14); top flange box (0.12, 0.0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 502.85it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.45s/it, est. speed input: 981.20 toks/s, output: 110.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.45s/it, est. speed input: 981.20 toks/s, output: 110.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.45s/it, est. speed input: 981.20 toks/s, output: 110.71 toks/s]
+        PASSED (277 chars)
+[13/46] Testing: Gear blank: Cylinder disc radius 0.28 half-height 0.045 minu...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 459.55it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.02s/it, est. speed input: 1381.61 toks/s, output: 110.29 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.02s/it, est. speed input: 1381.61 toks/s, output: 110.29 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.02s/it, est. speed input: 1381.61 toks/s, output: 110.29 toks/s]
+        PASSED (232 chars)
+[14/46] Testing: Flanged bearing: Hollow cylinder outer 0.12 inner 0.08 half-...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 528.18it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.07it/s, est. speed input: 1499.43 toks/s, output: 110.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.07it/s, est. speed input: 1499.43 toks/s, output: 110.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.07it/s, est. speed input: 1499.43 toks/s, output: 110.00 toks/s]
+        PASSED (215 chars)
+[15/46] Testing: Rivet: Shank cylinder radius 0.045 half-height 0.05; head sp...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 472.49it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s, est. speed input: 1884.15 toks/s, output: 109.32 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s, est. speed input: 1884.15 toks/s, output: 109.32 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.35it/s, est. speed input: 1884.15 toks/s, output: 109.32 toks/s]
+        PASSED (165 chars)
+[16/46] Testing: D-pull handle: Horizontal cylinder radius 0.032, axis along ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 530.39it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.33s/it, est. speed input: 1067.12 toks/s, output: 110.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.33s/it, est. speed input: 1067.12 toks/s, output: 110.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.33s/it, est. speed input: 1067.12 toks/s, output: 110.62 toks/s]
+        PASSED (271 chars)
+[17/46] Testing: Eccentric cam: Disc cylinder r=0.21 half-h=0.035 union boss ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 435.05it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.33it/s, est. speed input: 1870.37 toks/s, output: 109.24 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.33it/s, est. speed input: 1870.37 toks/s, output: 109.24 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.33it/s, est. speed input: 1870.37 toks/s, output: 109.24 toks/s]
+        PASSED (161 chars)
+[18/46] Testing: Fan hub four blades: Hub cylinder r=0.095 half-h=0.055; four...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 468.38it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.26s/it, est. speed input: 626.34 toks/s, output: 111.18 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.26s/it, est. speed input: 626.34 toks/s, output: 111.18 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.26s/it, est. speed input: 626.34 toks/s, output: 111.18 toks/s]
+        PASSED (440 chars)
+[19/46] Testing: Hollow square tube: Outer box half-extents (0.095, 0.26, 0.0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 447.68it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s, est. speed input: 1689.23 toks/s, output: 109.56 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s, est. speed input: 1689.23 toks/s, output: 109.56 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.20it/s, est. speed input: 1689.23 toks/s, output: 109.56 toks/s]
+        PASSED (177 chars)
+[20/46] Testing: Grille plate: Plate box (0.26, 0.032, 0.18); eight slot boxe...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 405.21it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.29s/it, est. speed input: 1109.27 toks/s, output: 110.46 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.29s/it, est. speed input: 1109.27 toks/s, output: 110.46 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.29s/it, est. speed input: 1109.27 toks/s, output: 110.46 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 306.06it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.95s/it, est. speed input: 357.41 toks/s, output: 106.01 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.95s/it, est. speed input: 357.41 toks/s, output: 106.01 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.95s/it, est. speed input: 357.41 toks/s, output: 106.01 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 231.69it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.83s/it, est. speed input: 594.70 toks/s, output: 95.42 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.83s/it, est. speed input: 594.70 toks/s, output: 95.42 toks/s]Processed prompts: 100%|██████████| 1/1 [00:04<00:00,  4.83s/it, est. speed input: 594.70 toks/s, output: 95.42 toks/s]
+        PASSED (793 chars)
+[21/46] Testing: L-shaped mounting bracket: two perpendicular flat plates of ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 427.12it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.07s/it, est. speed input: 1295.72 toks/s, output: 110.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.07s/it, est. speed input: 1295.72 toks/s, output: 110.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.07s/it, est. speed input: 1295.72 toks/s, output: 110.71 toks/s]
+        PASSED (208 chars)
+[22/46] Testing: Structural I-beam segment: vertical web with horizontal top ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 445.68it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.13s/it, est. speed input: 647.71 toks/s, output: 111.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.13s/it, est. speed input: 647.71 toks/s, output: 111.62 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.13s/it, est. speed input: 647.71 toks/s, output: 111.62 toks/s]
+        PASSED (471 chars)
+[23/46] Testing: Gear blank disc: circular disc with a large central through-...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 424.52it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.48s/it, est. speed input: 932.74 toks/s, output: 111.52 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.48s/it, est. speed input: 932.74 toks/s, output: 111.52 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.48s/it, est. speed input: 932.74 toks/s, output: 111.52 toks/s]
+        PASSED (331 chars)
+[24/46] Testing: Flanged bearing housing: short hollow shaft with a wider fla...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 428.82it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.61s/it, est. speed input: 853.87 toks/s, output: 111.53 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.61s/it, est. speed input: 853.87 toks/s, output: 111.53 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.61s/it, est. speed input: 853.87 toks/s, output: 111.53 toks/s]
+        PASSED (350 chars)
+[25/46] Testing: Rivet fastener: short cylindrical shank with a hemispherical...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 432.98it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it, est. speed input: 1087.29 toks/s, output: 111.25 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it, est. speed input: 1087.29 toks/s, output: 111.25 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it, est. speed input: 1087.29 toks/s, output: 111.25 toks/s]
+        PASSED (268 chars)
+[26/46] Testing: Cabinet D-pull handle: horizontal grip bar with two short ve...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 384.41it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.36s/it, est. speed input: 1010.00 toks/s, output: 111.41 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.36s/it, est. speed input: 1010.00 toks/s, output: 111.41 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.36s/it, est. speed input: 1010.00 toks/s, output: 111.41 toks/s]
+        PASSED (277 chars)
+[27/46] Testing: Eccentric cam plate: circular base with a second thicker cir...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 408.56it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s, est. speed input: 1583.00 toks/s, output: 110.36 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s, est. speed input: 1583.00 toks/s, output: 110.36 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.15it/s, est. speed input: 1583.00 toks/s, output: 110.36 toks/s]
+        PASSED (180 chars)
+[28/46] Testing: Fan hub: central hub with four identical flat blades radiati...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 438.14it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.17s/it, est. speed input: 635.82 toks/s, output: 111.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.17s/it, est. speed input: 635.82 toks/s, output: 111.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.17s/it, est. speed input: 635.82 toks/s, output: 111.66 toks/s]
+        PASSED (435 chars)
+[29/46] Testing: Hollow square structural tube: square outer profile with squ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 391.22it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.11s/it, est. speed input: 1242.68 toks/s, output: 111.16 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.11s/it, est. speed input: 1242.68 toks/s, output: 111.16 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.11s/it, est. speed input: 1242.68 toks/s, output: 111.16 toks/s]
+        PASSED (218 chars)
+[30/46] Testing: Perforated grille: flat plate with a row of evenly spaced lo...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 411.61it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.41s/it, est. speed input: 978.68 toks/s, output: 111.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.41s/it, est. speed input: 978.68 toks/s, output: 111.66 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.41s/it, est. speed input: 978.68 toks/s, output: 111.66 toks/s]
+        PASSED (282 chars)
+[31/46] Testing: Small shelf angle bracket....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 401.37it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.03s/it, est. speed input: 1317.52 toks/s, output: 111.24 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.03s/it, est. speed input: 1317.52 toks/s, output: 111.24 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.03s/it, est. speed input: 1317.52 toks/s, output: 111.24 toks/s]
+        PASSED (193 chars)
+[32/46] Testing: Short piece of I-beam....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 409.16it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.81s/it, est. speed input: 752.01 toks/s, output: 111.92 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.81s/it, est. speed input: 752.01 toks/s, output: 111.92 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.81s/it, est. speed input: 752.01 toks/s, output: 111.92 toks/s]
+        PASSED (457 chars)
+[33/46] Testing: Drilled gear disc....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 413.97it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.11s/it, est. speed input: 1232.59 toks/s, output: 111.31 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.11s/it, est. speed input: 1232.59 toks/s, output: 111.31 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.11s/it, est. speed input: 1232.59 toks/s, output: 111.31 toks/s]
+        PASSED (246 chars)
+[34/46] Testing: Bearing with a flange....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 420.10it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.25s/it, est. speed input: 1094.94 toks/s, output: 111.58 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.25s/it, est. speed input: 1094.94 toks/s, output: 111.58 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.25s/it, est. speed input: 1094.94 toks/s, output: 111.58 toks/s]
+        PASSED (265 chars)
+[35/46] Testing: Pop rivet shape....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 446.54it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.46s/it, est. speed input: 933.95 toks/s, output: 111.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.46s/it, est. speed input: 933.95 toks/s, output: 111.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.46s/it, est. speed input: 933.95 toks/s, output: 111.77 toks/s]
+        PASSED (318 chars)
+[36/46] Testing: Drawer pull....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 422.22it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.24s/it, est. speed input: 1092.97 toks/s, output: 111.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.24s/it, est. speed input: 1092.97 toks/s, output: 111.71 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.24s/it, est. speed input: 1092.97 toks/s, output: 111.71 toks/s]
+        PASSED (269 chars)
+[37/46] Testing: Offset cam for a latch....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 422.43it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.07s/it, est. speed input: 657.54 toks/s, output: 111.92 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.07s/it, est. speed input: 657.54 toks/s, output: 111.92 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.07s/it, est. speed input: 657.54 toks/s, output: 111.92 toks/s]
+        PASSED (460 chars)
+[38/46] Testing: Plastic fan wheel blank....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 387.11it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.35s/it, est. speed input: 1008.52 toks/s, output: 111.73 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.35s/it, est. speed input: 1008.52 toks/s, output: 111.73 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.35s/it, est. speed input: 1008.52 toks/s, output: 111.73 toks/s]
+        PASSED (292 chars)
+[39/46] Testing: Hollow square leg....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 469.58it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.12s/it, est. speed input: 643.30 toks/s, output: 111.94 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.12s/it, est. speed input: 643.30 toks/s, output: 111.94 toks/s]Processed prompts: 100%|██████████| 1/1 [00:02<00:00,  2.12s/it, est. speed input: 643.30 toks/s, output: 111.94 toks/s]
+        PASSED (581 chars)
+[40/46] Testing: Vent cover with slots....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 359.53it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.49s/it, est. speed input: 912.66 toks/s, output: 111.90 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.49s/it, est. speed input: 912.66 toks/s, output: 111.90 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.49s/it, est. speed input: 912.66 toks/s, output: 111.90 toks/s]
+        PASSED (313 chars)
+[41/46] Testing: Smooth blob pair: two spheres radius 0.28, centers 0.32 apar...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 383.22it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s, est. speed input: 1629.73 toks/s, output: 110.13 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s, est. speed input: 1629.73 toks/s, output: 110.13 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.17it/s, est. speed input: 1629.73 toks/s, output: 110.13 toks/s]
+        PASSED (174 chars)
+[42/46] Testing: Fillet cluster: sdRoundBox main (0.14, 0.14, 0.14) corner ra...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 452.41it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.08it/s, est. speed input: 1519.98 toks/s, output: 109.88 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.08it/s, est. speed input: 1519.98 toks/s, output: 109.88 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.08it/s, est. speed input: 1519.98 toks/s, output: 109.88 toks/s]
+        PASSED (219 chars)
+[43/46] Testing: Ellipsoid egg: axis-aligned ellipsoid semi-axes 0.22, 0.32, ...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 388.36it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  2.37it/s, est. speed input: 3300.90 toks/s, output: 106.86 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  2.37it/s, est. speed input: 3300.90 toks/s, output: 106.86 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  2.37it/s, est. speed input: 3300.90 toks/s, output: 106.86 toks/s]
+        PASSED (90 chars)
+[44/46] Testing: Triple metaball-style: smooth union of three spheres radii 0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 443.61it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.35s/it, est. speed input: 1036.21 toks/s, output: 110.86 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.35s/it, est. speed input: 1036.21 toks/s, output: 110.86 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.35s/it, est. speed input: 1036.21 toks/s, output: 110.86 toks/s]
+        PASSED (281 chars)
+[45/46] Testing: Soft pebble: smooth union of sdCapsule along slight diagonal...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 414.99it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.02s/it, est. speed input: 1356.95 toks/s, output: 110.79 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.02s/it, est. speed input: 1356.95 toks/s, output: 110.79 toks/s]Processed prompts: 100%|██████████| 1/1 [00:01<00:00,  1.02s/it, est. speed input: 1356.95 toks/s, output: 110.79 toks/s]
+        PASSED (194 chars)
+[46/46] Testing: Domed organic mound: sdSphere radius 0.45 center (0, 0.12, 0...
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 501.11it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.13it/s, est. speed input: 1592.21 toks/s, output: 109.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.13it/s, est. speed input: 1592.21 toks/s, output: 109.77 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.13it/s, est. speed input: 1592.21 toks/s, output: 109.77 toks/s]
+        PASSED (201 chars)
+
+============================================================
+RESULTS: validation_ok 46/46, agent_returned_code 46/46
+============================================================
+
+Wrote /home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/marksverdhei_GLM-4.7-Flash-FP8/results.json
+Generated files saved to /home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/marksverdhei_GLM-4.7-Flash-FP8
+(EngineCore pid=688690) INFO 04-01 14:30:34 [core.py:1201] Shutdown initiated (timeout=0)
+(EngineCore pid=688690) INFO 04-01 14:30:34 [core.py:1224] Shutdown complete
+ERROR 04-01 14:30:35 [core_client.py:704] Engine core proc EngineCore died unexpectedly, shutting down client.

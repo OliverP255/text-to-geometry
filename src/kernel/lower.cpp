@@ -38,7 +38,8 @@ inline uint32_t getChild(const NodeHeader& h, int index) {
 //outputs true only if transform is identity
 bool isIdentity(const AccumTransform& a) {
   return a.translate.x == 0 && a.translate.y == 0 && a.translate.z == 0 &&
-         a.scale.x == 1 && a.scale.y == 1 && a.scale.z == 1;
+         a.scale.x == 1 && a.scale.y == 1 && a.scale.z == 1 &&
+         a.qx == 0 && a.qy == 0 && a.qz == 0 && a.qw == 1;
 }
 
 
@@ -50,13 +51,17 @@ uint32_t addTransform(FlatIR& ir, const AccumTransform& accum) {
     const FlatTransform& t = ir.transforms[i];
     if (t.tx == accum.translate.x && t.ty == accum.translate.y &&
         t.tz == accum.translate.z && t.sx == accum.scale.x &&
-        t.sy == accum.scale.y && t.sz == accum.scale.z) {
+        t.sy == accum.scale.y && t.sz == accum.scale.z &&
+        t.qx == accum.qx && t.qy == accum.qy &&
+        t.qz == accum.qz && t.qw == accum.qw) {
       return static_cast<uint32_t>(i);
     }
   }
-  ir.transforms.push_back({accum.translate.x, accum.translate.y,
-                           accum.translate.z, accum.scale.x, accum.scale.y,
-                           accum.scale.z});
+  FlatTransform ft;
+  ft.tx = accum.translate.x; ft.ty = accum.translate.y; ft.tz = accum.translate.z;
+  ft.sx = accum.scale.x; ft.sy = accum.scale.y; ft.sz = accum.scale.z;
+  ft.qx = accum.qx; ft.qy = accum.qy; ft.qz = accum.qz; ft.qw = accum.qw;
+  ir.transforms.push_back(ft);
   return static_cast<uint32_t>(ir.transforms.size() - 1);
 }
 
@@ -121,23 +126,22 @@ uint32_t emitNode(FlatIR& ir, const FrozenDAG& dag, uint32_t nodeId,
       cache[key] = temp;
       return temp;
     }
-    if (h.opcode == static_cast<uint8_t>(ShapeOp::Plane)) {
+    if (h.opcode == static_cast<uint8_t>(ShapeOp::Cylinder)) {
       uint32_t transformIdx = addTransform(ir, accum);
       const uint8_t* payload = getPayload(dag, h);
-      Vec3 normal{0, 1, 0};
-      float d = 0;
+      float r = 1.0f, halfH = 1.0f;
       if (payload) {
-        const auto* p = reinterpret_cast<const PlanePayload*>(payload);
-        normal = p->normal;
-        d = p->d;
+        const auto* p = reinterpret_cast<const CylinderPayload*>(payload);
+        r = p->r;
+        halfH = p->h;
       }
-      uint32_t planeIdx = static_cast<uint32_t>(ir.planes.size());
-      ir.planes.push_back({normal.x, normal.y, normal.z, d});
+      uint32_t cylIdx = static_cast<uint32_t>(ir.cylinders.size());
+      ir.cylinders.push_back({r, halfH});
 
       FlatInstr instr;
-      instr.op = static_cast<uint32_t>(FlatOp::EvalPlane);
+      instr.op = static_cast<uint32_t>(FlatOp::EvalCylinder);
       instr.arg0 = transformIdx;
-      instr.constIdx = planeIdx;
+      instr.constIdx = cylIdx;
       ir.instrs.push_back(instr);
 
       uint32_t temp = nextDistTemp++;
@@ -192,6 +196,31 @@ uint32_t emitNode(FlatIR& ir, const FrozenDAG& dag, uint32_t nodeId,
       cache[key] = temp;
       return temp;
     }
+    if (h.opcode == static_cast<uint8_t>(ShapeOp::SmoothUnion)) {
+      uint32_t c0 = getChild(h, 0);
+      uint32_t c1 = getChild(h, 1);
+      uint32_t ta = emitNode(ir, dag, c0, accum, cache, nextDistTemp);
+      uint32_t tb = emitNode(ir, dag, c1, accum, cache, nextDistTemp);
+
+      const uint8_t* payload = getPayload(dag, h);
+      float k = 0.1f;
+      if (payload)
+        k = reinterpret_cast<const SmoothUnionPayload*>(payload)->k;
+
+      uint32_t kIdx = static_cast<uint32_t>(ir.smoothKs.size());
+      ir.smoothKs.push_back(k);
+
+      FlatInstr instr;
+      instr.op = static_cast<uint32_t>(FlatOp::CsgSmoothUnion);
+      instr.arg0 = ta;
+      instr.arg1 = tb;
+      instr.constIdx = kIdx;
+      ir.instrs.push_back(instr);
+
+      uint32_t temp = nextDistTemp++;
+      cache[key] = temp;
+      return temp;
+    }
     if (h.opcode == static_cast<uint8_t>(ShapeOp::ApplyTransform)) {
       uint32_t transformId = getChild(h, 0);
       uint32_t shapeId = getChild(h, 1);
@@ -219,7 +248,7 @@ FlatIR lower(const FrozenDAG& dag) {
     return ir;
   }
 
-  ir.transforms.push_back({0, 0, 0, 1, 1, 1});  // identity at index 0
+  ir.transforms.push_back({0, 0, 0, 1, 1, 1, 0, 0, 0, 1});  // identity at index 0
 
   std::unordered_map<CacheKey, uint32_t, AccumTransformKeyHash> cache;
   uint32_t nextDistTemp = 0;

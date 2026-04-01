@@ -1,0 +1,100 @@
+
+============================================================
+[1/9] Qwen3-32B-FP8
+  model_id=Qwen/Qwen3-32B-FP8
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-32B-FP8.log
+============================================================
+
+WARNING: model Qwen3-32B-FP8 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-32B-FP8.log
+  Cleaning up model weights / caches …
+  HF cache: removed Qwen/Qwen3-32B-FP8 (~15.9M)
+  vLLM disk cache cleared.
+
+============================================================
+[2/9] GLM-4.7-Flash-FP8
+  model_id=marksverdhei/GLM-4.7-Flash-FP8
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_marksverdhei_GLM-4.7-Flash-FP8.log
+============================================================
+
+WARNING: model GLM-4.7-Flash-FP8 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_marksverdhei_GLM-4.7-Flash-FP8.log
+  Cleaning up model weights / caches …
+  HF cache: removed marksverdhei/GLM-4.7-Flash-FP8 (~20.2M)
+  vLLM disk cache cleared.
+
+============================================================
+[3/9] DeepSeek-R1-Distill-Qwen-32B
+  model_id=deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_deepseek-ai_DeepSeek-R1-Distill-Qwen-32B.log
+============================================================
+
+WARNING: model DeepSeek-R1-Distill-Qwen-32B exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_deepseek-ai_DeepSeek-R1-Distill-Qwen-32B.log
+  Cleaning up model weights / caches …
+  HF cache: removed deepseek-ai/DeepSeek-R1-Distill-Qwen-32B (~7.0M)
+  vLLM disk cache cleared.
+
+============================================================
+[4/9] GLM-Z1-32B-0414
+  model_id=THUDM/GLM-Z1-32B-0414
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-Z1-32B-0414.log
+============================================================
+
+WARNING: model GLM-Z1-32B-0414 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-Z1-32B-0414.log
+  Cleaning up model weights / caches …
+  HF cache: removed THUDM/GLM-Z1-32B-0414 (~20.0M)
+  vLLM disk cache cleared.
+
+============================================================
+[5/9] GLM-4-32B-0414
+  model_id=THUDM/GLM-4-32B-0414
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-4-32B-0414.log
+============================================================
+
+WARNING: model GLM-4-32B-0414 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_THUDM_GLM-4-32B-0414.log
+  Cleaning up model weights / caches …
+  vLLM disk cache cleared.
+
+============================================================
+[6/9] Qwen3-14B-FP8
+  model_id=Qwen/Qwen3-14B-FP8
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-14B-FP8.log
+============================================================
+
+WARNING: model Qwen3-14B-FP8 exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen3-14B-FP8.log
+  Cleaning up model weights / caches …
+  HF cache: removed Qwen/Qwen3-14B-FP8 (~15.9M)
+  vLLM disk cache cleared.
+
+============================================================
+[7/9] LLaVA-1.6-Mistral-7B
+  model_id=llava-hf/llava-v1.6-mistral-7b-hf
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_llava-hf_llava-v1.6-mistral-7b-hf.log
+============================================================
+
+WARNING: model LLaVA-1.6-Mistral-7B exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_llava-hf_llava-v1.6-mistral-7b-hf.log
+  Cleaning up model weights / caches …
+  HF cache: removed llava-hf/llava-v1.6-mistral-7b-hf (~2.3M)
+  vLLM disk cache cleared.
+
+============================================================
+[8/9] LLaVA-OneVision-Qwen2-7B
+  model_id=llava-hf/llava-onevision-qwen2-7b-ov-hf
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_llava-hf_llava-onevision-qwen2-7b-ov-hf.log
+============================================================
+
+WARNING: model LLaVA-OneVision-Qwen2-7B exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_llava-hf_llava-onevision-qwen2-7b-ov-hf.log
+  Cleaning up model weights / caches …
+  HF cache: removed llava-hf/llava-onevision-qwen2-7b-ov-hf (~11.5M)
+  vLLM disk cache cleared.
+
+============================================================
+[9/9] Qwen2.5-Coder-32B-Instruct
+  model_id=Qwen/Qwen2.5-Coder-32B-Instruct
+  log=/home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen2.5-Coder-32B-Instruct.log
+============================================================
+
+WARNING: model Qwen2.5-Coder-32B-Instruct exited 1 — see /home/oliverpryce/text-to-geometry/agent/experiments/logs/benchmark_Qwen_Qwen2.5-Coder-32B-Instruct.log
+  Cleaning up model weights / caches …
+  HF cache: removed Qwen/Qwen2.5-Coder-32B-Instruct (~11.5M)
+  vLLM disk cache cleared.
+
+Wrote /home/oliverpryce/text-to-geometry/agent/experiments/outputs/by_model/manifest.json

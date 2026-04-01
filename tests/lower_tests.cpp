@@ -45,24 +45,6 @@ TEST(Lower, SingleBox) {
   EXPECT_EQ(ir.rootTemp, 0u);
 }
 
-TEST(Lower, SinglePlane) {
-  Builder b;
-  ShapeH root = b.plane({0, 1, 0}, 0);
-  FrozenDAG dag = {};
-  b.freeze(root, dag);
-  FlatIR ir = lower(dag);
-
-  EXPECT_EQ(ir.instrs.size(), 1u);
-  EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalPlane));
-  EXPECT_EQ(ir.instrs[0].arg0, 0u);
-  EXPECT_EQ(ir.planes.size(), 1u);
-  EXPECT_FLOAT_EQ(ir.planes[0].nx, 0.0f);
-  EXPECT_FLOAT_EQ(ir.planes[0].ny, 1.0f);
-  EXPECT_FLOAT_EQ(ir.planes[0].nz, 0.0f);
-  EXPECT_FLOAT_EQ(ir.planes[0].d, 0.0f);
-  EXPECT_EQ(ir.rootTemp, 0u);
-}
-
 TEST(Lower, EmptyDAG) {
   FrozenDAG dag = {};
   dag.rootId = 0;
@@ -274,7 +256,7 @@ TEST(Lower, DeeplyNestedCSG) {
   Builder b;
   ShapeH a = b.sphere(0.5f);
   ShapeH bx = b.box({0.3f, 0.3f, 0.3f});
-  ShapeH c = b.plane({0, 1, 0}, 0);
+  ShapeH c = b.cylinder(0.2f, 0.5f);
   ShapeH d = b.sphere(1.0f);
   ShapeH u1 = b.unite(a, bx);
   ShapeH u2 = b.unite(c, d);
@@ -292,8 +274,8 @@ TEST(Lower, TripleUnion) {
   Builder b;
   ShapeH s = b.sphere(1.0f);
   ShapeH bx = b.box({0.5f, 0.5f, 0.5f});
-  ShapeH pl = b.plane({0, 1, 0}, 0);
-  ShapeH inner = b.unite(bx, pl);
+  ShapeH cyl = b.cylinder(0.2f, 0.5f);
+  ShapeH inner = b.unite(bx, cyl);
   ShapeH root = b.unite(s, inner);
   FrozenDAG dag = {};
   b.freeze(root, dag);
@@ -302,7 +284,7 @@ TEST(Lower, TripleUnion) {
   EXPECT_EQ(ir.instrs.size(), 5u);
   EXPECT_EQ(ir.instrs[0].op, static_cast<uint32_t>(FlatOp::EvalSphere));
   EXPECT_EQ(ir.instrs[1].op, static_cast<uint32_t>(FlatOp::EvalBox));
-  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::EvalPlane));
+  EXPECT_EQ(ir.instrs[2].op, static_cast<uint32_t>(FlatOp::EvalCylinder));
   EXPECT_EQ(ir.instrs[3].op, static_cast<uint32_t>(FlatOp::CsgUnion));
   EXPECT_EQ(ir.instrs[4].op, static_cast<uint32_t>(FlatOp::CsgUnion));
   EXPECT_EQ(ir.rootTemp, 4u);
@@ -380,13 +362,6 @@ TEST(Lower, LoweringIsDeterministic) {
     EXPECT_FLOAT_EQ(ir0.boxes[i].hy, ir1.boxes[i].hy);
     EXPECT_FLOAT_EQ(ir0.boxes[i].hz, ir1.boxes[i].hz);
   }
-  EXPECT_EQ(ir0.planes.size(), ir1.planes.size());
-  for (size_t i = 0; i < ir0.planes.size(); ++i) {
-    EXPECT_FLOAT_EQ(ir0.planes[i].nx, ir1.planes[i].nx);
-    EXPECT_FLOAT_EQ(ir0.planes[i].ny, ir1.planes[i].ny);
-    EXPECT_FLOAT_EQ(ir0.planes[i].nz, ir1.planes[i].nz);
-    EXPECT_FLOAT_EQ(ir0.planes[i].d, ir1.planes[i].d);
-  }
   EXPECT_EQ(ir0.rootTemp, ir1.rootTemp);
 }
 
@@ -414,7 +389,7 @@ TEST(Lower, SemanticEquivalenceAtSamplePoints) {
 
   testShape([](Builder& b) { return b.sphere(1.0f); });
   testShape([](Builder& b) { return b.box({1, 1, 1}); });
-  testShape([](Builder& b) { return b.plane({0, 1, 0}, 0); });
+  testShape([](Builder& b) { return b.cylinder(0.5f, 1.0f); });
   testShape([](Builder& b) {
     return b.unite(b.sphere(1.0f), b.box({0.5f, 0.5f, 0.5f}));
   });

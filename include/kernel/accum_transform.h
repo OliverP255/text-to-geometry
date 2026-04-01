@@ -14,6 +14,7 @@ namespace kernel {
 struct AccumTransform {
   Vec3 translate{0, 0, 0};
   Vec3 scale{1, 1, 1};
+  float qx = 0, qy = 0, qz = 0, qw = 1;  // quaternion (identity)
 
   bool operator==(const AccumTransform& other) const;
 };

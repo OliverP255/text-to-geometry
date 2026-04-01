@@ -199,15 +199,6 @@ TEST(Optimise, SemanticEquiv_Box) {
   assertSemanticEquiv(dag, opt, kSamplePoints);
 }
 
-TEST(Optimise, SemanticEquiv_Plane) {
-  Builder b;
-  ShapeH root = b.plane({0, 1, 0}, 0);
-  FrozenDAG dag = {};
-  b.freeze(root, dag);
-  OptimisedDAG opt = optimise(dag);
-  assertSemanticEquiv(dag, opt, kSamplePoints);
-}
-
 TEST(Optimise, SemanticEquiv_Union) {
   Builder b;
   ShapeH root = b.unite(b.sphere(1.0f), b.box({0.5f, 0.5f, 0.5f}));
@@ -309,8 +300,8 @@ TEST(Optimise, SemanticEquiv_Complex) {
   ShapeH s = b.sphere(0.5f);
   ShapeH translated = b.apply(t, s);
   ShapeH bx = b.box({1, 1, 1});
-  ShapeH pl = b.plane({0, 1, 0}, 0);
-  ShapeH inter = b.intersect(bx, pl);
+  ShapeH cyl = b.cylinder(0.5f, 1.0f);
+  ShapeH inter = b.intersect(bx, cyl);
   ShapeH root = b.unite(translated, inter);
   FrozenDAG dag = {};
   b.freeze(root, dag);

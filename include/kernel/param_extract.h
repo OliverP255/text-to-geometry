@@ -6,7 +6,7 @@
 namespace kernel {
 
 // Extract raw trainable parameters from FlatIR (no constraint projection).
-// Order: transforms (6 floats each), spheres (1 each), boxes (3 each), planes (4 each).
+// Order: transforms (10 floats each), spheres (1 each), boxes (3 each), cylinders (2 each), smoothKs (1 each).
 std::vector<float> extractParams(const FlatIR& ir);
 
 // Apply params to FlatIR. Converts raw -> physical only at write-back.

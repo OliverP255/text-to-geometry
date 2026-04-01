@@ -110,13 +110,13 @@ TEST(DagBuilderFreeze, FrozenDagLayout) {
   EXPECT_EQ(rootHeader.in1, bx.id);
 }
 
-TEST(DagBuilderPrimitives, PlaneAndBox) {
+TEST(DagBuilderPrimitives, CylinderAndBox) {
   Builder b;
-  ShapeH p = b.plane({0, 1, 0}, 0);
+  ShapeH c = b.cylinder(0.5f, 1.0f);
   ShapeH bx = b.box({1, 1, 1});
-  EXPECT_TRUE(p.valid());
+  EXPECT_TRUE(c.valid());
   EXPECT_TRUE(bx.valid());
-  ShapeH u = b.unite(p, bx);
+  ShapeH u = b.unite(c, bx);
   EXPECT_TRUE(u.valid());
 }
 
@@ -138,7 +138,7 @@ TEST(DagBuilderNary, UniteBalanced) {
   Builder b;
   ShapeH a = b.sphere(1.0f);
   ShapeH b_ = b.box({1, 1, 1});
-  ShapeH c = b.plane({0, 1, 0}, 0);
+  ShapeH c = b.cylinder(0.3f, 0.5f);
   ShapeH d = b.box({0.5f, 0.5f, 0.5f});
   ShapeH u = b.unite(std::vector<ShapeH>{a, b_, c, d});
   EXPECT_TRUE(u.valid());

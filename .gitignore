@@ -2,3 +2,24 @@ k8s/
 glm4-flash-fp8/
 build/
 .t2g-reqs-no-torch.txt
+config.yaml
+.cursor/
+.venv/
+.pytest_cache/
+.cursorignore
+.cursorrules
+.cursor/
+.claude/
+web/node_modules/
+**/__pycache__/
+*.pyc
+.env/
+
+# Benchmark / local runs (large)
+agent/experiments/outputs/
+agent/experiments/logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+

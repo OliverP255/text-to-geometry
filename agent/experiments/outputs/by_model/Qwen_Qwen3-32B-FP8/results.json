@@ -1,0 +1,332 @@
+{
+  "label": "Qwen3-32B-FP8",
+  "model_id": "Qwen/Qwen3-32B-FP8",
+  "finished_utc": "2026-04-01T14:28:16.610870+00:00",
+  "prompt_count": 46,
+  "validation_passed": 46,
+  "agent_returned_code": 46,
+  "per_prompt": [
+    {
+      "n": 1,
+      "prompt": "L-bracket STEPS: 1) Vertical plate sdBox half-extents (0.055, 0.16, 0.14) center (0.075, 0, 0). 2) Horizontal plate sdBox (0.13, 0.055, 0.14) center (0, -0.075, 0). 3) opU. 4) Subtract optional fillet via sdRoundBox if desired. Units: scene meters.",
+      "ok": true,
+      "error": null,
+      "code_len": 356
+    },
+    {
+      "n": 2,
+      "prompt": "I-beam STEPS: 1) Web: sdBox (0.04, 0.2, 0.14) at origin. 2) Top flange: sdBox (0.12, 0.025, 0.14) at y=+0.225. 3) Bottom flange: same at y=-0.225. 4) opU all. Symmetric in X.",
+      "ok": true,
+      "error": null,
+      "code_len": 268
+    },
+    {
+      "n": 3,
+      "prompt": "Gear blank STEPS: 1) Main disc sdCylinder radius 0.28 half-height 0.045. 2) Subtract central hole cylinder r=0.09. 3) Subtract second hole cylinder r=0.045 center offset (+0.11, 0, 0).",
+      "ok": true,
+      "error": null,
+      "code_len": 247
+    },
+    {
+      "n": 4,
+      "prompt": "Flanged bearing STEPS: 1) Hollow main tube outer r=0.12 inner r=0.08 half-h=0.18. 2) Flange disc sdCylinder r=0.22 half-h=0.02 at y=-0.18. 3) opU tube and flange.",
+      "ok": true,
+      "error": null,
+      "code_len": 249
+    },
+    {
+      "n": 5,
+      "prompt": "Rivet STEPS: 1) Shank sdCylinder r=0.045 half-h=0.05 along Y. 2) Head sdSphere or sdSphere cap r=0.09 centered at (0, 0.11, 0). 3) opU.",
+      "ok": true,
+      "error": null,
+      "code_len": 152
+    },
+    {
+      "n": 6,
+      "prompt": "D-pull handle STEPS: 1) Bar sdCylinder radius 0.032, half-length 0.16 along X at y=+0.075. 2) Leg cylinders r=0.032 half-h=0.065 at (\u00b10.16, -0.02, 0). 3) opU three pieces.",
+      "ok": true,
+      "error": null,
+      "code_len": 265
+    },
+    {
+      "n": 7,
+      "prompt": "Eccentric cam STEPS: 1) Base disc sdCylinder r=0.21 half-h=0.035. 2) Boss sdCylinder r=0.095 half-h=0.055 center (+0.115, 0, 0). 3) opU.",
+      "ok": true,
+      "error": null,
+      "code_len": 174
+    },
+    {
+      "n": 8,
+      "prompt": "Four-blade fan hub STEPS: 1) Hub sdCylinder r=0.095 half-h=0.055. 2) Blade sdBox (0.24, 0.018, 0.065) along +X. 3) opRotateY 90\u00b0 and 180\u00b0 and 270\u00b0 copies union with hub\u2014or four explicit blade boxes along \u00b1X \u00b1Z. 4) opU all.",
+      "ok": true,
+      "error": null,
+      "code_len": 497
+    },
+    {
+      "n": 9,
+      "prompt": "Hollow square tube STEPS: 1) Outer sdBox (0.095, 0.26, 0.095). 2) Subtract inner sdBox (0.078, 0.27, 0.078). Y vertical.",
+      "ok": true,
+      "error": null,
+      "code_len": 157
+    },
+    {
+      "n": 10,
+      "prompt": "Grille plate STEPS: 1) Plate sdBox (0.26, 0.032, 0.18). 2) For i=0..7 subtract slot sdBox (0.012, 0.04, 0.19) center at (-0.105 + i*0.03, 0, 0). Eight slots.",
+      "ok": true,
+      "error": null,
+      "code_len": 1022
+    },
+    {
+      "n": 11,
+      "prompt": "L-bracket: Vertical plate half-extents (0.055, 0.16, 0.14) centered (0.075, 0, 0); horizontal plate (0.13, 0.055, 0.14) at (0, -0.075, 0); union; Y up.",
+      "ok": true,
+      "error": null,
+      "code_len": 204
+    },
+    {
+      "n": 12,
+      "prompt": "I-beam: Web box (0.04, 0.2, 0.14); top flange box (0.12, 0.025, 0.14) at y=0.225; bottom flange mirror at y=-0.225; union.",
+      "ok": true,
+      "error": null,
+      "code_len": 288
+    },
+    {
+      "n": 13,
+      "prompt": "Gear blank: Cylinder disc radius 0.28 half-height 0.045 minus central hole radius 0.09 minus offset hole radius 0.045 at (+0.11, 0, 0).",
+      "ok": true,
+      "error": null,
+      "code_len": 224
+    },
+    {
+      "n": 14,
+      "prompt": "Flanged bearing: Hollow cylinder outer 0.12 inner 0.08 half-height 0.18; union flange cylinder radius 0.22 half-height 0.02 with center at y=-0.18.",
+      "ok": true,
+      "error": null,
+      "code_len": 242
+    },
+    {
+      "n": 15,
+      "prompt": "Rivet: Shank cylinder radius 0.045 half-height 0.05; head sphere radius 0.09 centered (0, 0.11, 0); union.",
+      "ok": true,
+      "error": null,
+      "code_len": 152
+    },
+    {
+      "n": 16,
+      "prompt": "D-pull handle: Horizontal cylinder radius 0.032, axis along X, half-length 0.16, center y=0.075; two vertical cylinders same radius half-height 0.065 at x=\u00b10.16, y=-0.02; union.",
+      "ok": true,
+      "error": null,
+      "code_len": 359
+    },
+    {
+      "n": 17,
+      "prompt": "Eccentric cam: Disc cylinder r=0.21 half-h=0.035 union boss cylinder r=0.095 half-h=0.055 at (+0.115, 0, 0).",
+      "ok": true,
+      "error": null,
+      "code_len": 161
+    },
+    {
+      "n": 18,
+      "prompt": "Fan hub four blades: Hub cylinder r=0.095 half-h=0.055; four thin box blades length 0.24 width 0.065 thickness 0.036 along +X, -X, +Z, -Z; union.",
+      "ok": true,
+      "error": null,
+      "code_len": 622
+    },
+    {
+      "n": 19,
+      "prompt": "Hollow square tube: Outer box half-extents (0.095, 0.26, 0.095) minus inner (0.078, 0.27, 0.078).",
+      "ok": true,
+      "error": null,
+      "code_len": 157
+    },
+    {
+      "n": 20,
+      "prompt": "Grille plate: Plate box (0.26, 0.032, 0.18); eight slot boxes half-extents (0.012, 0.04, 0.19) at x = -0.105 + i*0.03 for i=0..7; subtract all from plate.",
+      "ok": true,
+      "error": null,
+      "code_len": 278
+    },
+    {
+      "n": 21,
+      "prompt": "L-shaped mounting bracket: two perpendicular flat plates of uniform thickness meeting at ninety degrees, rounded outer corner, Y vertical.",
+      "ok": true,
+      "error": null,
+      "code_len": 264
+    },
+    {
+      "n": 22,
+      "prompt": "Structural I-beam segment: vertical web with horizontal top and bottom flanges, symmetric, all from box primitives.",
+      "ok": true,
+      "error": null,
+      "code_len": 282
+    },
+    {
+      "n": 23,
+      "prompt": "Gear blank disc: circular disc with a large central through-hole and one smaller off-center hole for a bolt pattern.",
+      "ok": true,
+      "error": null,
+      "code_len": 256
+    },
+    {
+      "n": 24,
+      "prompt": "Flanged bearing housing: short hollow shaft with a wider flat flange on one end, axis vertical.",
+      "ok": true,
+      "error": null,
+      "code_len": 529
+    },
+    {
+      "n": 25,
+      "prompt": "Rivet fastener: short cylindrical shank with a hemispherical or domed head on top.",
+      "ok": true,
+      "error": null,
+      "code_len": 126
+    },
+    {
+      "n": 26,
+      "prompt": "Cabinet D-pull handle: horizontal grip bar with two short vertical legs down to the mounting plane.",
+      "ok": true,
+      "error": null,
+      "code_len": 280
+    },
+    {
+      "n": 27,
+      "prompt": "Eccentric cam plate: circular base with a second thicker circular boss offset from the rotation center.",
+      "ok": true,
+      "error": null,
+      "code_len": 154
+    },
+    {
+      "n": 28,
+      "prompt": "Fan hub: central hub with four identical flat blades radiating along the cardinal horizontal directions, no twist.",
+      "ok": true,
+      "error": null,
+      "code_len": 185
+    },
+    {
+      "n": 29,
+      "prompt": "Hollow square structural tube: square outer profile with square inner void, long axis vertical.",
+      "ok": true,
+      "error": null,
+      "code_len": 175
+    },
+    {
+      "n": 30,
+      "prompt": "Perforated grille: flat plate with a row of evenly spaced long narrow through-slots.",
+      "ok": true,
+      "error": null,
+      "code_len": 267
+    },
+    {
+      "n": 31,
+      "prompt": "Small shelf angle bracket.",
+      "ok": true,
+      "error": null,
+      "code_len": 193
+    },
+    {
+      "n": 32,
+      "prompt": "Short piece of I-beam.",
+      "ok": true,
+      "error": null,
+      "code_len": 275
+    },
+    {
+      "n": 33,
+      "prompt": "Drilled gear disc.",
+      "ok": true,
+      "error": null,
+      "code_len": 513
+    },
+    {
+      "n": 34,
+      "prompt": "Bearing with a flange.",
+      "ok": true,
+      "error": null,
+      "code_len": 415
+    },
+    {
+      "n": 35,
+      "prompt": "Pop rivet shape.",
+      "ok": true,
+      "error": null,
+      "code_len": 250
+    },
+    {
+      "n": 36,
+      "prompt": "Drawer pull.",
+      "ok": true,
+      "error": null,
+      "code_len": 225
+    },
+    {
+      "n": 37,
+      "prompt": "Offset cam for a latch.",
+      "ok": true,
+      "error": null,
+      "code_len": 242
+    },
+    {
+      "n": 38,
+      "prompt": "Plastic fan wheel blank.",
+      "ok": true,
+      "error": null,
+      "code_len": 245
+    },
+    {
+      "n": 39,
+      "prompt": "Hollow square leg.",
+      "ok": true,
+      "error": null,
+      "code_len": 197
+    },
+    {
+      "n": 40,
+      "prompt": "Vent cover with slots.",
+      "ok": true,
+      "error": null,
+      "code_len": 200
+    },
+    {
+      "n": 41,
+      "prompt": "Smooth blob pair: two spheres radius 0.28, centers 0.32 apart on X; combine with smooth union, blend parameter k\u22480.12.",
+      "ok": true,
+      "error": null,
+      "code_len": 174
+    },
+    {
+      "n": 42,
+      "prompt": "Fillet cluster: sdRoundBox main (0.14, 0.14, 0.14) corner radius 0.03 union smooth with sphere radius 0.1 at outer +X+Y+Z corner, k\u22480.1.",
+      "ok": true,
+      "error": null,
+      "code_len": 188
+    },
+    {
+      "n": 43,
+      "prompt": "Ellipsoid egg: axis-aligned ellipsoid semi-axes 0.22, 0.32, 0.18 centered at origin\u2014smooth closed surface.",
+      "ok": true,
+      "error": null,
+      "code_len": 77
+    },
+    {
+      "n": 44,
+      "prompt": "Triple metaball-style: smooth union of three spheres radii 0.2, 0.18, 0.16 with centers forming a triangle in XZ at slightly different Y, k\u22480.08.",
+      "ok": true,
+      "error": null,
+      "code_len": 260
+    },
+    {
+      "n": 45,
+      "prompt": "Soft pebble: smooth union of sdCapsule along slight diagonal and sphere offset, k\u22480.11\u2014one continuous rounded mass.",
+      "ok": true,
+      "error": null,
+      "code_len": 242
+    },
+    {
+      "n": 46,
+      "prompt": "Domed organic mound: sdSphere radius 0.45 center (0, 0.12, 0) union smooth with wider sdCylinder pedestal radius 0.35 half-height 0.08, k\u22480.14.",
+      "ok": true,
+      "error": null,
+      "code_len": 192
+    }
+  ]
+}

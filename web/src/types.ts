@@ -1,18 +1,28 @@
-/** Packed FlatIR (WGSL-aligned) from backend. */
+/** Packed FlatIR (WGSL-aligned) from backend packForWebGPU. */
 export interface PackedFlatIR {
   instrs: Array<{ op: number; arg0: number; arg1: number; constIdx: number }>;
-  transforms: number[];  // 8 per: tx,ty,tz,0, sx,sy,sz,minScale
-  spheres: number[];     // 4 per: r,0,0,0
-  boxes: number[];       // 4 per: hx,hy,hz,0
-  planes: number[];      // 4 per: nx,ny,nz,d
+  transforms: number[]; // 12 per: tx,ty,tz,0, sx,sy,sz,minScale, qx,qy,qz,qw
+  spheres: number[];
+  boxes: number[];
+  cylinders: number[];
+  smoothKs: number[];
   rootTemp: number;
 }
 
 export const FlatOp = {
   EvalSphere: 0,
   EvalBox: 1,
-  EvalPlane: 2,
-  CsgUnion: 3,
-  CsgIntersect: 4,
-  CsgSubtract: 5,
+  CsgUnion: 2,
+  CsgIntersect: 3,
+  CsgSubtract: 4,
+  EvalCylinder: 5,
+  CsgSmoothUnion: 6,
 } as const;
+
+/** WGSL SDF scene from server / agent. */
+export interface WGSLSdfScene {
+  type: 'wgsl-sdf';
+  code: string;
+}
+
+export type SceneData = WGSLSdfScene | PackedFlatIR;

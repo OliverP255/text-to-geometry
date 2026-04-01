@@ -1,0 +1,13 @@
+WGSL 50-prompt batch — 2026-03-31 (see full_visual_experiment.log)
+
+Settings: T2G_QWEN_THINKING=1, test_50_prompts.py --post, rate_visuals.py, build_visual_report.py
+
+Generation: 34/50 passed, 16/50 failed (Agent returned None after retries)
+
+Failed prompt indices: 9, 16, 18, 19, 23, 29, 30, 31, 33, 35, 39, 41, 43, 44, 45, 46
+
+Screenshots written: 47 PNG files under outputs/screenshots/ (skipped when WGSL missing or no fn map)
+
+VISUAL_REPORT.md mean heuristic score: 72.8% (see report for per-prompt table)
+
+Tip: For a clean report aligned with a single run, remove outputs/*.wgsl (and optionally screenshots) before re-running run_full_visual_experiment.sh.

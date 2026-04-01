@@ -78,9 +78,6 @@ target_include_directories(unparse_dsl_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 target_link_libraries(unparse_dsl_tests PRIVATE frontend kernel GTest::gtest GTest::gtest_main)
 add_test(NAME unparse_dsl_tests COMMAND unparse_dsl_tests)
 
-add_executable(validate_dsl text-to-dsl/validate_dsl.cpp)
-target_link_libraries(validate_dsl PRIVATE frontend)
-
 # Python bindings (pybind11)
 pybind11_add_module(text_to_geometry_bindings bindings/pybind_compile.cpp)
 target_link_libraries(text_to_geometry_bindings PRIVATE frontend kernel)

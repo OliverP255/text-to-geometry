@@ -8,6 +8,15 @@ export default defineConfig({
         ws: true,
         changeOrigin: true,
       },
+      // Same-origin during `vite dev` — Flask serves these on :5001
+      '/chat': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+      },
+      '/scene': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+      },
     },
   },
 });

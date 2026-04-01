@@ -101,24 +101,16 @@ class Parser {
           shapes_[dstId] = s;
           lastShape = s;
           lastStmtLine = stmtLine;
-        } else if (op == "plane") {
-          float nx = expectNamedNum("nx", stmtLine);
+        } else if (op == "cylinder") {
+          float r = expectNamedNum("r", stmtLine);
           if (!ok_) return failFromOk();
           expectComma(stmtLine);
           if (!ok_) return failFromOk();
-          float ny = expectNamedNum("ny", stmtLine);
-          if (!ok_) return failFromOk();
-          expectComma(stmtLine);
-          if (!ok_) return failFromOk();
-          float nz = expectNamedNum("nz", stmtLine);
-          if (!ok_) return failFromOk();
-          expectComma(stmtLine);
-          if (!ok_) return failFromOk();
-          float d = expectNamedNum("d", stmtLine);
+          float h = expectNamedNum("h", stmtLine);
           if (!ok_) return failFromOk();
           expectRparen(stmtLine);
           if (!ok_) return failFromOk();
-          kernel::ShapeH s = b.plane({nx, ny, nz}, d);
+          kernel::ShapeH s = b.cylinder(r, h);
           shapes_[dstId] = s;
           lastShape = s;
           lastStmtLine = stmtLine;
@@ -146,6 +138,23 @@ class Parser {
           expectRparen(stmtLine);
           if (!ok_) return failFromOk();
           kernel::ShapeH s = b.subtract(a, b_);
+          shapes_[dstId] = s;
+          lastShape = s;
+          lastStmtLine = stmtLine;
+        } else if (op == "smooth_union") {
+          kernel::ShapeH a = expectShapeRef(stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH b_ = expectShapeRef(stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float k = expectNamedNum("k", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::ShapeH s = b.smoothUnite(a, b_, k);
           shapes_[dstId] = s;
           lastShape = s;
           lastStmtLine = stmtLine;
@@ -215,8 +224,28 @@ class Parser {
           kernel::TransformH t = b.scale({x, y, z});
           transforms_[dstId] = t;
           lastStmtLine = stmtLine;
+        } else if (op == "rotate") {
+          float x = expectNamedNum("x", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float y = expectNamedNum("y", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float z = expectNamedNum("z", stmtLine);
+          if (!ok_) return failFromOk();
+          expectComma(stmtLine);
+          if (!ok_) return failFromOk();
+          float w = expectNamedNum("w", stmtLine);
+          if (!ok_) return failFromOk();
+          expectRparen(stmtLine);
+          if (!ok_) return failFromOk();
+          kernel::TransformH t = b.rotate(x, y, z, w);
+          transforms_[dstId] = t;
+          lastStmtLine = stmtLine;
         } else {
-          return fail("expected translate or scale", stmtLine);
+          return fail("expected translate, scale, or rotate", stmtLine);
         }
       } else {
         return fail("expected sN or tN = expr", peek().line);
