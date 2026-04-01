@@ -90,12 +90,7 @@ Results:
 | llava-onevision-qwen2-7b-ov-hf | 82.6% | 2.15 | B |
 
 <div align="center">
-
-<p><strong>Model comparison</strong> — mean prompt-fidelity (1–5) vs <code>wgsl_validator</code> pass rate (nine models, 46 prompts).</p>
-<img src="agent/experiments/figures/benchmark_models_fidelity_and_validation.png" alt="Bar chart comparing prompt fidelity and WGSL validation pass rate across nine LLMs" width="920">
-
-<p><strong>Band profiles</strong> — mean fidelity on each prompt band (B1–B5) per model.</p>
-<img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="920">
+<img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="600">
 
 </div>
 
