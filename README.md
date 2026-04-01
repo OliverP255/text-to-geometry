@@ -5,6 +5,7 @@
 <h4>Text → 3D geometry via signed distance functions (SDFs)</h4>  
 </div>
 
+
 <p align="center">
 [![WebGPU](https://img.shields.io/badge/WebGPU-005A9C?style=flat-square&logo=webgpu&logoColor=white)](https://www.w3.org/TR/webgpu/)
 [![WGSL](https://img.shields.io/badge/WGSL-1EAEDB?style=flat-square&labelColor=0d1117)](https://www.w3.org/TR/WGSL/)
