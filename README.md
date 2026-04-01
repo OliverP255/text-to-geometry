@@ -19,7 +19,7 @@ SketchCAD is an app that turns natural language into **executable 3D geometry**.
 
 ## How it works
 
-| Step | What happens |
+| Step   | What happens   |
 |------|----------------|
 | **1 · Prompt** | User describes an object (dimensions, parts, style). |
 | **2 · Generate** | LLM (*default:* `Qwen3-32B-FP8` via vLLM, override with `T2G_MODEL_ID`) outputs `fn map(p: vec3f) -> f32` using the project’s **`sd*`** primitives and **`op*`** CSG helpers. |
