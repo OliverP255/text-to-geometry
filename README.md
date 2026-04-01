@@ -90,6 +90,7 @@ The biggest issues the top models faced were small geometry mistakes e.g. wrong 
 <tr><td>llava-onevision-qwen2-7b-ov-hf</td><td>82.6%</td><td>2.15</td><td>B</td></tr>
 </tbody>
 </table>
+</div>
 
 Qwen2.5-Coder-32B-Instruct was the best overall model. 
 
@@ -97,7 +98,6 @@ Qwen2.5-Coder-32B-Instruct was the best overall model.
 Interestingly, Qwen2.5-Coder beat both sizes of Qwen3 models and even produced some genuinely creative solutions for making CAD designs with SDF primitives. The smaller Qwen3 model also beat the larger one by a noticeable amount. 
 
 
-</div>
 
 <div align="center">
 <img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="800">
