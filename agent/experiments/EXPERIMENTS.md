@@ -14,7 +14,7 @@
 | 2 | GLM-4.7-Flash-FP8 | `marksverdhei/GLM-4.7-Flash-FP8` |
 | 3 | DeepSeek-R1-Distill-Qwen-32B | `deepseek-ai/DeepSeek-R1-Distill-Qwen-32B` |
 | 4 | GLM-Z1-32B-0414 | `THUDM/GLM-Z1-32B-0414` |
-| 5 | GLM-4-32B-0414 | `THUDM/GLM-4-32B-0414` |
+| 5 | GLM-4-32B-0414 | `zai-org/GLM-4-32B-0414` |
 | 6 | Qwen3-14B-FP8 | `Qwen/Qwen3-14B-FP8` |
 | 7 | LLaVA-1.6-Mistral-7B | `llava-hf/llava-v1.6-mistral-7b-hf` |
 | 8 | LLaVA-OneVision-Qwen2-7B | `llava-hf/llava-onevision-qwen2-7b-ov-hf` |
@@ -38,10 +38,14 @@ Smoke test (2 prompts × 9 models):
 
 Outputs per model: `agent/experiments/outputs/by_model/<model_slug>/` plus `results.json`. Logs: `agent/experiments/logs/`.
 
-## Ratings (automated)
+## Ratings report
 
 ```bash
 .venv/bin/python3 agent/experiments/aggregate_benchmark_ratings.py
 ```
 
-Writes `BENCHMARK_RATINGS.md` and `benchmark_aggregate.json` — **validation pass rate** through `wgsl_validator` and letter **grade**.
+Writes **`BENCHMARK_RATINGS.md`** (human-readable): **syntactic validation** pass rate (`wgsl_validator`) plus **prompt-fidelity** means merged from `outputs/by_model/*/accuracy_ratings.json`. Also writes **`benchmark_aggregate.json`** (machine-readable rows).
+
+Per-prompt fidelity scores and notes remain in each model folder’s `accuracy_ratings.json` only (no per-model markdown).
+
+**Figures:** after aggregating, install `agent/experiments/requirements-plots.txt` and run `python3 agent/experiments/plot_benchmark_comparison.py` — writes comparison charts to `agent/experiments/figures/` (linked from `BENCHMARK_RATINGS.md`).

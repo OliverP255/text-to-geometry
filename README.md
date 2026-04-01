@@ -62,30 +62,43 @@ In summary: SDFs are perfect for **exploring AND quickly iterating on cool CAD d
 ## Benchmark: How well do LLMs design 3D geometry?
 
 A fixed prompt suite of **46 prompts** from (`agent/experiments/test_50_prompts.py`) was run across **nine open-weight models**.
-The models I tested were:
-
-<table>
-<tr><td><b>Qwen3-32B-FP8</b></td><td><code>Qwen/Qwen3-32B-FP8</code></td></tr>
-<tr><td><b>GLM-4.7-Flash-FP8</b></td><td><code>marksverdhei/GLM-4.7-Flash-FP8</code></td></tr>
-<tr><td><b>DeepSeek-R1-Distill-Qwen-32B</b></td><td><code>deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</code></td></tr>
-<tr><td><b>GLM-Z1-32B-0414</b></td><td><code>THUDM/GLM-Z1-32B-0414</code></td></tr>
-<tr><td><b>GLM-4-32B-0414</b></td><td><code>THUDM/GLM-4-32B-0414</code></td></tr>
-<tr><td><b>Qwen3-14B-FP8</b></td><td><code>Qwen/Qwen3-14B-FP8</code></td></tr>
-<tr><td><b>LLaVA-1.6-Mistral-7B</b></td><td><code>llava-hf/llava-v1.6-mistral-7b-hf</code></td></tr>
-<tr><td><b>LLaVA-OneVision-Qwen2-7B</b></td><td><code>llava-hf/llava-onevision-qwen2-7b-ov-hf</code></td></tr>
-<tr><td><b>Qwen2.5-Coder-32B-Instruct</b></td><td><code>Qwen/Qwen2.5-Coder-32B-Instruct</code></td></tr>
-</table>
-I wanted to see the effect of the size of model, and the importance of reasoning and vision capabilities.
 
 I tested them on **5 categories** to see how prompting with specific length measurements or with step-by-step design instructions affected the output of the agent.
-**Prompt Categories:**
-Classic CAD — measurements + numbered steps
-Classic CAD — measurements, no steps
-Classic CAD — no measurements, no steps
-Classic CAD — vague / short
-Organic (SDF-friendly)
 
-The outputs were **WGSL** `map()` functions; quality of the output was scored/rated and summarised in `agent/experiments/50_PROMPTS_RESULTS.md` and figures under `agent/experiments/figures/`.
+**Prompt Categories:**
+
+B1: Classic CAD — measurements + numbered steps
+B2: Classic CAD — measurements, no steps
+B3: Classic CAD — no measurements, no steps
+B4: Classic CAD — vague / short
+B5: Organic (SDF-friendly)
+
+The outputs were **WGSL** `map()` functions and we rated both how well each model followed syntax as well as performance on each band.
+
+Results:
+
+| Model | Valid WGSL % | Fidelity mean | Grade |
+|-------|-------------|---------------|-------|
+| Qwen2.5-Coder-32B-Instruct | 100.0% | 4.35 | A |
+| Qwen3-14B-FP8 | 100.0% | 4.28 | A |
+| Qwen3-32B-FP8 | 100.0% | 4.15 | A |
+| GLM-4.7-Flash-FP8 | 100.0% | 4.00 | A |
+| GLM-4-32B-0414 | 100.0% | 3.96 | A |
+| DeepSeek-R1-Distill-Qwen-32B | 100.0% | 3.87 | A |
+| GLM-Z1-32B-0414 | 67.4% | 3.02 | C |
+| llava-v1.6-mistral-7b-hf | 95.7% | 2.37 | A |
+| llava-onevision-qwen2-7b-ov-hf | 82.6% | 2.15 | B |
+
+<div align="center">
+
+<p><strong>Model comparison</strong> — mean prompt-fidelity (1–5) vs <code>wgsl_validator</code> pass rate (nine models, 46 prompts).</p>
+<img src="agent/experiments/figures/benchmark_models_fidelity_and_validation.png" alt="Bar chart comparing prompt fidelity and WGSL validation pass rate across nine LLMs" width="920">
+
+<p><strong>Band profiles</strong> — mean fidelity on each prompt band (B1–B5) per model.</p>
+<img src="agent/experiments/figures/benchmark_band_spaghetti.png" alt="Line chart of mean fidelity across prompt bands B1 through B5 for each model" width="920">
+
+</div>
+
 
 ---
 
