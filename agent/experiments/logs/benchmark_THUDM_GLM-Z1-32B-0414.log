@@ -310,4 +310,45 @@ Generating WGSL…
 Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.04s/it, est. speed input: 9.76 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.04s/it, est. speed input: 9.76 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.04s/it, est. speed input: 9.76 toks/s, output: 21.94 toks/s]
 Generating WGSL…
 Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 140.82it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.99s/it, est. speed input: 34.46 toks/s, output: 21.79 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.99s/it, est. speed input: 34.46 toks/s, output: 21.79 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.99s/it, est. speed input: 34.46 toks/s, output: 21.79 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[36/46] Testing: Drawer pull....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 498.73it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.01s/it, est. speed input: 9.75 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.01s/it, est. speed input: 9.75 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.01s/it, est. speed input: 9.75 toks/s, output: 21.94 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 108.24it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:15<00:00, 75.01s/it, est. speed input: 87.63 toks/s, output: 21.59 toks/s]Processed prompts: 100%|██████████| 1/1 [01:15<00:00, 75.01s/it, est. speed input: 87.63 toks/s, output: 21.59 toks/s]Processed prompts: 100%|██████████| 1/1 [01:15<00:00, 75.01s/it, est. speed input: 87.63 toks/s, output: 21.59 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 106.32it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.29s/it, est. speed input: 288.71 toks/s, output: 21.86 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.29s/it, est. speed input: 288.71 toks/s, output: 21.86 toks/s]Processed prompts: 100%|██████████| 1/1 [00:23<00:00, 23.29s/it, est. speed input: 288.71 toks/s, output: 21.86 toks/s]
+        PASSED (202 chars)
+[37/46] Testing: Offset cam for a latch....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 406.42it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.05s/it, est. speed input: 9.77 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.05s/it, est. speed input: 9.77 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.05s/it, est. speed input: 9.77 toks/s, output: 21.94 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 94.56it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [00:28<00:00, 28.23s/it, est. speed input: 269.28 toks/s, output: 20.94 toks/s]Processed prompts: 100%|██████████| 1/1 [00:28<00:00, 28.23s/it, est. speed input: 269.28 toks/s, output: 20.94 toks/s]Processed prompts: 100%|██████████| 1/1 [00:28<00:00, 28.23s/it, est. speed input: 269.28 toks/s, output: 20.94 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+        FAILED: Agent returned None after retries
+[38/46] Testing: Plastic fan wheel blank....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 499.74it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:12<00:00, 72.74s/it, est. speed input: 18.81 toks/s, output: 21.95 toks/s]Processed prompts: 100%|██████████| 1/1 [01:12<00:00, 72.74s/it, est. speed input: 18.81 toks/s, output: 21.95 toks/s]Processed prompts: 100%|██████████| 1/1 [01:12<00:00, 72.74s/it, est. speed input: 18.81 toks/s, output: 21.95 toks/s]
+        PASSED (131 chars)
+[39/46] Testing: Hollow square leg....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 404.86it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.01s/it, est. speed input: 9.76 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.01s/it, est. speed input: 9.76 toks/s, output: 21.94 toks/s]Processed prompts: 100%|██████████| 1/1 [02:20<00:00, 140.01s/it, est. speed input: 9.76 toks/s, output: 21.94 toks/s]
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 119.68it/s]
+Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]Processed prompts: 100%|██████████| 1/1 [01:29<00:00, 89.47s/it, est. speed input: 64.90 toks/s, output: 21.68 toks/s]Processed prompts: 100%|██████████| 1/1 [01:29<00:00, 89.47s/it, est. speed input: 64.90 toks/s, output: 21.68 toks/s]Processed prompts: 100%|██████████| 1/1 [01:29<00:00, 89.47s/it, est. speed input: 64.90 toks/s, output: 21.68 toks/s]
+        PASSED (173 chars)
+[40/46] Testing: Vent cover with slots....
+Generating WGSL…
+Rendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]Rendering conversations: 100%|██████████| 1/1 [00:00<00:00, 396.51it/s]
 Processed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
