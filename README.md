@@ -28,7 +28,7 @@ SketchCAD closes that gap entirely.
 
 You describe what you want. SketcCAD builds it and gives you a file you can print.
 
-```wgsl
+```html
 "A vase with a twisting body and a voronoi texture on the surface"
                     │
                     ▼
