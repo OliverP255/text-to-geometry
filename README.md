@@ -29,16 +29,16 @@ SketchCAD closes that gap entirely.
 You describe what you want. SketcCAD builds it and gives you a file you can print.
 
 ```html
-"A vase with a twisting body and a voronoi texture on the surface"
-                    │
-                    ▼
-  AI agent generates 3D geometry in real time
-                    │
-                    ▼
-  WebGPU ray marcher renders it instantly in your browser
-                    │
-                    ▼
-  Download STL  or  3D print directly
+          "A vase with a twisting body and a voronoi texture on the surface"
+                                          │
+                                          ▼
+                        AI agent generates 3D geometry in real time
+                                          │
+                                          ▼
+                  WebGPU ray marcher renders it instantly in your browser
+                                          │
+                                          ▼
+                            Download STL  or  3D print directly
 ```
 
 The kinds of objects SketchCAD excels at (organic shapes, surface textures, procedural structures, smooth blending between parts) are either impossible or require hours of expert work in traditional CAD tools. SketchCAD can generate them in seconds.
