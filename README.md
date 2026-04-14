@@ -28,7 +28,7 @@ SketchCAD closes that gap entirely.
 
 You describe what you want. SketcCAD builds it and gives you a file you can print.
 
-```h
+
 "A vase with a twisting body and a voronoi texture on the surface"
         │
         ▼
@@ -39,7 +39,7 @@ You describe what you want. SketcCAD builds it and gives you a file you can prin
         │
         ▼
   Download STL  or  3D print directly
-```
+
 
 The kinds of objects SketchCAD excels at (organic shapes, surface textures, procedural structures, smooth blending between parts) are either impossible or require hours of expert work in traditional CAD tools. SketchCAD can generate them in seconds.
 
