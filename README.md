@@ -226,6 +226,5 @@ text-to-geometry/
 
 The SDF primitive library and ray marching implementation are deeply influenced by the work of [Inigo Quilez](https://iquilezles.org/articles/distfunctions/), whose tutorials and Shadertoy examples form the canonical reference for SDF-based geometry. The deliberate use of iq's naming conventions in this codebase is intentional and it aligns the generation target with the representation that frontier language models understand best.
 
----
 
-For commercial use / collaboration, please reach out.
+For commercial use / collaboration, please reach out!
