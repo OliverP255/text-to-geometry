@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Run test_50_prompts.py once per model in benchmark_models.BENCHMARK_MODELS (subprocess per model
-so vLLM releases GPU memory between runs).
+Run test_prompts.py once per model (subprocess per model so vLLM releases GPU memory between runs).
 
 Usage (from repo root):
   .venv/bin/python3 agent/experiments/run_multi_llm_benchmark.py
   .venv/bin/python3 agent/experiments/run_multi_llm_benchmark.py --max-prompts 2   # smoke test
+  .venv/bin/python3 agent/experiments/run_multi_llm_benchmark.py --models Qwen/foo Qwen/bar
 
 Then:
   .venv/bin/python3 agent/experiments/aggregate_benchmark_ratings.py
@@ -99,7 +99,7 @@ def _clear_vllm_disk_cache() -> None:
 
 _agent_root = Path(__file__).resolve().parent.parent
 _repo_root = _agent_root.parent
-_test_script = Path(__file__).resolve().parent / "test_50_prompts.py"
+_test_script = Path(__file__).resolve().parent / "test_prompts.py"
 _out_root = Path(__file__).resolve().parent / "outputs" / "by_model"
 _log_dir = Path(__file__).resolve().parent / "logs"
 
@@ -109,8 +109,20 @@ def main() -> None:
     from experiments.benchmark_models import BENCHMARK_MODELS, model_slug
 
     parser = argparse.ArgumentParser(description="Run WGSL prompt suite for each benchmark model.")
+    parser.add_argument(
+        "--models",
+        nargs="+",
+        default=None,
+        metavar="MODEL_ID",
+        help="Hugging Face model ids to run (default: experiments.benchmark_models.BENCHMARK_MODELS)",
+    )
     parser.add_argument("--max-prompts", type=int, default=None, help="Limit prompts per model (smoke test)")
-    parser.add_argument("--start-at", type=int, default=0, help="Skip first N models in the list")
+    parser.add_argument(
+        "--start-at",
+        type=int,
+        default=0,
+        help="Skip first N models in the list (ignored if --models is set)",
+    )
     parser.add_argument(
         "--no-cleanup-between",
         action="store_true",
@@ -126,14 +138,13 @@ def main() -> None:
     _out_root.mkdir(parents=True, exist_ok=True)
     _log_dir.mkdir(parents=True, exist_ok=True)
 
-    need_gib = 28.0
+    need_gib = 10.0
     free_gib = _free_disk_gib(_repo_root)
     if free_gib < need_gib:
         print(
-            f"ERROR: need at least ~{need_gib:.0f} GiB free on {_repo_root} for one 32B download; "
-            f"have {free_gib:.1f} GiB. Clear ~/.cache/huggingface/hub or set HF_HOME to a larger volume."
+            f"WARNING: only {free_gib:.1f} GiB free on {_repo_root} (recommend ≥28 GiB for fresh 32B downloads). "
+            f"Continuing — cached weights may already be present. Clear ~/.cache/huggingface/hub if not."
         )
-        sys.exit(1)
 
     manifest = {
         "started_utc": datetime.now(timezone.utc).isoformat(),
@@ -141,9 +152,16 @@ def main() -> None:
         "models": [],
     }
 
+    if args.models:
+        model_entries: list[tuple[str, str]] = [
+            (mid.split("/")[-1].replace(":", "_"), mid.strip()) for mid in args.models if mid.strip()
+        ]
+    else:
+        model_entries = list(BENCHMARK_MODELS)
+
     py = sys.executable
-    for idx, (label, model_id) in enumerate(BENCHMARK_MODELS):
-        if idx < args.start_at:
+    for idx, (label, model_id) in enumerate(model_entries):
+        if not args.models and idx < args.start_at:
             continue
         slug = model_slug(model_id)
         out_dir = _out_root / slug
@@ -164,7 +182,9 @@ def main() -> None:
         if args.max_prompts is not None:
             cmd.extend(["--max-prompts", str(args.max_prompts)])
 
-        print(f"\n{'='*60}\n[{idx + 1}/{len(BENCHMARK_MODELS)}] {label}\n  model_id={model_id}\n  log={log_path}\n{'='*60}\n")
+        print(
+            f"\n{'='*60}\n[{idx + 1}/{len(model_entries)}] {label}\n  model_id={model_id}\n  log={log_path}\n{'='*60}\n"
+        )
 
         if not args.skip_gpu_reset:
             _kill_gpu_compute_processes()

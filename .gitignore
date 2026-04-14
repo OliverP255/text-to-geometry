@@ -2,7 +2,7 @@ k8s/
 glm4-flash-fp8/
 build/
 .t2g-reqs-no-torch.txt
-config.yaml
+/config.yaml
 .cursor/
 .venv/
 .pytest_cache/
@@ -10,6 +10,7 @@ config.yaml
 .cursorrules
 .cursor/
 .claude/
+litellm/.vertex-sa.json
 web/node_modules/
 **/__pycache__/
 *.pyc
@@ -22,4 +23,3 @@ agent/experiments/logs/
 # OS / editor
 .DS_Store
 Thumbs.db
-

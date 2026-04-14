@@ -25,12 +25,17 @@ fn sdCapsule(p: vec3f, a: vec3f, b: vec3f, r: f32) -> f32 {
   let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
   return length(pa - ba * h) - r;
 }
-fn sdCone(p: vec3f, h: f32, r: f32) -> f32 {
-  let q = vec2f(length(p.xz), p.y);
-  let tip = q - vec2f(0.0, h);
-  let mantle = q - r * q.y / h;
-  let d = max(tip.x, tip.y);
-  return sqrt(min(dot(tip, tip), dot(mantle, mantle))) * sign(d);
+fn sdCone(p: vec3f, c: vec2f, h: f32) -> f32 {
+  let cy = select(c.y, sign(c.y) * 1e-7, abs(c.y) < 1e-7);
+  let q = h * vec2f(c.x / cy, -1.0);
+  let w = vec2f(length(p.xz), p.y);
+  let a = w - q * clamp(dot(w, q) / dot(q, q), 0.0, 1.0);
+  let qx = select(q.x, sign(q.x) * 1e-7, abs(q.x) < 1e-7);
+  let b = w - q * vec2f(clamp(w.x / qx, 0.0, 1.0), 1.0);
+  let k = sign(q.y);
+  let d = min(dot(a, a), dot(b, b));
+  let s = max(k * (w.x * q.y - w.y * q.x), k * (w.y - q.y));
+  return sqrt(d) * sign(s);
 }
 fn sdEllipsoid(p: vec3f, r: vec3f) -> f32 {
   let k0 = length(p / r);
@@ -93,7 +98,36 @@ fn opRepPolar(p: vec3f, n: f32) -> vec3f {
   let ca = a - na;
   return vec3f(cos(ca) * r, p.y, sin(ca) * r);
 }
+fn opRepLinear(p: vec3f, spacing: f32, count: f32) -> vec3f {
+  let halfN = (count - 1.0) * 0.5;
+  let cellX = clamp(round(p.x / spacing), -halfN, halfN);
+  return vec3f(p.x - spacing * cellX, p.y, p.z);
+}
 fn opOnion(d: f32, t: f32) -> f32 { return abs(d) - t; }
+fn opRound(d: f32, r: f32) -> f32 { return d - r; }
+fn opU3(a: f32, b: f32, c: f32) -> f32 { return min(a, min(b, c)); }
+fn opU4(a: f32, b: f32, c: f32, d: f32) -> f32 { return min(min(a, b), min(c, d)); }
+fn sdCylinderX(p: vec3f, h: f32, r: f32) -> f32 {
+  let d = abs(vec2f(length(p.yz), p.x)) - vec2f(r, h);
+  return min(max(d.x, d.y), 0.0) + length(max(d, vec2f(0.0)));
+}
+fn sdCylinderZ(p: vec3f, h: f32, r: f32) -> f32 {
+  let d = abs(vec2f(length(p.xy), p.z)) - vec2f(r, h);
+  return min(max(d.x, d.y), 0.0) + length(max(d, vec2f(0.0)));
+}
+fn sdHemisphere(p: vec3f, r: f32) -> f32 {
+  return max(length(p) - r, -p.y);
+}
+fn opTwist(p: vec3f, k: f32) -> vec3f {
+  let c = cos(k * p.y);
+  let s = sin(k * p.y);
+  return vec3f(c * p.x - s * p.z, p.y, s * p.x + c * p.z);
+}
+fn opCheapBend(p: vec3f, k: f32) -> vec3f {
+  let c = cos(k * p.x);
+  let s = sin(k * p.x);
+  return vec3f(c * p.x - s * p.y, s * p.x + c * p.y, p.z);
+}
 `;
 
 const WGSL_FLATIR_FULL = String.raw`
@@ -120,12 +154,17 @@ fn sdCapsule(p: vec3f, a: vec3f, b: vec3f, r: f32) -> f32 {
   let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
   return length(pa - ba * h) - r;
 }
-fn sdCone(p: vec3f, h: f32, r: f32) -> f32 {
-  let q = vec2f(length(p.xz), p.y);
-  let tip = q - vec2f(0.0, h);
-  let mantle = q - r * q.y / h;
-  let d = max(tip.x, tip.y);
-  return sqrt(min(dot(tip, tip), dot(mantle, mantle))) * sign(d);
+fn sdCone(p: vec3f, c: vec2f, h: f32) -> f32 {
+  let cy = select(c.y, sign(c.y) * 1e-7, abs(c.y) < 1e-7);
+  let q = h * vec2f(c.x / cy, -1.0);
+  let w = vec2f(length(p.xz), p.y);
+  let a = w - q * clamp(dot(w, q) / dot(q, q), 0.0, 1.0);
+  let qx = select(q.x, sign(q.x) * 1e-7, abs(q.x) < 1e-7);
+  let b = w - q * vec2f(clamp(w.x / qx, 0.0, 1.0), 1.0);
+  let k = sign(q.y);
+  let d = min(dot(a, a), dot(b, b));
+  let s = max(k * (w.x * q.y - w.y * q.x), k * (w.y - q.y));
+  return sqrt(d) * sign(s);
 }
 fn sdEllipsoid(p: vec3f, r: vec3f) -> f32 {
   let k0 = length(p / r);
@@ -277,8 +316,10 @@ fn evalSdf(p: vec3f) -> f32 {
 }
 fn map(p: vec3f) -> f32 { return evalSdf(p); }
 
-const MAX_STEPS = 96u;
-const MAX_DIST  = 60.0;
+const MAX_STEPS = 224u;
+const MAX_DIST  = 120.0;
+const MARCH_RELAX = 0.88;
+const MIN_MARCH = 0.00005;
 const SURF_DIST = 0.001;
 const NORM_EPS  = 0.001;
 const KEY_DIR   = vec3f(0.6, 0.8, -0.4);
@@ -303,7 +344,8 @@ fn march(ro: vec3f, rd: vec3f) -> f32 {
     let d = map(ro + rd * t);
     if (d < SURF_DIST * (1.0 + t * 0.1)) { return t; }
     if (t > MAX_DIST) { break; }
-    t += d;
+    let step = max(d * MARCH_RELAX, MIN_MARCH);
+    t += step;
   }
   return -1.0;
 }
@@ -360,18 +402,18 @@ fn main(@builtin(global_invocation_id) id: vec3u) {
     let fill = max(dot(n, normalize(FILL_DIR)), 0.0);
     let rim  = pow(1.0 - max(dot(n, v), 0.0), 3.0);
     var light = MAT_COL * KEY_COL * diff * shad * 0.9;
-    light += MAT_COL * FILL_COL * fill * 0.5;
+    light += MAT_COL * FILL_COL * fill * 0.62;
     light += RIM_COL * rim * 0.35;
-    light += MAT_COL * AMB_COL * (0.5 + 0.5 * n.y);
+    light += MAT_COL * AMB_COL * (0.58 + 0.42 * n.y);
     light += vec3f(0.9, 0.95, 1.0) * spec * 0.6;
-    light *= ao;
+    light *= 0.22 + 0.78 * ao;
     col = light;
   } else {
     col = background(rd);
   }
   col = pow(col, vec3f(1.0 / 2.2));
   let ctr = (px + 0.5) / res - 0.5;
-  let vig = 1.0 - 0.3 * dot(ctr, ctr);
+  let vig = 1.0 - 0.22 * dot(ctr, ctr);
   col *= vig;
   col = clamp(col, vec3f(0.0), vec3f(1.0));
   textureStore(outImage, vec2i(i32(id.x), i32(id.y)), vec4f(col, 1.0));
@@ -450,8 +492,10 @@ struct Uniforms {
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var outImage: texture_storage_2d<rgba8unorm, write>;
 
-const MAX_STEPS = 96u;
-const MAX_DIST  = 60.0;
+const MAX_STEPS = 224u;
+const MAX_DIST  = 120.0;
+const MARCH_RELAX = 0.88;
+const MIN_MARCH = 0.00005;
 const SURF_DIST = 0.001;
 const NORM_EPS  = 0.001;
 const KEY_DIR   = vec3f(0.6, 0.8, -0.4);
@@ -476,7 +520,8 @@ fn march(ro: vec3f, rd: vec3f) -> f32 {
     let d = map(ro + rd * t);
     if (d < SURF_DIST * (1.0 + t * 0.1)) { return t; }
     if (t > MAX_DIST) { break; }
-    t += d;
+    let step = max(d * MARCH_RELAX, MIN_MARCH);
+    t += step;
   }
   return -1.0;
 }
@@ -533,18 +578,18 @@ fn main(@builtin(global_invocation_id) id: vec3u) {
     let fill = max(dot(n, normalize(FILL_DIR)), 0.0);
     let rim  = pow(1.0 - max(dot(n, v), 0.0), 3.0);
     var light = MAT_COL * KEY_COL * diff * shad * 0.9;
-    light += MAT_COL * FILL_COL * fill * 0.5;
+    light += MAT_COL * FILL_COL * fill * 0.62;
     light += RIM_COL * rim * 0.35;
-    light += MAT_COL * AMB_COL * (0.5 + 0.5 * n.y);
+    light += MAT_COL * AMB_COL * (0.58 + 0.42 * n.y);
     light += vec3f(0.9, 0.95, 1.0) * spec * 0.6;
-    light *= ao;
+    light *= 0.22 + 0.78 * ao;
     col = light;
   } else {
     col = background(rd);
   }
   col = pow(col, vec3f(1.0 / 2.2));
   let ctr = (px + 0.5) / res - 0.5;
-  let vig = 1.0 - 0.3 * dot(ctr, ctr);
+  let vig = 1.0 - 0.22 * dot(ctr, ctr);
   col *= vig;
   col = clamp(col, vec3f(0.0), vec3f(1.0));
   textureStore(outImage, vec2i(i32(id.x), i32(id.y)), vec4f(col, 1.0));

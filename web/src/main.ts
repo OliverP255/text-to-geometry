@@ -1,6 +1,5 @@
 import { WebGPURenderer } from './webgpu_renderer';
-import { connectAndSubscribe } from './flatir';
-import { sceneServerBaseUrl } from './sceneServer';
+import { connectAndSubscribe, getSocket } from './flatir';
 import type { PackedFlatIR, WGSLSdfScene } from './types';
 
 const DEFAULT_WGSL_SCENE: WGSLSdfScene = {
@@ -30,71 +29,80 @@ function escapeHtmlText(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
-// ── Prompt bar ──────────────────────────────────────────────────
+// -- Prompt bar ---------------------------------------------------
 
-type ChatResponse = { ok?: boolean; error?: string; code?: string };
+let hasScene = false;
+let lastCode: string | null = null;
 
 function initPromptBar(renderer: WebGPURenderer | null): void {
-  const bar = document.getElementById('prompt-bar')!;
   const input = document.getElementById('prompt-input') as HTMLInputElement;
   const send = document.getElementById('prompt-send') as HTMLButtonElement;
+  const bar = document.getElementById('prompt-bar')!;
 
   let busy = false;
-  const base = sceneServerBaseUrl();
 
-  async function handleSend(): Promise<void> {
+  function handleSend(): void {
     const text = input.value.trim();
     if (!text || busy) return;
+
+    const socket = getSocket();
+    if (!socket?.connected) {
+      setStatus('<span class="err">not connected to server</span>');
+      return;
+    }
 
     busy = true;
     send.disabled = true;
     bar.classList.add('loading');
-    input.placeholder = 'Generating…';
 
-    try {
-      const resp = await fetch(`${base}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: text }),
-      });
-      const raw = await resp.text();
-      let data: ChatResponse = {};
-      try {
-        data = raw ? (JSON.parse(raw) as ChatResponse) : {};
-      } catch {
-        input.placeholder = `Server error (${resp.status})`;
-        setStatus(`<span class="err">chat: bad JSON (${resp.status})</span>`);
-        setTimeout(() => { input.placeholder = 'Describe a shape…'; }, 4000);
-        return;
-      }
+    const isRefine = hasScene;
+    const action = isRefine ? 'refining' : 'generating';
+    input.placeholder = action.charAt(0).toUpperCase() + action.slice(1) + '\u2026';
+    setStatus(`<span class="ok">${action}\u2026</span>`);
 
-      if (resp.ok && data.ok && typeof data.code === 'string' && data.code.trim()) {
-        input.value = '';
-        input.placeholder = 'Describe a shape…';
-        const scene: WGSLSdfScene = { type: 'wgsl-sdf', code: data.code };
-        if (renderer) {
-          renderer.setWgslScene(scene);
-          setStatus(`<span class="ok">scene</span> · wgsl (${data.code.length} chars)`);
-        } else {
-          setStatus(
-            `<span class="ok">scene ok</span> · wgsl (${data.code.length} chars) — <span class="err">no WebGPU preview</span>`,
-          );
-        }
-      } else {
-        const msg = data.error || `Request failed (${resp.status})`;
-        input.placeholder = msg.slice(0, 80);
-        setStatus(`<span class="err">${escapeHtmlText(msg)}</span>`);
-        setTimeout(() => { input.placeholder = 'Describe a shape…'; }, 6000);
-      }
-    } catch {
-      input.placeholder = `Can’t reach ${base} — run: python3 server.py`;
-      setStatus(`<span class="err">no server at ${base}</span>`);
-      setTimeout(() => { input.placeholder = 'Describe a shape…'; }, 6000);
-    } finally {
+    const cleanup = () => {
       busy = false;
       send.disabled = false;
       bar.classList.remove('loading');
       input.focus();
+    };
+
+    socket.once('chat_done', (data: { code?: string }) => {
+      hasScene = true;
+      if (data?.code) {
+        lastCode = data.code;
+        console.log('WGSL code:\n', data.code);
+        // Show export/print buttons
+        const exportBtn = document.getElementById('export-stl') as HTMLButtonElement;
+        const printBtn = document.getElementById('print-btn') as HTMLButtonElement;
+        if (exportBtn) exportBtn.style.display = 'flex';
+        if (printBtn) printBtn.style.display = 'flex';
+        fetchSizePreview(data.code);
+      }
+      input.value = '';
+      input.placeholder = 'Refine: "make it smoother", "add twist", or new: "/new gyroid"';
+      cleanup();
+    });
+
+    socket.once('chat_error', (data: { error?: string }) => {
+      const msg = data.error || 'Generation failed';
+      input.placeholder = msg.slice(0, 80);
+      setStatus(`<span class="err">${escapeHtmlText(msg)}</span>`);
+      setTimeout(() => {
+        input.placeholder = hasScene
+          ? 'Refine or type /new for a fresh shape\u2026'
+          : 'Describe a shape\u2026';
+      }, 4000);
+      cleanup();
+    });
+
+    if (text.startsWith('/new ')) {
+      hasScene = false;
+      socket.emit('chat', { prompt: text.slice(5).trim() });
+    } else if (isRefine) {
+      socket.emit('refine', { instruction: text });
+    } else {
+      socket.emit('chat', { prompt: text });
     }
   }
 
@@ -107,7 +115,72 @@ function initPromptBar(renderer: WebGPURenderer | null): void {
   });
 }
 
-// ── Renderer bootstrap ──────────────────────────────────────────
+// -- Export button ------------------------------------------------
+
+// Request size preview when scene updates
+async function fetchSizePreview(code: string): Promise<void> {
+  const dimensionsEl = document.getElementById('dimensions');
+  try {
+    const resp = await fetch('/export/preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      const [w, h, d] = data.dimensions_mm as [number, number, number];
+      if (dimensionsEl) {
+        dimensionsEl.textContent = `${w.toFixed(0)} \u00d7 ${h.toFixed(0)} \u00d7 ${d.toFixed(0)} mm`;
+        dimensionsEl.style.display = 'block';
+      }
+    }
+  } catch {
+    // Ignore preview errors
+  }
+}
+
+function initExportButton(): void {
+  const exportBtn = document.getElementById('export-stl') as HTMLButtonElement;
+
+  if (!exportBtn) return;
+
+  // Handle export click
+  exportBtn.addEventListener('click', async () => {
+    if (!lastCode) return;
+
+    exportBtn.disabled = true;
+
+    try {
+      const response = await fetch('/export/stl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: lastCode }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: 'Export failed' }));
+        throw new Error(errData.error || 'Export failed');
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'shape.stl';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setStatus(`<span class="err">${escapeHtmlText(msg)}</span>`);
+    } finally {
+      exportBtn.disabled = false;
+    }
+  });
+}
+
+// -- Renderer bootstrap -------------------------------------------
 
 async function main(): Promise<void> {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -118,10 +191,10 @@ async function main(): Promise<void> {
 
   const renderer = new WebGPURenderer();
 
-  setStatus('initialising WebGPU…');
+  setStatus('initialising WebGPU\u2026');
   const ok = await renderer.init(canvas);
   if (!ok) {
-    setStatus('<span class="err">WebGPU not supported</span> · prompt bar still talks to server');
+    setStatus('<span class="err">WebGPU not supported</span>');
     initPromptBar(null);
     return;
   }
@@ -140,7 +213,7 @@ async function main(): Promise<void> {
   });
 
   renderer.setWgslScene(DEFAULT_WGSL_SCENE);
-  setStatus('<span class="ok">gpu ready</span> · connecting…');
+  setStatus('<span class="ok">gpu ready</span> \u00b7 connecting\u2026');
 
   initPromptBar(renderer);
 
@@ -148,16 +221,18 @@ async function main(): Promise<void> {
     (data) => {
       if (isWgslSdfScene(data)) {
         renderer.setWgslScene(data);
-        setStatus(`<span class="ok">live</span> · wgsl (${data.code.length} chars)`);
+        setStatus(`<span class="ok">live</span> \u00b7 wgsl (${data.code.length} chars)`);
       } else {
         renderer.setScene(data as PackedFlatIR);
         const n = (data as PackedFlatIR).instrs?.length ?? 0;
-        setStatus(`<span class="ok">live</span> · ${n} ops (flatir)`);
+        setStatus(`<span class="ok">live</span> \u00b7 ${n} ops (flatir)`);
       }
     },
-    () => setStatus('<span class="ok">connected</span> · waiting for scene…'),
+    () => setStatus('<span class="ok">connected</span> \u00b7 waiting for scene\u2026'),
     (err) => setStatus(`<span class="err">socket: ${err.message}</span>`),
   );
+
+  initExportButton();
 
   const loop = () => {
     renderer.render();

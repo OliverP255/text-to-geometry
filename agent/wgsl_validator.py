@@ -41,12 +41,16 @@ ALLOWED_FUNCTIONS = {
     # Primitives
     'sdSphere', 'sdBox', 'sdRoundBox', 'sdTorus', 'sdCylinder',
     'sdCapsule', 'sdCone', 'sdEllipsoid', 'sdOctahedron', 'sdHexPrism',
+    'sdCylinderX', 'sdCylinderZ', 'sdHemisphere',
     # CSG operations
     'opU', 'opI', 'opS', 'opSmoothUnion', 'opSmoothIntersection', 'opSmoothSubtraction',
-    'opRepPolar', 'opOnion',
+    'opRepPolar', 'opRepLinear', 'opOnion', 'opRound',
+    'opU3', 'opU4',
     # Transforms
     'rotX', 'rotY', 'rotZ', 'opRotateX', 'opRotateY', 'opRotateZ',
     'opTranslate', 'opScale', 'opScale3',
+    # Domain deformations
+    'opTwist', 'opCheapBend',
     # Built-in WGSL
     'min', 'max', 'abs', 'sqrt', 'sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'atan2',
     'length', 'distance', 'dot', 'cross', 'normalize', 'reflect', 'clamp',
@@ -118,12 +122,138 @@ def validate_wgsl(code: str) -> Tuple[bool, str]:
         return False, f"Extra function(s) defined: {', '.join(extra_functions)}. Only 'map' should be defined."
 
     # Check for undefined function calls (not in allowed list)
-    # Find all function calls: word followed by (
     call_pattern = r'\b(\w+)\s*\('
     all_calls = set(re.findall(call_pattern, code_nocomment))
     undefined = all_calls - ALLOWED_FUNCTIONS - {'map'} - TYPE_CONSTRUCTORS
     if undefined:
         return False, f"Undefined function(s): {', '.join(sorted(undefined))}"
+
+    # --- Phase 2 checks: catch common VLM code-generation bugs ---
+
+    map_body_match = re.search(r'fn\s+map\b[^{]*\{', code_nocomment)
+    if map_body_match:
+        map_body = code_nocomment[map_body_match.end():]
+        depth = 1
+        body_end = len(map_body)
+        for ci, ch in enumerate(map_body):
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    body_end = ci
+                    break
+        map_body = map_body[:body_end]
+
+        # 2a: Detect dead code after return (multiple returns at top brace depth)
+        returns_at_depth_0: list[int] = []
+        d = 0
+        for rm in re.finditer(r'[\{\}]|\breturn\b', map_body):
+            tok = rm.group()
+            if tok == '{':
+                d += 1
+            elif tok == '}':
+                d -= 1
+            elif tok == 'return' and d == 0:
+                returns_at_depth_0.append(rm.start())
+        if len(returns_at_depth_0) > 1:
+            return False, (
+                "Multiple return statements at the same level in map(). "
+                "Code after the first return is dead and never executes. "
+                "Combine all parts into a single return expression."
+            )
+
+        # 2b: Detect variable shadowing (duplicate `let` bindings)
+        let_names = re.findall(r'\blet\s+(\w+)\s*=', map_body)
+        seen: set[str] = set()
+        for name in let_names:
+            if name in seen:
+                return False, (
+                    f"Variable '{name}' is declared twice with `let`. "
+                    "Each `let` binding must have a unique name."
+                )
+            seen.add(name)
+
+    # 2c-extra-0: Detect CSG function wrong arity
+    for fn_name, expected in [("opU3", 3), ("opU4", 4), ("opU", 2), ("opS", 2), ("opI", 2)]:
+        for fm in re.finditer(rf'\b{fn_name}\s*\(', code_nocomment):
+            start = fm.end()
+            dp = 1
+            ep = len(code_nocomment)
+            for ci in range(start, len(code_nocomment)):
+                if code_nocomment[ci] == '(':
+                    dp += 1
+                elif code_nocomment[ci] == ')':
+                    dp -= 1
+                    if dp == 0:
+                        ep = ci
+                        break
+            arg_str = code_nocomment[start:ep]
+            ad = 0
+            nc = 0
+            for ch in arg_str:
+                if ch == '(':
+                    ad += 1
+                elif ch == ')':
+                    ad -= 1
+                elif ch == ',' and ad == 0:
+                    nc += 1
+            na = nc + 1
+            if na != expected:
+                return False, (
+                    f"{fn_name}() called with {na} argument(s) but requires exactly {expected}. "
+                    f"For {na} shapes, use nested opU calls instead."
+                )
+
+    # 2c-extra: Detect opRepLinear result used as distance (passed to opS/opU/opI)
+    rep_vars: set[str] = set()
+    for rm in re.finditer(r'\blet\s+(\w+)\s*=\s*opRepLinear\b', code_nocomment):
+        rep_vars.add(rm.group(1))
+    if rep_vars:
+        for rv in rep_vars:
+            if re.search(rf'\bop[USI]\s*\([^)]*\b{rv}\b', code_nocomment):
+                return False, (
+                    f"Variable '{rv}' holds a vec3f from opRepLinear but is passed to a CSG op "
+                    f"(opU/opS/opI) which expects f32 distances. "
+                    f"opRepLinear returns a modified position — use it to evaluate a primitive: "
+                    f"`let q = opRepLinear(p, ...); let d = sdBox(q, ...);`"
+                )
+            if re.search(rf'\bopRepLinear\s*\(\s*{rv}\b', code_nocomment):
+                return False, (
+                    f"opRepLinear is called on '{rv}' which is already a repeated position. "
+                    f"Do NOT chain opRepLinear calls. Use it once: "
+                    f"`let q = opRepLinear(p, spacing, count); let slot = sdBox(q, ...);`"
+                )
+
+    # 2c: Detect sdCapsule wrong arity
+    for cm in re.finditer(r'\bsdCapsule\s*\(', code_nocomment):
+        start = cm.end()
+        depth_p = 1
+        end_p = len(code_nocomment)
+        for ci in range(start, len(code_nocomment)):
+            if code_nocomment[ci] == '(':
+                depth_p += 1
+            elif code_nocomment[ci] == ')':
+                depth_p -= 1
+                if depth_p == 0:
+                    end_p = ci
+                    break
+        args_str = code_nocomment[start:end_p]
+        arg_depth = 0
+        n_commas = 0
+        for ch in args_str:
+            if ch in '(':
+                arg_depth += 1
+            elif ch in ')':
+                arg_depth -= 1
+            elif ch == ',' and arg_depth == 0:
+                n_commas += 1
+        n_args = n_commas + 1
+        if n_args != 4:
+            return False, (
+                f"sdCapsule() called with {n_args} argument(s) but requires exactly 4: "
+                "sdCapsule(p, a, b, r) where a and b are vec3f endpoints and r is the radius."
+            )
 
     return True, ""
 
@@ -145,5 +275,13 @@ def validate_wgsl_with_fallback(code: str) -> Tuple[bool, str, str]:
         suggestion = "Define helper logic inside map() using let bindings"
     elif "Undefined function" in err:
         suggestion = "Use only the provided SDF primitives and operations"
+    elif "Multiple return" in err or "dead" in err.lower():
+        suggestion = "Use a single return at the end: return opU(partA, partB);"
+    elif "declared twice" in err:
+        suggestion = "Give each let binding a unique name (e.g. blades1, blades2)"
+    elif "sdCapsule" in err:
+        suggestion = "sdCapsule(p, vec3f(ax,ay,az), vec3f(bx,by,bz), radius)"
+    elif "argument" in err and ("opU" in err or "opS" in err or "opI" in err):
+        suggestion = "opU takes 2 args, opU3 takes 3, opU4 takes 4. For 5+ shapes nest: opU(opU3(a,b,c), opU(d,e))"
 
     return False, err, suggestion

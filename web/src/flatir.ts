@@ -1,6 +1,12 @@
-import { io } from 'socket.io-client';
+import { io, type Socket } from 'socket.io-client';
 import type { SceneData } from './types';
 import { sceneServerBaseUrl } from './sceneServer';
+
+let _socket: Socket | null = null;
+
+export function getSocket(): Socket | null {
+  return _socket;
+}
 
 export function connectAndSubscribe(
   onScene: (data: SceneData) => void,
@@ -11,6 +17,7 @@ export function connectAndSubscribe(
     path: '/socket.io',
     transports: ['websocket', 'polling'],
   });
+  _socket = socket;
   socket.on('connect', () => {
     onConnect?.();
   });

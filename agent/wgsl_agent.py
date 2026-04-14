@@ -1,38 +1,31 @@
 #!/usr/bin/env python3
 """
-Text-to-CAD agent: WGSL SDF code generation via Qwen3-32B-FP8 (default).
+Text-to-CAD agent: WGSL SDF code generation via tool calls.
 
-Usage: python wgsl_agent.py
-       python wgsl_agent.py --once "a snowman made of three spheres"
+The agent uses tool calls to generate, validate, render, and submit WGSL code.
+It iterates until satisfied with the result.
 
-Reads a text prompt, generates WGSL SDF code (fn map(p: vec3f) -> f32),
-validates it, and POSTs to the scene server.
+Usage:
+    python wgsl_agent.py
+    python wgsl_agent.py --once "a snowman made of three spheres"
 
-If you run `python3 wgsl_agent.py` with system Python, we re-exec using repo .venv when present
-(so torch/vLLM import). Set T2G_NO_VENV_REEXEC=1 to disable.
+Vertex AI: Set T2G_BACKEND=vertex, T2G_VERTEX_PROJECT_ID, T2G_MODEL_ID=claude-opus-4-6
+Extended thinking: Set T2G_CLAUDE_BUDGET_TOKENS=4096
 """
 
 from __future__ import annotations
 
 import json
 import os
-import re
 import sys
-import urllib.error
-import urllib.request
 from pathlib import Path
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional
 
 _root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_root / "agent"))
 
-from inference import generate_wgsl_code, load_llm
-from wgsl_validator import validate_wgsl_with_fallback
-
-if TYPE_CHECKING:
-    from vllm import LLM
-else:
-    LLM = Any
+from inference import load_llm
+from tools import TOOLS, execute_tool, get_current_code, set_current_code, post_wgsl_scene
 
 SERVER_URL = os.environ.get("SCENE_SERVER_URL", "http://localhost:5001/scene/wgsl")
 
@@ -40,291 +33,266 @@ SERVER_URL = os.environ.get("SCENE_SERVER_URL", "http://localhost:5001/scene/wgs
 # System prompt for WGSL SDF generation
 # ---------------------------------------------------------------------------
 
-WGSL_SYSTEM_PROMPT = """\
-You are a 3D CAD geometry assistant. Given a text description, write a WGSL SDF function.
+SYSTEM_PROMPT = """\
+You are an expert SDF (Signed Distance Function) artist. Given a description, write WGSL code that defines the shape mathematically.
 
-CRITICAL: Output ONLY the code. No explanation, no markdown, no comments outside the function.
+## Workflow
+1. Call generate_wgsl with your complete fn map(p: vec3f) -> f32 code
+2. Call validate_wgsl to check for syntax errors
+3. If invalid, use edit_wgsl to fix specific errors or regenerate
+4. Call render_wgsl to see the result visually
+5. If it doesn't look perfect, use edit_wgsl for small tweaks or regenerate for major changes
+6. Call submit_wgsl only when you are completely satisfied with the shape
 
-fn map(p: vec3f) -> f32 {
-  // code here
-}
+## Available Tools
+- generate_wgsl: Generate complete WGSL SDF code
+- edit_wgsl: Find/replace in existing code for incremental changes
+- validate_wgsl: Check for syntax errors
+- render_wgsl: Render to image (4 views: front, top, side, back)
+- submit_wgsl: Push to viewer
+
+## When to use edit_wgsl vs generate_wgsl
+- Use edit_wgsl for small tweaks (changing a radius, position, blend amount)
+- Use generate_wgsl when starting fresh or making major structural changes
 
 ### Coordinate system
-Y-axis is up. Objects should be centred near the origin.
+Y-axis is up. Objects centred near origin. Most shapes fit within 0.5–2.0 units.
 
-### Scale reference
-- Bolts, nuts, small gears:   0.02 – 0.1 units
-- Hand tools, knobs, brackets: 0.1 – 0.5 units  
-- Furniture, large parts:      0.5 – 2.0 units
+### Primitives (library functions)
+| Function | Signature |
+|----------|-----------|
+| `sdSphere(p, r)` | Sphere |
+| `sdBox(p, vec3f(hx,hy,hz))` | Box (half-extents) |
+| `sdRoundBox(p, vec3f(hx,hy,hz), r)` | Rounded box |
+| `sdTorus(p, vec2f(R,r))` | Torus (major R, tube r) |
+| `sdCylinder(p, h, r)` | Y-cylinder (h=HALF-HEIGHT first, r=RADIUS second) |
+| `sdCylinderX(p, h, r)` / `sdCylinderZ(p, h, r)` | Horizontal cylinders |
+| `sdCapsule(p, a, b, r)` | Capsule between two vec3f points |
+| `sdCone(p, c, h)` | IQ cone: `c = vec2f(sin(α), cos(α))`, `h` = height |
+| `sdHemisphere(p, r)` | Dome (+Y) |
+| `sdEllipsoid(p, vec3f(rx,ry,rz))` | Ellipsoid |
+| `sdHexPrism(p, vec2f(hexR, halfH))` | Hex prism |
 
-### Primitives
-
+### Operations
 | Function | Description |
 |----------|-------------|
-| `sdSphere(p, r)` | Sphere radius r |
-| `sdBox(p, vec3f(x,y,z))` | Box, half-extents x y z |
-| `sdRoundBox(p, vec3f(x,y,z), r)` | Rounded box, corner radius r |
-| `sdTorus(p, vec2f(R,r))` | Torus, major radius R, tube radius r |
-| `sdCylinder(p, h, r)` | Cylinder, Y-aligned, half-height h, radius r |
-| `sdCapsule(p, a, b, r)` | Capsule from point a to point b, radius r |
-| `sdCone(p, vec2f(sin_a, cos_a), h)` | Cone, tip at origin pointing +Y |
-| `sdEllipsoid(p, vec3f(rx,ry,rz))` | Ellipsoid, per-axis radii |
-| `sdHexPrism(p, vec2f(hexRadius, halfHeight))` | Hexagonal prism, Y-aligned |
-
-### CSG Operations
-
-| Function | Description |
-|----------|-------------|
-| `opU(d1, d2)` | Union — combine shapes |
-| `opI(d1, d2)` | Intersection — keep only overlap |
+| `opU(d1, d2)` | Hard union |
 | `opS(d1, d2)` | Subtract d2 from d1 |
-| `opSmoothUnion(d1, d2, k)` | Smooth union — k=0.05 tight, k=0.2 organic, k=0.4 very soft |
-| `opRepPolar(p, n)` | Repeat shape n times around Y axis |
-| `opOnion(d, t)` | Shell — hollow out a shape to wall thickness t |
+| `opI(d1, d2)` | Intersection |
+| `opSmoothUnion(d1, d2, k)` | Smooth blend — k=0.05 tight, k=0.2 organic, k=0.4 blobby |
+| `opOnion(d, t)` | Shell (wall thickness t) |
+| `opRound(d, r)` | Round all edges by r |
 
 ### Transforms
-
-| Function | Description |
-|----------|-------------|
-| `p - vec3f(x,y,z)` | Translate (use inline) |
-| `opRotateX(p, a)` | Rotate around X, a in radians |
-| `opRotateY(p, a)` | Rotate around Y, a in radians |
-| `opRotateZ(p, a)` | Rotate around Z, a in radians |
-
-Common angles: 90° = 1.5708  45° = 0.7854  30° = 0.5236
-
-### Key Patterns
-
-**Hollow tube** — inner h slightly larger than outer to avoid end-cap artifacts:
-```wgsl
-fn map(p: vec3f) -> f32 {
-  let outer = sdCylinder(p, 0.5, 0.4);
-  let inner = sdCylinder(p, 0.6, 0.3);  // taller and narrower
-  return opS(outer, inner);
-}
-```
-
-**Washer** — same principle, disc with punched hole:
-```wgsl
-fn map(p: vec3f) -> f32 {
-  let disc = sdCylinder(p, 0.05, 0.5);
-  let hole = sdCylinder(p, 0.06, 0.2);  // slightly taller
-  return opS(disc, hole);
-}
-```
-
-**Stepped shaft** — overlap joins by 0.01 to avoid seams:
-```wgsl
-fn map(p: vec3f) -> f32 {
-  let base = sdCylinder(p - vec3f(0.0, -0.26, 0.0), 0.25, 0.4);
-  let shaft = sdCylinder(p - vec3f(0.0,  0.31, 0.0), 0.30, 0.2);
-  return opU(base, shaft);
-}
-```
-
-**L-bracket** — two boxes joined at corner:
-```wgsl
-fn map(p: vec3f) -> f32 {
-  let vert  = sdBox(p - vec3f(0.0,  0.5, 0.0), vec3f(0.1, 0.5, 0.3));
-  let horiz = sdBox(p - vec3f(0.35, 0.0, 0.0), vec3f(0.35, 0.1, 0.3));
-  return opU(vert, horiz);
-}
-```
-
-**Rotated part** — apply opRotateX/Y/Z before the primitive:
-```wgsl
-fn map(p: vec3f) -> f32 {
-  let q = opRotateZ(p - vec3f(0.6, 0.0, 0.0), 1.5708);  // horizontal cylinder
-  return sdCylinder(q, 0.6, 0.08);
-}
-```
-
-**Radial repeat** — for gear teeth, bolt holes, fins:
-```wgsl
-fn map(p: vec3f) -> f32 {
-  let body = sdCylinder(p, 0.1, 0.5);
-  let q = opRepPolar(p, 6.0);  // 6 holes equally spaced
-  let hole = sdCylinder(q - vec3f(0.35, 0.0, 0.0), 0.12, 0.05);
-  return opS(body, hole);
-}
-```
-
-
+| `p - vec3f(x,y,z)` | Translate |
+| `opRotateX/Y/Z(p, radians)` | Rotate |
+| `opTwist(p, k)` | Twist around Y |
 
 ### Rules
-- Output ONLY `fn map(p: vec3f) -> f32 { ... }` — no extra functions, no surrounding text
-- Use `let` for all variables
-- For subtraction: inner shape must be slightly larger in the cut axis than the outer
-- Always overlap joined parts by ~0.01 to avoid seam artifacts
+- Output ONLY `fn map(p: vec3f) -> f32 { ... }` — no extra functions
+- Use `let` for all variables; never reuse a variable name
+- Only ONE `return` statement per function
+- `sdCylinder(p, h, r)`: h = HALF-HEIGHT (first), r = RADIUS (second)
+- Prefer `opSmoothUnion` over `opU` for organic shapes
 """
-# ---------------------------------------------------------------------------
-# Code extraction
-# ---------------------------------------------------------------------------
-
-def _finalize_wgsl_extraction(s: str) -> str:
-    """Strip markdown junk, ``wgsl typos, and leading text before fn map."""
-    t = s.strip()
-    for _ in range(10):
-        prev = t
-        t = re.sub(r"^`{3,}\w*\s*", "", t)
-        t = re.sub(r"^`{2}wgsl\s*", "", t, flags=re.IGNORECASE)
-        t = re.sub(r"^`+\s*\n", "", t)
-        t = t.strip()
-        if t == prev:
-            break
-    if "```" in t:
-        t = t.split("```", 1)[0].strip()
-    m = re.search(r"\bfn\s+map\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32", t)
-    if m is not None and m.start() > 0:
-        t = t[m.start() :].strip()
-    return t
-
-
-def extract_code_block(text: str) -> str:
-    """Extract WGSL code from markdown code blocks or return as-is."""
-    raw = text.strip()
-    wgsl_match = re.search(r"```wgsl\s*(.*?)\s*```", raw, re.DOTALL)
-    if wgsl_match:
-        return _finalize_wgsl_extraction(wgsl_match.group(1))
-
-    generic_match = re.search(r"```\s*(.*?)\s*```", raw, re.DOTALL)
-    if generic_match:
-        return _finalize_wgsl_extraction(generic_match.group(1))
-
-    return _finalize_wgsl_extraction(raw)
-
 
 # ---------------------------------------------------------------------------
-# POST to server
+# Agent loop
 # ---------------------------------------------------------------------------
 
-def post_wgsl_scene(code: str, url: str = SERVER_URL) -> tuple[bool, Optional[str]]:
-    """POST WGSL code to the scene server. Returns (ok, error_message)."""
-    data = json.dumps({"code": code}).encode("utf-8")
-    req = urllib.request.Request(
-        url, data=data, method="POST",
-        headers={"Content-Type": "application/json"},
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            if resp.status >= 400:
-                body = resp.read().decode()
-                return False, f"HTTP {resp.status}: {body[:200]}"
-            return True, None
-    except urllib.error.URLError as e:
-        return False, str(e)
-    except Exception as e:
-        return False, str(e)
-
-
-# ---------------------------------------------------------------------------
-# Error feedback for retry loop
-# ---------------------------------------------------------------------------
-
-def _error_feedback(error_kind: str, detail: str, suggestion: str = "", code: str = "") -> str:
-    """Construct error feedback message for the LLM to self-correct."""
-    parts = [f"Error: {error_kind}", detail]
-    if suggestion:
-        parts.append(f"Suggestion: {suggestion}")
-    if code:
-        parts.append(f"Your code:\n```wgsl\n{code}\n```")
-    parts.append("Please fix and output only the corrected `fn map(p: vec3f) -> f32 { ... }` function.")
-    return "\n\n".join(parts)
-
-
-# ---------------------------------------------------------------------------
-# Agent retry loop
-# ---------------------------------------------------------------------------
-
-MAX_RETRIES = 3
+MAX_TURNS = 20
 
 
 def run_agent(
-    llm: LLM | None,
+    llm: Any,
     user_prompt: str,
     *,
-    attempt_post: bool = True,
+    max_tokens: int = 4096,
+    effort: str | None = None,
     verbose: bool = False,
-    max_retries: int = MAX_RETRIES,
 ) -> Optional[str]:
     """
-    Generate WGSL SDF code from a text prompt with validation and retry.
+    Run the WGSL agent with tool calls.
 
-    Args:
-        llm: The loaded LLM instance
-        user_prompt: Natural language description of the 3D shape
-        attempt_post: Whether to POST the result to the scene server
-        verbose: Print debug information
-        max_retries: Maximum number of retry attempts after initial generation
-
-    Returns:
-        The WGSL code on success, None if all attempts exhausted
+    The agent iterates until it calls submit_wgsl or exhausts max turns.
+    Returns the final WGSL code, or None if unsuccessful.
     """
-    messages: list[dict[str, str]] = [
-        {"role": "system", "content": WGSL_SYSTEM_PROMPT},
-        {"role": "user", "content": user_prompt},
+    messages: list[dict] = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"Create a 3D shape: {user_prompt}"},
     ]
 
-    for attempt in range(1, max_retries + 2):  # 1 initial + max_retries
-        is_retry = attempt > 1
-        label = f"(attempt {attempt}/{max_retries + 1}) " if is_retry else ""
+    submitted_code: Optional[str] = None
 
+    for turn in range(MAX_TURNS):
         if verbose:
-            print(f"{label}Generating WGSL for: {user_prompt!r}")
+            print(f"[turn {turn + 1}/{MAX_TURNS}] Calling model...")
 
-        # --- Generation ---
-        if llm is None:
-            print("run_agent: llm is None", flush=True)
-            return None
-        if not verbose:
-            print("Generating WGSL…", flush=True)
-        try:
-            raw_output = generate_wgsl_code(messages, llm)
-        except Exception as e:
-            err_str = str(e)
+        # Check if backend supports tools (duck typing)
+        supports_tools = getattr(llm, "supports_tools", False)
+        if verbose:
+            print(f"  LLM type: {type(llm).__name__}")
+            print(f"  supports_tools: {supports_tools}")
+
+        if supports_tools:
+            # First turn: disable thinking for immediate response
+            # Subsequent turns: use adaptive thinking with effort
+            response = llm.chat(
+                messages,
+                max_tokens=max_tokens,
+                effort=effort if turn > 0 else None,
+                disable_thinking=(turn == 0),
+                tools=TOOLS,
+            )
+        else:
+            # vLLM doesn't support tools in the same way
             if verbose:
-                print(f"{label}[ERROR] Generation failed: {err_str}")
-            if attempt <= max_retries:
-                messages.append({"role": "user", "content": f"Generation error: {err_str}. Try again."})
-                continue
-            return None
+                print("[WARN] Backend doesn't support tools, using direct generation")
+            text = llm.chat(messages, max_tokens=max_tokens)
+            return _extract_code_from_text(text)
 
-        # Extract code block if wrapped in markdown
-        code = extract_code_block(raw_output)
+        # Check stop reason
+        stop_reason = getattr(response, "stop_reason", "end_turn")
 
-        if verbose:
-            print(f"{label}Generated code ({len(code)} chars)")
+        if stop_reason == "tool_use":
+            # Process tool calls
+            tool_results = []
+            assistant_content = []
 
-        # --- Validation ---
-        ok, err, suggestion = validate_wgsl_with_fallback(code)
-        if not ok:
+            for block in response.content:
+                block_dict = {
+                    "type": block.type,
+                }
+                if hasattr(block, "id"):
+                    block_dict["id"] = block.id
+                if hasattr(block, "name"):
+                    block_dict["name"] = block.name
+                if hasattr(block, "input"):
+                    block_dict["input"] = block.input
+                if hasattr(block, "text"):
+                    block_dict["text"] = block.text
+                assistant_content.append(block_dict)
+
+                if block.type == "tool_use":
+                    tool_name = block.name
+                    tool_input = block.input
+                    tool_id = block.id
+
+                    if verbose:
+                        print(f"  Tool call: {tool_name}({list(tool_input.keys())})")
+
+                    # Execute tool
+                    result = execute_tool(tool_name, dict(tool_input), server_url=SERVER_URL)
+
+                    if verbose:
+                        result_preview = {k: (v[:50] + "..." if isinstance(v, str) and len(v) > 50 else v)
+                                         for k, v in result.items() if k != "image_base64"}
+                        if "image_base64" in result:
+                            result_preview["image_base64"] = f"<{len(result['image_base64'])} chars>"
+                        print(f"  Result: {result_preview}")
+
+                    # Track submission
+                    if tool_name == "submit_wgsl" and result.get("success"):
+                        submitted_code = get_current_code()
+
+                    # Build tool result content
+                    if "image_base64" in result:
+                        # Vertex AI doesn't support images in tool results
+                        # Just return success status and image dimensions
+                        tool_results.append({
+                            "type": "tool_result",
+                            "tool_use_id": tool_id,
+                            "content": json.dumps({
+                                "success": True,
+                                "rendered": True,
+                                "message": "Rendered 4 views (front, top, side, back). Check if the shape looks correct.",
+                                "image_size_bytes": result.get("image_size_bytes", 0),
+                            }),
+                        })
+                    else:
+                        tool_results.append({
+                            "type": "tool_result",
+                            "tool_use_id": tool_id,
+                            "content": json.dumps(result),
+                        })
+
+            # Append assistant message and tool results
+            messages.append({"role": "assistant", "content": assistant_content})
+            messages.append({"role": "user", "content": tool_results})
+
+        elif stop_reason == "end_turn":
+            # Model finished with text response
+            text = ""
+            for block in response.content:
+                if hasattr(block, "text"):
+                    text += block.text
+
             if verbose:
-                print(f"{label}[ERROR] Validation failed: {err}")
-            if attempt <= max_retries:
-                feedback = _error_feedback("Invalid WGSL", err, suggestion, code)
-                messages.append({"role": "assistant", "content": raw_output})
-                messages.append({"role": "user", "content": feedback})
-                continue
-            return None
+                print(f"  Text response: {text[:200]}...")
 
-        if verbose:
-            print(f"{label}Validation passed")
-            print(f"  Code:\n    {code.replace(chr(10), chr(10) + '    ')}")
+            # Check if we have code to return
+            current = get_current_code()
+            if current:
+                return current
+            return _extract_code_from_text(text)
 
-        # --- POST to server ---
-        if attempt_post:
-            ok, err = post_wgsl_scene(code)
-            if ok:
-                if verbose:
-                    print(f"{label}Pushed to viewer")
-            else:
-                if verbose:
-                    print(f"{label}[WARN] Could not push: {err}")
-                # Don't retry on POST errors - code is valid
+        else:
+            if verbose:
+                print(f"  Stop reason: {stop_reason}")
+            break
 
-        return code
+    return submitted_code or get_current_code()
+
+
+def _extract_code_from_text(text: str) -> Optional[str]:
+    """Extract WGSL code from text response."""
+    import re
+
+    # Look for code blocks
+    wgsl_match = re.search(r"```wgsl\s*(.*?)\s*```", text, re.DOTALL)
+    if wgsl_match:
+        return wgsl_match.group(1).strip()
+
+    generic_match = re.search(r"```\s*(.*?)\s*```", text, re.DOTALL)
+    if generic_match:
+        code = generic_match.group(1).strip()
+        if "fn map" in code:
+            return code
+
+    # Look for fn map directly
+    fn_match = re.search(r"fn\s+map\s*\([^)]*\)\s*->\s*f32\s*\{", text)
+    if fn_match:
+        # Find the matching closing brace
+        start = fn_match.start()
+        brace_count = 0
+        for i, c in enumerate(text[start:], start):
+            if c == "{":
+                brace_count += 1
+            elif c == "}":
+                brace_count -= 1
+                if brace_count == 0:
+                    return text[start:i + 1].strip()
 
     return None
+
+
+# Alias for backward compatibility with server.py
+extract_code_block = _extract_code_from_text
+
+
+def refine_agent(
+    llm: Any,
+    current_code: str,
+    instruction: str,
+    *,
+    verbose: bool = False,
+) -> Optional[str]:
+    """Refine existing WGSL code based on a follow-up instruction.
+
+    This is a simplified version that runs the agent with a refinement prompt.
+    """
+    prompt = f"Modify this WGSL code to: {instruction}\n\nCurrent code:\n```wgsl\n{current_code}\n```"
+    return run_agent(llm, prompt, verbose=verbose)
 
 
 # ---------------------------------------------------------------------------
@@ -347,13 +315,12 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="Text-to-CAD WGSL SDF agent")
     parser.add_argument("--once", type=str, default=None, help="Run once with this prompt and exit")
-    parser.add_argument("--no-post", action="store_true", help="Skip POSTing to scene server")
     parser.add_argument("--verbose", "-v", action="store_true", help="Print debug information")
     parser.add_argument(
         "--model",
         type=str,
         default=None,
-        help="vLLM HuggingFace model id (default: Qwen/Qwen3-32B-FP8, or T2G_MODEL_ID)",
+        help="Model ID (e.g., claude-opus-4-6 for Vertex, Qwen/Qwen2.5-Coder-32B-Instruct-AWQ for vLLM)",
     )
     args = parser.parse_args()
 
@@ -363,12 +330,14 @@ def main() -> None:
 
     print("Loading model...")
     llm = load_llm(**model_kwargs)
-    print("Model loaded.\n")
-
-    attempt_post = not args.no_post
+    print(f"Model loaded: {llm.model_id if hasattr(llm, 'model_id') else 'vLLM'}\n")
 
     if args.once is not None:
-        run_agent(llm, args.once.strip(), attempt_post=attempt_post, verbose=True)
+        code = run_agent(llm, args.once.strip(), verbose=True)
+        if code:
+            print(f"\nFinal code:\n{code}")
+        else:
+            print("\nNo code generated")
         return
 
     print("Ready. Describe a shape or scene. Type 'quit' or 'exit' to stop.\n")
@@ -386,8 +355,11 @@ def main() -> None:
             print("Bye.")
             break
 
-        run_agent(llm, prompt, attempt_post=attempt_post, verbose=args.verbose)
-        print()
+        code = run_agent(llm, prompt, verbose=args.verbose)
+        if code:
+            print(f"\nGenerated:\n{code}\n")
+        else:
+            print("\nGeneration failed.\n")
 
 
 if __name__ == "__main__":

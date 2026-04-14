@@ -1,2 +1,7 @@
 vllm
 torch
+anthropic>=0.40.0
+scikit-image
+trimesh
+fast-simplification
+numpy

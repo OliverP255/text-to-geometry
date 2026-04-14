@@ -246,7 +246,8 @@ class TestValidateWgsl:
           let d4 = sdTorus(p, vec2f(1.0, 0.3));
           let d5 = sdCylinder(p, 1.0, 0.5);
           let d6 = sdCapsule(p, vec3f(0.0), vec3f(1.0), 0.5);
-          let d7 = sdCone(p, 1.0, 0.5);
+          let coneL = sqrt(0.5 * 0.5 + 1.0 * 1.0);
+          let d7 = sdCone(p, vec2f(0.5 / coneL, 1.0 / coneL), 1.0);
           let d8 = sdEllipsoid(p, vec3f(1.0, 0.5, 0.5));
           let d9 = sdOctahedron(p, 1.0);
           let d10 = sdHexPrism(p, vec2f(1.0, 0.5));

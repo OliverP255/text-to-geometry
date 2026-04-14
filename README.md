@@ -2,7 +2,7 @@
 
 <h1>SketchCAD</h1>
 
-<h4>Text → 3D geometry via signed distance functions (SDFs)</h4>  
+<h4>Text to 3D geometry via signed distance functions (SDFs)</h4>  
 </div>
 
 <p align="center">

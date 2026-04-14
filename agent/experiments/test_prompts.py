@@ -99,7 +99,7 @@ def main() -> None:
         "--model",
         type=str,
         default=None,
-        help="vLLM HuggingFace model id (else T2G_MODEL_ID or Qwen3-32B-FP8 default)",
+        help="vLLM HuggingFace model id (else T2G_MODEL_ID or Qwen2.5-Coder-32B-Instruct-AWQ default)",
     )
     parser.add_argument(
         "--output-dir",
@@ -119,7 +119,29 @@ def main() -> None:
         default=None,
         help=f"Only run first K prompts (1..K), for smoke tests (default: all {n_all})",
     )
+    parser.add_argument(
+        "--visual-feedback",
+        action="store_true",
+        help="Enable visual feedback loop (render SDF, ask VLM to verify)",
+    )
+    parser.add_argument(
+        "--decompose-vague",
+        action="store_true",
+        default=True,
+        help="Auto-expand short/vague prompts into construction steps (default: on)",
+    )
+    parser.add_argument(
+        "--no-decompose-vague",
+        action="store_true",
+        help="Disable vague prompt decomposition",
+    )
+    parser.add_argument(
+        "--save-renders",
+        action="store_true",
+        help="Save rendered PNGs alongside .wgsl files (requires headless_renderer)",
+    )
     args = parser.parse_args()
+    decompose = args.decompose_vague and not args.no_decompose_vague
 
     exp_dir = Path(__file__).resolve().parent
     out_dir = (args.output_dir or (exp_dir / "outputs")).resolve()
@@ -133,7 +155,7 @@ def main() -> None:
     k = max(0, min(k, n_all))
     run_prompts = PROMPTS[:k]
 
-    resolved_model = (args.model or os.environ.get("T2G_MODEL_ID") or "").strip() or "Qwen/Qwen3-32B-FP8"
+    resolved_model = (args.model or os.environ.get("T2G_MODEL_ID") or "").strip() or "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ"
     label = resolved_model.split("/")[-1]
 
     print(f"Loading LLM: {resolved_model} …")
@@ -158,6 +180,9 @@ def main() -> None:
                 attempt_post=args.post,
                 verbose=False,
                 max_retries=args.max_retries,
+                decompose_vague=decompose,
+                visual_feedback=args.visual_feedback,
+                save_renders_dir=out_dir if args.save_renders else None,
             )
 
             if code is None:
@@ -208,6 +233,14 @@ def main() -> None:
                     print(f"      Code: {code[:100]}...")
                 print()
 
+    render_fn = None
+    if args.save_renders:
+        try:
+            from headless_renderer import render_sdf_to_png
+            render_fn = render_sdf_to_png
+        except ImportError:
+            print("WARNING: --save-renders requires headless_renderer (wgpu + Pillow)")
+
     for i, prompt, code, _ in results:
         safe_name = prompt.split(":")[0].replace(" ", "_").replace("/", "_")[:30]
         out_path = out_dir / f"{i:02d}_{safe_name}.wgsl"
@@ -216,6 +249,12 @@ def main() -> None:
                 f"// Prompt: {prompt}\n// Model: {resolved_model}\n// Generated WGSL SDF\n\n{code}",
                 encoding="utf-8",
             )
+            if render_fn is not None:
+                try:
+                    png_path = out_dir / f"{i:02d}_{safe_name}.png"
+                    png_path.write_bytes(render_fn(code))
+                except Exception as e:
+                    print(f"  [render] Failed for prompt {i}: {e}")
         elif out_path.is_file():
             out_path.unlink()
 
