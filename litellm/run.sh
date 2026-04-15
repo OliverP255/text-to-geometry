@@ -78,4 +78,10 @@ fi
 echo "LiteLLM proxy -> Vertex GLM (project=$VERTEXAI_PROJECT)"
 echo "Claude Code: export ANTHROPIC_BASE_URL=http://127.0.0.1:4000"
 echo "             export ANTHROPIC_AUTH_TOKEN=\"\$LITELLM_MASTER_KEY\"  # same as LITELLM_MASTER_KEY ($LITELLM_MASTER_KEY)"
+
+# If DATABASE_URL is set (e.g. from repo ../.env when cwd is wrong, or exported for the main app),
+# LiteLLM tries to load Prisma for proxy spend/UI DB and crashes without `pip install prisma`
+# + `prisma generate`. This project uses YAML-only routing — no DB for the proxy.
+unset DATABASE_URL
+
 exec litellm --config "$ROOT/config.yaml" --host 127.0.0.1 --port 4000

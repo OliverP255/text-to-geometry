@@ -1,3 +1,9 @@
+python-dotenv
 flask
 flask-socketio
 eventlet
+sqlalchemy>=2.0
+psycopg2-binary
+pyjwt
+cryptography
+pytest

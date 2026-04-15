@@ -128,6 +128,36 @@ fn opCheapBend(p: vec3f, k: f32) -> vec3f {
   let s = sin(k * p.x);
   return vec3f(c * p.x - s * p.y, s * p.x + c * p.y, p.z);
 }
+/** Hollow axis-aligned room: floor slab + four walls + ceiling (must match FLOOR_Y and ROOM_* in TS). */
+fn roomShell(p: vec3f) -> f32 {
+  let f = -6.0;
+  let c = 7.0;
+  let hx = 6.5;
+  let hz = 19.0;
+  let wt = 0.42;
+  let cy = (f + c) * 0.5;
+  let outerHalfY = (c - f) * 0.5;
+  let innerHalfY = (c - f - 2.0 * wt) * 0.5;
+  let outerB = vec3f(hx, outerHalfY, hz);
+  let innerB = vec3f(hx - wt, innerHalfY, hz - wt);
+  let c3 = vec3f(0.0, cy, 0.0);
+  let dOuter = sdBox(p - c3, outerB);
+  let dInner = sdBox(p - c3, innerB);
+  return max(dOuter, -dInner);
+}
+/** World-space translation for scene SDFs (near +Z wall, on floor level). */
+const SCENE_OFFSET = vec3f(0.0, -0.5, 17.23);
+const LIGHT_DISC_Y = -1.0;
+fn rotateY_vec3(p: vec3f, angle: f32) -> vec3f {
+  let c = cos(angle);
+  let s = sin(angle);
+  return vec3f(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
+}
+fn sdDisc(p: vec3f, r: f32, thickness: f32) -> f32 {
+  let d = length(p.xz) - r;
+  let h = abs(p.y) - thickness * 0.5;
+  return max(d, h);
+}
 `;
 
 const WGSL_FLATIR_FULL = String.raw`
@@ -314,21 +344,72 @@ fn evalSdf(p: vec3f) -> f32 {
   }
   return select(1e10, temps[u.rootTemp], u.rootTemp < tempCount);
 }
-fn map(p: vec3f) -> f32 { return evalSdf(p); }
+fn roomShell(p: vec3f) -> f32 {
+  let f = -6.0;
+  let c = 7.0;
+  let hx = 6.5;
+  let hz = 19.0;
+  let wt = 0.42;
+  let cy = (f + c) * 0.5;
+  let outerHalfY = (c - f) * 0.5;
+  let innerHalfY = (c - f - 2.0 * wt) * 0.5;
+  let outerB = vec3f(hx, outerHalfY, hz);
+  let innerB = vec3f(hx - wt, innerHalfY, hz - wt);
+  let c3 = vec3f(0.0, cy, 0.0);
+  let dOuter = sdBox(p - c3, outerB);
+  let dInner = sdBox(p - c3, innerB);
+  return max(dOuter, -dInner);
+}
+const SCENE_OFFSET = vec3f(0.0, -0.5, 17.23);
+fn rotateY_vec3(p: vec3f, angle: f32) -> vec3f {
+  let c = cos(angle);
+  let s = sin(angle);
+  return vec3f(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
+}
+fn sdDisc(p: vec3f, r: f32, thickness: f32) -> f32 {
+  let d = length(p.xz) - r;
+  let h = abs(p.y) - thickness * 0.5;
+  return max(d, h);
+}
+fn map(p: vec3f) -> f32 {
+  let objAngle = u.time * 0.5;
+  let rotatedP = rotateY_vec3(p - SCENE_OFFSET, objAngle);
+  let obj = evalSdf(rotatedP);
+  let discP = p - vec3f(SCENE_OFFSET.x, LIGHT_DISC_Y, SCENE_OFFSET.z);
+  let disc = sdDisc(discP, 2.0, 0.05);
+  return min(min(obj, disc), roomShell(p));
+}
 
 const MAX_STEPS = 224u;
 const MAX_DIST  = 120.0;
-const MARCH_RELAX = 0.88;
+const MARCH_RELAX = 0.5;
 const MIN_MARCH = 0.00005;
-const SURF_DIST = 0.001;
+const SURF_DIST = 0.0005;
 const NORM_EPS  = 0.001;
-const KEY_DIR   = vec3f(0.6, 0.8, -0.4);
-const FILL_DIR  = vec3f(-0.5, 0.3, 0.6);
-const KEY_COL   = vec3f(1.0, 0.96, 0.88);
-const FILL_COL  = vec3f(0.35, 0.45, 0.7);
-const RIM_COL   = vec3f(0.55, 0.65, 0.85);
-const AMB_COL   = vec3f(0.10, 0.11, 0.15);
-const MAT_COL   = vec3f(0.95, 0.6, 0.25);
+const KEY_DIR   = vec3f(0.18, 0.94, -0.28);
+const FILL_DIR  = vec3f(-0.36, 0.78, 0.50);
+const KEY_COL   = vec3f(1.0, 0.99, 0.98);
+const FILL_COL  = vec3f(0.52, 0.58, 0.68);
+const RIM_COL   = vec3f(0.78, 0.79, 0.82);
+const AMB_COL   = vec3f(0.12, 0.13, 0.17);
+const MAT_COL   = vec3f(0.90, 0.88, 0.86);
+const FLOOR_Y = -6.0;
+const LIGHT_DISC_Y = -1.0;
+const CEIL_LIGHT_A = vec3f(0.18, -0.92, 0.14);
+const CEIL_LIGHT_B = vec3f(-0.28, -0.88, 0.12);
+
+fn sky_environment(rd: vec3f) -> vec3f {
+  let v = rd.y;
+  let g0 = vec3f(0.102, 0.122, 0.169);
+  let g1 = vec3f(0.043, 0.059, 0.102);
+  let g2 = vec3f(0.020, 0.027, 0.047);
+  var c = mix(g2, g1, smoothstep(-0.85, 0.18, v));
+  c = mix(c, g0, smoothstep(0.12, 0.95, v));
+  let hz = abs(v);
+  let rim = exp(-hz * 28.0) * 0.012;
+  c += vec3f(rim * 0.55, rim * 0.62, rim * 0.85);
+  return c;
+}
 
 fn calcNormal(p: vec3f) -> vec3f {
   let e = vec2f(NORM_EPS, 0.0);
@@ -369,14 +450,133 @@ fn calcAO(p: vec3f, n: vec3f) -> f32 {
     occ += (h - d) * w;
     w *= 0.65;
   }
-  return clamp(1.0 - 1.8 * occ, 0.0, 1.0);
+  return clamp(1.0 - 1.2 * occ, 0.0, 1.0);
 }
-fn background(rd: vec3f) -> vec3f {
-  let t = 0.5 + 0.5 * rd.y;
-  let sky  = mix(vec3f(0.12, 0.14, 0.2), vec3f(0.04, 0.045, 0.08), t);
-  let glow = exp(-8.0 * max(rd.y + 0.1, 0.0)) * vec3f(0.1, 0.07, 0.05);
-  return sky + glow;
+
+fn shade_room(p: vec3f, ro: vec3f) -> vec3f {
+  let n = calcNormal(p);
+  let v = normalize(ro - p);
+
+  // Futuristic underlighting effect on walls
+  let underlightCol = vec3f(0.2, 0.7, 1.0);
+  let upLight = max(-n.y, 0.0) * 0.5; // Subtle bounce from floor
+
+  // Dark walls with subtle glow
+  let wallCol = vec3f(0.08, 0.09, 0.12);
+  var c = wallCol + underlightCol * upLight * 0.3;
+
+  // Rim
+  let rimV = pow(1.0 - max(dot(n, v), 0.0), 2.0);
+  c += vec3f(0.05, 0.06, 0.08) * rimV * 0.3;
+
+  c *= 0.4 + 0.6 * calcAO(p, n);
+
+  let fogCol = vec3f(0.08, 0.09, 0.12);
+  let t_cam = length(ro - p);
+  let fogF = clamp((t_cam - 5.0) / 20.0, 0.0, 1.0);
+  return mix(c, fogCol, fogF * 0.14);
 }
+
+fn shade_sdf_hit(p: vec3f, ro: vec3f) -> vec3f {
+  let n = calcNormal(p);
+  let v = normalize(ro - p);
+  let ao = calcAO(p, n);
+
+  // Futuristic underlighting
+  let underlightCol = vec3f(0.2, 0.7, 1.0);
+
+  // Light from below (bottom faces)
+  let upLight = max(-n.y, 0.0) * 1.5;
+
+  // Radial light from center - lights up sides
+  let objCenter = SCENE_OFFSET;
+  let toPoint = p - objCenter;
+  let radialDir = normalize(vec3f(toPoint.x, 0.0, toPoint.z));
+  let radialLight = max(dot(n, radialDir), 0.0) * 0.6;
+
+  // Downward-facing surfaces get extra glow
+  let downFace = max(n.y, 0.0) * 0.4;
+
+  // Rim lighting from camera
+  let rimV = pow(1.0 - max(dot(n, v), 0.0), 2.4);
+
+  // Subtle ambient
+  let ambient = vec3f(0.06, 0.07, 0.10);
+
+  // Combine lighting
+  var light = MAT_COL * underlightCol * (upLight + radialLight + downFace);
+  light += ambient;
+  light += underlightCol * rimV * 0.35; // Cyan rim glow
+  light *= 0.3 + 0.7 * ao;
+
+  let fogCol = vec3f(0.08, 0.09, 0.12);
+  let t_cam = length(ro - p);
+  let fogF = clamp((t_cam - 4.0) / 14.0, 0.0, 1.0);
+  return mix(light, fogCol, fogF * 0.22);
+}
+
+fn shade_sdf_mirror(p: vec3f, roVirt: vec3f) -> vec3f {
+  let n = calcNormal(p);
+  let v = normalize(roVirt - p);
+  let ao = calcAO(p, n);
+
+  // Futuristic underlighting
+  let underlightCol = vec3f(0.2, 0.7, 1.0);
+
+  // Light from below
+  let upLight = max(-n.y, 0.0) * 1.5;
+
+  // Radial light from center
+  let objCenter = SCENE_OFFSET;
+  let toPoint = p - objCenter;
+  let radialDir = normalize(vec3f(toPoint.x, 0.0, toPoint.z));
+  let radialLight = max(dot(n, radialDir), 0.0) * 0.6;
+
+  // Downward-facing surfaces
+  let downFace = max(n.y, 0.0) * 0.4;
+
+  // Rim lighting
+  let rimV = pow(1.0 - max(dot(n, v), 0.0), 2.4);
+
+  // Subtle ambient
+  let ambient = vec3f(0.06, 0.07, 0.10);
+
+  // Combine lighting
+  var light = MAT_COL * underlightCol * (upLight + radialLight + downFace);
+  light += ambient;
+  light += underlightCol * rimV * 0.35;
+  light *= 0.3 + 0.7 * ao;
+
+  let fogCol = vec3f(0.08, 0.09, 0.12);
+  let t_cam = length(roVirt - p);
+  let fogF = clamp((t_cam - 4.0) / 14.0, 0.0, 1.0);
+  return mix(light, fogCol, fogF * 0.22) * 0.94;
+}
+
+fn shade_floor(ro: vec3f, rd: vec3f, t_floor: f32) -> vec3f {
+  let nUp = vec3f(0.0, 1.0, 0.0);
+  let p_floor = ro + rd * t_floor;
+
+  // Futuristic circular underlighting
+  let lightCenterXZ = vec2f(SCENE_OFFSET.x, SCENE_OFFSET.z);
+  let floorXZ = vec2f(p_floor.x, p_floor.z);
+  let distXZ = length(floorXZ - lightCenterXZ);
+
+  // Bright cyan-blue futuristic glow - very visible
+  let underlightCol = vec3f(0.35, 0.82, 0.98);
+  let glow = exp(-distXZ * 0.35) * 2.2;
+
+  let ringDist = abs(distXZ - 2.5);
+  let ring = exp(-ringDist * 1.6) * 1.1;
+
+  // Dark floor base
+  let floorBase = vec3f(0.02, 0.025, 0.04);
+
+  let result = floorBase + underlightCol * (glow + ring);
+
+  return result;
+}
+
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) id: vec3u) {
   let dims = textureDimensions(outImage);
@@ -388,39 +588,44 @@ fn main(@builtin(global_invocation_id) id: vec3u) {
   let rd = normalize(u.cameraRight * uv.x * halfFov + u.cameraUp * -uv.y * halfFov + u.cameraFwd);
   let ro = u.cameraPos;
   let tSdf = march(ro, rd);
+  let tFloor = select(-1.0, (FLOOR_Y - ro.y) / rd.y, rd.y < -0.00001);
+  let validF = tFloor > 0.0 && tFloor < MAX_DIST;
+  let sdfFront = tSdf >= 0.0 && (!validF || tSdf < tFloor);
+  let floorFront = validF && (tSdf < 0.0 || tFloor < tSdf);
   var col: vec3f;
-  if (tSdf >= 0.0) {
-    let p = ro + rd * tSdf;
-    let n = calcNormal(p);
-    let v = -rd;
-    let ao = calcAO(p, n);
-    let keyL = normalize(KEY_DIR);
-    let diff = max(dot(n, keyL), 0.0);
-    let shad = softShadow(p + n * 0.003, keyL, 0.02, 16.0, 8.0);
-    let h = normalize(keyL + v);
-    let spec = pow(max(dot(n, h), 0.0), 48.0) * diff * shad;
-    let fill = max(dot(n, normalize(FILL_DIR)), 0.0);
-    let rim  = pow(1.0 - max(dot(n, v), 0.0), 3.0);
-    var light = MAT_COL * KEY_COL * diff * shad * 0.9;
-    light += MAT_COL * FILL_COL * fill * 0.62;
-    light += RIM_COL * rim * 0.35;
-    light += MAT_COL * AMB_COL * (0.58 + 0.42 * n.y);
-    light += vec3f(0.9, 0.95, 1.0) * spec * 0.6;
-    light *= 0.22 + 0.78 * ao;
-    col = light;
+  if (sdfFront) {
+    let pHit = ro + rd * tSdf;
+    let nHit = calcNormal(pHit);
+    let objAngle = u.time * 0.5;
+    let ds = evalSdf(rotateY_vec3(pHit - SCENE_OFFSET, objAngle));
+    let dr = roomShell(pHit);
+    let discY = abs(pHit.y - LIGHT_DISC_Y);
+    let discDist = length(vec2f(pHit.x - SCENE_OFFSET.x, pHit.z - SCENE_OFFSET.z));
+    if (discY < 0.1 && discDist < 2.2) {
+      let glowIntensity = 1.0 - discDist / 2.5;
+      col = vec3f(0.32, 0.82, 0.98) * (1.1 + glowIntensity * 1.6);
+    } else if (nHit.y > 0.76 && pHit.y < FLOOR_Y + 0.28 && pHit.y > FLOOR_Y - 0.12) {
+      col = shade_floor(ro, rd, tFloor);
+    } else if (ds < dr - 0.003) {
+      col = shade_sdf_hit(pHit, ro);
+    } else {
+      col = shade_room(pHit, ro);
+    }
+  } else if (floorFront) {
+    col = shade_floor(ro, rd, tFloor);
   } else {
-    col = background(rd);
+    col = sky_environment(rd);
   }
   col = pow(col, vec3f(1.0 / 2.2));
   let ctr = (px + 0.5) / res - 0.5;
-  let vig = 1.0 - 0.22 * dot(ctr, ctr);
+  let vig = 1.0 - 0.26 * dot(ctr, ctr);
   col *= vig;
   col = clamp(col, vec3f(0.0), vec3f(1.0));
   textureStore(outImage, vec2i(i32(id.x), i32(id.y)), vec4f(col, 1.0));
 }
 `.replace(
-  'const MAT_COL   = vec3f(0.95, 0.6, 0.25);',
-  `const MAT_COL   = vec3f(0.95, 0.6, 0.25);`,
+  'const MAT_COL   = vec3f(0.90, 0.88, 0.86);',
+  'const MAT_COL   = vec3f(0.90, 0.88, 0.86);',
 );
 
 const BLIT_WGSL = String.raw`
@@ -446,7 +651,27 @@ struct Varyings {
 
 const UNIFORM_SIZE = 96;
 const RENDER_SCALE = 1.0;
-const DEFAULT_MAP = String.raw`fn map(p: vec3f) -> f32 { return sdSphere(p, 1.0); }`;
+const DEFAULT_MAP = String.raw`fn sceneEval(p: vec3f) -> f32 { return sdSphere(p, 1.0); }`;
+
+function wrapUserSceneForRoom(userMap: string): string {
+  let code = userMap;
+  if (!/\bfn\s+sceneEval\s*\(/.test(code)) {
+    code = code.replace(/\bfn\s+map\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32\s*\{/, 'fn sceneEval(p: vec3f) -> f32 {');
+  }
+  if (!/\bfn\s+map\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32\s*\{/.test(code)) {
+    code += `
+fn map(p: vec3f) -> f32 {
+  let objAngle = u.time * 0.5;
+  let rotatedP = rotateY_vec3(p - SCENE_OFFSET, objAngle);
+  let obj = sceneEval(rotatedP);
+  let discP = p - vec3f(SCENE_OFFSET.x, LIGHT_DISC_Y, SCENE_OFFSET.z);
+  let disc = sdDisc(discP, 2.0, 0.05);
+  return min(min(obj, disc), roomShell(p));
+}
+`;
+  }
+  return code;
+}
 
 /** Strip markdown fences from model output (```wgsl, ``wgsl typos, trailing ```). */
 function sanitizeWgslUserCode(code: string): string {
@@ -464,7 +689,7 @@ function sanitizeWgslUserCode(code: string): string {
   const end = s.lastIndexOf('```');
   if (end >= 0) s = s.slice(0, end);
   s = s.trim();
-  const mapSig = /\bfn\s+map\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32/;
+  const mapSig = /\bfn\s+(map|sceneEval)\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32/;
   const m = s.match(mapSig);
   if (m && m.index !== undefined && m.index > 0) {
     s = s.slice(m.index).trim();
@@ -494,17 +719,33 @@ struct Uniforms {
 
 const MAX_STEPS = 224u;
 const MAX_DIST  = 120.0;
-const MARCH_RELAX = 0.88;
+const MARCH_RELAX = 0.5;
 const MIN_MARCH = 0.00005;
-const SURF_DIST = 0.001;
+const SURF_DIST = 0.0005;
 const NORM_EPS  = 0.001;
-const KEY_DIR   = vec3f(0.6, 0.8, -0.4);
-const FILL_DIR  = vec3f(-0.5, 0.3, 0.6);
-const KEY_COL   = vec3f(1.0, 0.96, 0.88);
-const FILL_COL  = vec3f(0.35, 0.45, 0.7);
-const RIM_COL   = vec3f(0.55, 0.65, 0.85);
-const AMB_COL   = vec3f(0.10, 0.11, 0.15);
-const MAT_COL   = vec3f(0.95, 0.6, 0.25);
+const KEY_DIR   = vec3f(0.18, 0.94, -0.28);
+const FILL_DIR  = vec3f(-0.36, 0.78, 0.50);
+const KEY_COL   = vec3f(1.0, 0.99, 0.98);
+const FILL_COL  = vec3f(0.52, 0.58, 0.68);
+const RIM_COL   = vec3f(0.78, 0.79, 0.82);
+const AMB_COL   = vec3f(0.12, 0.13, 0.17);
+const MAT_COL   = vec3f(0.90, 0.88, 0.86);
+const FLOOR_Y = -6.0;
+const CEIL_LIGHT_A = vec3f(0.18, -0.92, 0.14);
+const CEIL_LIGHT_B = vec3f(-0.28, -0.88, 0.12);
+
+fn sky_environment(rd: vec3f) -> vec3f {
+  let v = rd.y;
+  let g0 = vec3f(0.102, 0.122, 0.169);
+  let g1 = vec3f(0.043, 0.059, 0.102);
+  let g2 = vec3f(0.020, 0.027, 0.047);
+  var c = mix(g2, g1, smoothstep(-0.85, 0.18, v));
+  c = mix(c, g0, smoothstep(0.12, 0.95, v));
+  let hz = abs(v);
+  let rim = exp(-hz * 28.0) * 0.012;
+  c += vec3f(rim * 0.55, rim * 0.62, rim * 0.85);
+  return c;
+}
 
 fn calcNormal(p: vec3f) -> vec3f {
   let e = vec2f(NORM_EPS, 0.0);
@@ -545,14 +786,133 @@ fn calcAO(p: vec3f, n: vec3f) -> f32 {
     occ += (h - d) * w;
     w *= 0.65;
   }
-  return clamp(1.0 - 1.8 * occ, 0.0, 1.0);
+  return clamp(1.0 - 1.2 * occ, 0.0, 1.0);
 }
-fn background(rd: vec3f) -> vec3f {
-  let t = 0.5 + 0.5 * rd.y;
-  let sky  = mix(vec3f(0.12, 0.14, 0.2), vec3f(0.04, 0.045, 0.08), t);
-  let glow = exp(-8.0 * max(rd.y + 0.1, 0.0)) * vec3f(0.1, 0.07, 0.05);
-  return sky + glow;
+
+fn shade_room(p: vec3f, ro: vec3f) -> vec3f {
+  let n = calcNormal(p);
+  let v = normalize(ro - p);
+
+  // Futuristic underlighting effect on walls
+  let underlightCol = vec3f(0.2, 0.7, 1.0);
+  let upLight = max(-n.y, 0.0) * 0.5; // Subtle bounce from floor
+
+  // Dark walls with subtle glow
+  let wallCol = vec3f(0.08, 0.09, 0.12);
+  var c = wallCol + underlightCol * upLight * 0.3;
+
+  // Rim
+  let rimV = pow(1.0 - max(dot(n, v), 0.0), 2.0);
+  c += vec3f(0.05, 0.06, 0.08) * rimV * 0.3;
+
+  c *= 0.4 + 0.6 * calcAO(p, n);
+
+  let fogCol = vec3f(0.08, 0.09, 0.12);
+  let t_cam = length(ro - p);
+  let fogF = clamp((t_cam - 5.0) / 20.0, 0.0, 1.0);
+  return mix(c, fogCol, fogF * 0.14);
 }
+
+fn shade_sdf_hit(p: vec3f, ro: vec3f) -> vec3f {
+  let n = calcNormal(p);
+  let v = normalize(ro - p);
+  let ao = calcAO(p, n);
+
+  // Futuristic underlighting
+  let underlightCol = vec3f(0.2, 0.7, 1.0);
+
+  // Light from below (bottom faces)
+  let upLight = max(-n.y, 0.0) * 1.5;
+
+  // Radial light from center - lights up sides
+  let objCenter = SCENE_OFFSET;
+  let toPoint = p - objCenter;
+  let radialDir = normalize(vec3f(toPoint.x, 0.0, toPoint.z));
+  let radialLight = max(dot(n, radialDir), 0.0) * 0.6;
+
+  // Downward-facing surfaces get extra glow
+  let downFace = max(n.y, 0.0) * 0.4;
+
+  // Rim lighting from camera
+  let rimV = pow(1.0 - max(dot(n, v), 0.0), 2.4);
+
+  // Subtle ambient
+  let ambient = vec3f(0.06, 0.07, 0.10);
+
+  // Combine lighting
+  var light = MAT_COL * underlightCol * (upLight + radialLight + downFace);
+  light += ambient;
+  light += underlightCol * rimV * 0.35; // Cyan rim glow
+  light *= 0.3 + 0.7 * ao;
+
+  let fogCol = vec3f(0.08, 0.09, 0.12);
+  let t_cam = length(ro - p);
+  let fogF = clamp((t_cam - 4.0) / 14.0, 0.0, 1.0);
+  return mix(light, fogCol, fogF * 0.22);
+}
+
+fn shade_sdf_mirror(p: vec3f, roVirt: vec3f) -> vec3f {
+  let n = calcNormal(p);
+  let v = normalize(roVirt - p);
+  let ao = calcAO(p, n);
+
+  // Futuristic underlighting
+  let underlightCol = vec3f(0.2, 0.7, 1.0);
+
+  // Light from below
+  let upLight = max(-n.y, 0.0) * 1.5;
+
+  // Radial light from center
+  let objCenter = SCENE_OFFSET;
+  let toPoint = p - objCenter;
+  let radialDir = normalize(vec3f(toPoint.x, 0.0, toPoint.z));
+  let radialLight = max(dot(n, radialDir), 0.0) * 0.6;
+
+  // Downward-facing surfaces
+  let downFace = max(n.y, 0.0) * 0.4;
+
+  // Rim lighting
+  let rimV = pow(1.0 - max(dot(n, v), 0.0), 2.4);
+
+  // Subtle ambient
+  let ambient = vec3f(0.06, 0.07, 0.10);
+
+  // Combine lighting
+  var light = MAT_COL * underlightCol * (upLight + radialLight + downFace);
+  light += ambient;
+  light += underlightCol * rimV * 0.35;
+  light *= 0.3 + 0.7 * ao;
+
+  let fogCol = vec3f(0.08, 0.09, 0.12);
+  let t_cam = length(roVirt - p);
+  let fogF = clamp((t_cam - 4.0) / 14.0, 0.0, 1.0);
+  return mix(light, fogCol, fogF * 0.22) * 0.94;
+}
+
+fn shade_floor(ro: vec3f, rd: vec3f, t_floor: f32) -> vec3f {
+  let nUp = vec3f(0.0, 1.0, 0.0);
+  let p_floor = ro + rd * t_floor;
+
+  // Futuristic circular underlighting
+  let lightCenterXZ = vec2f(SCENE_OFFSET.x, SCENE_OFFSET.z);
+  let floorXZ = vec2f(p_floor.x, p_floor.z);
+  let distXZ = length(floorXZ - lightCenterXZ);
+
+  // Bright cyan-blue futuristic glow - very visible
+  let underlightCol = vec3f(0.35, 0.82, 0.98);
+  let glow = exp(-distXZ * 0.35) * 2.2;
+
+  let ringDist = abs(distXZ - 2.5);
+  let ring = exp(-ringDist * 1.6) * 1.1;
+
+  // Dark floor base
+  let floorBase = vec3f(0.02, 0.025, 0.04);
+
+  let result = floorBase + underlightCol * (glow + ring);
+
+  return result;
+}
+
 @compute @workgroup_size(8, 8)
 fn main(@builtin(global_invocation_id) id: vec3u) {
   let dims = textureDimensions(outImage);
@@ -564,41 +924,46 @@ fn main(@builtin(global_invocation_id) id: vec3u) {
   let rd = normalize(u.cameraRight * uv.x * halfFov + u.cameraUp * -uv.y * halfFov + u.cameraFwd);
   let ro = u.cameraPos;
   let tSdf = march(ro, rd);
+  let tFloor = select(-1.0, (FLOOR_Y - ro.y) / rd.y, rd.y < -0.00001);
+  let validF = tFloor > 0.0 && tFloor < MAX_DIST;
+  let sdfFront = tSdf >= 0.0 && (!validF || tSdf < tFloor);
+  let floorFront = validF && (tSdf < 0.0 || tFloor < tSdf);
   var col: vec3f;
-  if (tSdf >= 0.0) {
-    let p = ro + rd * tSdf;
-    let n = calcNormal(p);
-    let v = -rd;
-    let ao = calcAO(p, n);
-    let keyL = normalize(KEY_DIR);
-    let diff = max(dot(n, keyL), 0.0);
-    let shad = softShadow(p + n * 0.003, keyL, 0.02, 16.0, 8.0);
-    let h = normalize(keyL + v);
-    let spec = pow(max(dot(n, h), 0.0), 48.0) * diff * shad;
-    let fill = max(dot(n, normalize(FILL_DIR)), 0.0);
-    let rim  = pow(1.0 - max(dot(n, v), 0.0), 3.0);
-    var light = MAT_COL * KEY_COL * diff * shad * 0.9;
-    light += MAT_COL * FILL_COL * fill * 0.62;
-    light += RIM_COL * rim * 0.35;
-    light += MAT_COL * AMB_COL * (0.58 + 0.42 * n.y);
-    light += vec3f(0.9, 0.95, 1.0) * spec * 0.6;
-    light *= 0.22 + 0.78 * ao;
-    col = light;
+  if (sdfFront) {
+    let pHit = ro + rd * tSdf;
+    let nHit = calcNormal(pHit);
+    let objAngle = u.time * 0.5;
+    let ds = sceneEval(rotateY_vec3(pHit - SCENE_OFFSET, objAngle));
+    let dr = roomShell(pHit);
+    let discY = abs(pHit.y - LIGHT_DISC_Y);
+    let discDist = length(vec2f(pHit.x - SCENE_OFFSET.x, pHit.z - SCENE_OFFSET.z));
+    if (discY < 0.1 && discDist < 2.2) {
+      let glowIntensity = 1.0 - discDist / 2.5;
+      col = vec3f(0.32, 0.82, 0.98) * (1.1 + glowIntensity * 1.6);
+    } else if (nHit.y > 0.76 && pHit.y < FLOOR_Y + 0.28 && pHit.y > FLOOR_Y - 0.12) {
+      col = shade_floor(ro, rd, tFloor);
+    } else if (ds < dr - 0.003) {
+      col = shade_sdf_hit(pHit, ro);
+    } else {
+      col = shade_room(pHit, ro);
+    }
+  } else if (floorFront) {
+    col = shade_floor(ro, rd, tFloor);
   } else {
-    col = background(rd);
+    col = sky_environment(rd);
   }
   col = pow(col, vec3f(1.0 / 2.2));
   let ctr = (px + 0.5) / res - 0.5;
-  let vig = 1.0 - 0.22 * dot(ctr, ctr);
+  let vig = 1.0 - 0.26 * dot(ctr, ctr);
   col *= vig;
   col = clamp(col, vec3f(0.0), vec3f(1.0));
   textureStore(outImage, vec2i(i32(id.x), i32(id.y)), vec4f(col, 1.0));
 }
 `.replace(
-    'const MAT_COL   = vec3f(0.95, 0.6, 0.25);',
-    `const MAT_COL   = vec3f(0.95, 0.6, 0.25);`,
+    'const MAT_COL   = vec3f(0.90, 0.88, 0.86);',
+    'const MAT_COL   = vec3f(0.90, 0.88, 0.86);',
   );
-  return SDF_LIBRARY_WGSL + '\n' + userMap + '\n' + userTail;
+  return SDF_LIBRARY_WGSL + '\n' + wrapUserSceneForRoom(userMap) + '\n' + userTail;
 }
 
 
@@ -608,6 +973,34 @@ interface OrbitCamera {
   radius: number;
   target: [number, number, number];
   fov: number;
+}
+
+/** Must match `roomShell` f, c, hx, hz, wt in WGSL (SDF_LIBRARY + WGSL_FLATIR_FULL). */
+const ROOM_FLOOR_Y = -6.0;
+const ROOM_CEILING_Y = 7.0;
+const ROOM_HALF_X = 6.5;
+const ROOM_HALF_Z = 19.0;
+const ROOM_WALL_T = 0.42;
+const ROOM_CAMERA_MARGIN = 0.35;
+
+function clampEyeIntoRoom(eye: [number, number, number]): [number, number, number] {
+  const f = ROOM_FLOOR_Y;
+  const c = ROOM_CEILING_Y;
+  const hx = ROOM_HALF_X;
+  const hz = ROOM_HALF_Z;
+  const wt = ROOM_WALL_T;
+  const m = ROOM_CAMERA_MARGIN;
+  const cy = (f + c) * 0.5;
+  const innerHalfY = (c - f - 2.0 * wt) * 0.5;
+  const xMax = hx - wt - m;
+  const zMax = hz - wt - m;
+  const yMin = cy - innerHalfY + m;
+  const yMax = cy + innerHalfY - m;
+  return [
+    Math.max(-xMax, Math.min(xMax, eye[0])),
+    Math.max(yMin, Math.min(yMax, eye[1])),
+    Math.max(-zMax, Math.min(zMax, eye[2])),
+  ];
 }
 
 type SceneMode = 'wgsl' | 'flatir';
@@ -647,9 +1040,9 @@ export class WebGPURenderer {
   private cam: OrbitCamera = {
     theta: 0.4,
     phi: 0.35,
-    radius: 6,
-    target: [0, 0.3, 0],
-    fov: 1.0,
+    radius: 7.25,
+    target: [0, 0.3, 17],
+    fov: (45 * Math.PI) / 180,
   };
 
   private dragging = false;
@@ -735,11 +1128,11 @@ export class WebGPURenderer {
     const { theta, phi, radius, target } = this.cam;
     const ct = Math.cos(theta), st = Math.sin(theta);
     const cp = Math.cos(phi), sp = Math.sin(phi);
-    const eye = [
+    const eye = clampEyeIntoRoom([
       target[0] + radius * cp * st,
       target[1] + radius * sp,
       target[2] + radius * cp * ct,
-    ];
+    ]);
     const fwd = [target[0] - eye[0], target[1] - eye[1], target[2] - eye[2]];
     const len = Math.sqrt(fwd[0] ** 2 + fwd[1] ** 2 + fwd[2] ** 2);
     fwd[0] /= len; fwd[1] /= len; fwd[2] /= len;
@@ -775,7 +1168,7 @@ export class WebGPURenderer {
 
   setWgslScene(scene: WGSLSdfScene): void {
     const userMap = sanitizeWgslUserCode(scene.code);
-    if (!/fn\s+map\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32/.test(userMap)) {
+    if (!/\bfn\s+(map|sceneEval)\s*\(\s*p\s*:\s*vec3f\s*\)\s*->\s*f32/.test(userMap)) {
       return;
     }
     try {
@@ -868,7 +1261,11 @@ export class WebGPURenderer {
 
   render(): void {
     if (!this.device) return;
-    if (this.sceneMode === 'flatir' && !this.sceneBuffers) return;
+    /** FlatIR without buffers would skip all draws and leave a black canvas — fall back to WGSL. */
+    const useFlatir = this.sceneMode === 'flatir' && this.sceneBuffers !== null;
+
+    // Object rotation is handled in shader via time uniform
+    this.needsCompute = true;
 
     const canvas = this.canvasContext.canvas;
     const canvasW = canvas.width;
@@ -882,11 +1279,11 @@ export class WebGPURenderer {
     const encoder = this.device.createCommandEncoder();
 
     if (this.needsCompute) {
-      const pipeline = this.sceneMode === 'flatir' ? this.flatirPipeline : this.wgslPipeline;
-      const rootTemp = this.sceneMode === 'flatir' && this.sceneBuffers ? this.sceneBuffers.rootTemp : 0;
+      const pipeline = useFlatir ? this.flatirPipeline : this.wgslPipeline;
+      const rootTemp = useFlatir && this.sceneBuffers ? this.sceneBuffers.rootTemp : 0;
       this.writeUniforms(rw, rh, rootTemp);
 
-      if (this.sceneMode === 'flatir' && this.sceneBuffers) {
+      if (useFlatir && this.sceneBuffers) {
         const sb = this.sceneBuffers;
         const bg = this.device.createBindGroup({
           layout: pipeline.getBindGroupLayout(0),

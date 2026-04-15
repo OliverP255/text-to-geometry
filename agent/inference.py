@@ -545,7 +545,12 @@ class AnthropicHttpBackend:
                 thinking_enabled = False
                 if disable_thinking:
                     # Disable thinking entirely for fast responses
-                    api_kwargs["thinking"] = {"type": "disabled"}
+                    # GLM through LiteLLM requires chat_template_kwargs format
+                    # Anthropic Claude uses thinking: {type: disabled} format
+                    if T2G_BACKEND == "litellm":
+                        api_kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": False}}
+                    else:
+                        api_kwargs["thinking"] = {"type": "disabled"}
                     thinking_enabled = True
                 else:
                     # Adaptive thinking (recommended for 4.6 models)

@@ -15,6 +15,14 @@ web/node_modules/
 **/__pycache__/
 *.pyc
 .env/
+.env
+# LiteLLM: tracked placeholder so dotenv doesn't walk up to repo root DATABASE_URL (Prisma crash)
+!litellm/.env
+.env.local
+.env.*.local
+
+# Print job uploads (local)
+data/print_uploads/
 
 # Benchmark / local runs (large)
 agent/experiments/outputs/

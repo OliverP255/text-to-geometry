@@ -40,9 +40,9 @@ struct Uniforms {
 
 const MAX_STEPS = 224u;
 const MAX_DIST  = 120.0;
-const MARCH_RELAX = 0.88;
+const MARCH_RELAX = 0.5;
 const MIN_MARCH = 0.00005;
-const SURF_DIST = 0.001;
+const SURF_DIST = 0.0005;
 const NORM_EPS  = 0.001;
 const KEY_DIR   = vec3f(0.6, 0.8, -0.4);
 const FILL_DIR  = vec3f(-0.5, 0.3, 0.6);
@@ -91,7 +91,7 @@ fn calcAO(p: vec3f, n: vec3f) -> f32 {
     occ += (h - d) * w;
     w *= 0.65;
   }
-  return clamp(1.0 - 1.8 * occ, 0.0, 1.0);
+  return clamp(1.0 - 1.2 * occ, 0.0, 1.0);
 }
 fn background(rd: vec3f) -> vec3f {
   let t = 0.5 + 0.5 * rd.y;

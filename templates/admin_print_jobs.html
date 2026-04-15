@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Print jobs — admin</title>
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --fg: rgba(255, 255, 255, 0.88);
+      --muted: rgba(255, 255, 255, 0.45);
+      --border: rgba(255, 255, 255, 0.12);
+      --accent: #6ee7b7;
+      --err: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+
+    header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+
+    p.sub {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .panel {
+      padding: 16px 24px 24px;
+      max-width: 1200px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    input[type="password"],
+    input[type="text"],
+    select {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--fg);
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      min-width: 200px;
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: rgba(110, 231, 183, 0.15);
+      border-color: rgba(110, 231, 183, 0.35);
+      color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .msg {
+      font-size: 0.85rem;
+      margin: 0 0 12px;
+    }
+
+    .msg.err {
+      color: var(--err);
+    }
+
+    .msg.ok {
+      color: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    code {
+      font-size: 0.75rem;
+      word-break: break-all;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .actions select {
+      min-width: 120px;
+      font-size: 0.75rem;
+      padding: 4px 6px;
+    }
+
+    .actions input.notes {
+      min-width: 140px;
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Print jobs</h1>
+    <p class="sub">Paste the admin token once; it is kept in this browser only (session storage).</p>
+  </header>
+  <div class="panel">
+    <div class="row">
+      <div>
+        <label for="admin-token">Admin token</label><br />
+        <input id="admin-token" type="password" autocomplete="off" placeholder="PRINT_ADMIN_TOKEN" />
+      </div>
+      <div style="align-self: flex-end;">
+        <button type="button" class="primary" id="btn-load">Load jobs</button>
+      </div>
+    </div>
+    <p id="msg" class="msg" style="display: none;"></p>
+    <div id="table-wrap"></div>
+  </div>
+  <script>
+    const STORAGE_KEY = 't2g_print_admin_token';
+    const api = '';
+
+    const tokenInput = document.getElementById('admin-token');
+    const btnLoad = document.getElementById('btn-load');
+    const msg = document.getElementById('msg');
+    const tableWrap = document.getElementById('table-wrap');
+
+    function showMessage(text, ok) {
+      msg.style.display = text ? 'block' : 'none';
+      msg.textContent = text || '';
+      msg.className = 'msg ' + (ok ? 'ok' : 'err');
+    }
+
+    function getToken() {
+      const v = tokenInput.value.trim();
+      if (v) return v;
+      try {
+        return sessionStorage.getItem(STORAGE_KEY) || '';
+      } catch {
+        return '';
+      }
+    }
+
+    function saveToken(t) {
+      try {
+        sessionStorage.setItem(STORAGE_KEY, t);
+      } catch (_) { /* ignore */ }
+    }
+
+    tokenInput.value = getToken();
+
+    async function loadJobs() {
+      const t = tokenInput.value.trim();
+      if (t) saveToken(t);
+      const tok = getToken();
+      if (!tok) {
+        showMessage('Enter admin token first.', false);
+        return;
+      }
+      btnLoad.disabled = true;
+      showMessage('Loading…', true);
+      try {
+        const r = await fetch(api + '/api/print-jobs', {
+          headers: { 'X-Print-Admin-Token': tok },
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          showMessage(data.error || ('HTTP ' + r.status), false);
+          tableWrap.innerHTML = '';
+          return;
+        }
+        showMessage(data.jobs ? data.jobs.length + ' job(s)' : '0 jobs', true);
+        renderTable(data.jobs || []);
+      } catch (e) {
+        showMessage(String(e), false);
+        tableWrap.innerHTML = '';
+      } finally {
+        btnLoad.disabled = false;
+      }
+    }
+
+    function renderTable(jobs) {
+      if (!jobs.length) {
+        tableWrap.innerHTML = '<p class="msg ok">No jobs yet.</p>';
+        return;
+      }
+      const rows = jobs.map((j) => {
+        const stl = api + '/api/print-jobs/' + encodeURIComponent(j.id) + '/stl';
+        return (
+          '<tr>' +
+          '<td><code>' + escapeHtml(j.id) + '</code></td>' +
+          '<td>' + escapeHtml(j.status || '') + '</td>' +
+          '<td>' + escapeHtml(j.material || '') + ' / ' + escapeHtml(j.quality || '') + '</td>' +
+          '<td>' + escapeHtml(j.customer_name || '') + '</td>' +
+          '<td><a href="' + stl + '" target="_blank" rel="noopener" data-stl="' + escapeAttr(stl) + '">STL</a></td>' +
+          '<td class="actions">' +
+          '<select data-id="' + escapeAttr(j.id) + '" class="st">' +
+          '<option value="queued"' + sel(j.status, 'queued') + '>queued</option>' +
+          '<option value="printing"' + sel(j.status, 'printing') + '>printing</option>' +
+          '<option value="done"' + sel(j.status, 'done') + '>done</option>' +
+          '<option value="cancelled"' + sel(j.status, 'cancelled') + '>cancelled</option>' +
+          '</select>' +
+          '<input type="text" class="notes" placeholder="notes" data-id="' + escapeAttr(j.id) + '" value="' + escapeAttr(j.notes || '') + '" />' +
+          '<input type="text" placeholder="assignee" data-id="' + escapeAttr(j.id) + '" class="asg" value="' + escapeAttr(j.assigned_to || '') + '" />' +
+          '<button type="button" class="btn-save" data-id="' + escapeAttr(j.id) + '">Save</button>' +
+          '</td>' +
+          '</tr>'
+        );
+      }).join('');
+      tableWrap.innerHTML =
+        '<table><thead><tr>' +
+        '<th>ID</th><th>Status</th><th>Mat / Q</th><th>Customer</th><th>File</th><th>Actions</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table>';
+
+      tableWrap.querySelectorAll('a[data-stl]').forEach((a) => {
+        a.addEventListener('click', async (ev) => {
+          ev.preventDefault();
+          const tok = getToken();
+          if (!tok) {
+            showMessage('Token required for download.', false);
+            return;
+          }
+          const url = a.getAttribute('data-stl');
+          try {
+            const r = await fetch(url, { headers: { 'X-Print-Admin-Token': tok } });
+            if (!r.ok) {
+              showMessage('Download failed: ' + r.status, false);
+              return;
+            }
+            const blob = await r.blob();
+            const idCell = a.closest('tr') && a.closest('tr').querySelector('code');
+            const idShort = idCell ? idCell.textContent : 'job';
+            const dl = document.createElement('a');
+            dl.href = URL.createObjectURL(blob);
+            dl.download = 'print_' + idShort + '.stl';
+            dl.click();
+            URL.revokeObjectURL(dl.href);
+          } catch (e) {
+            showMessage(String(e), false);
+          }
+        });
+      });
+
+      tableWrap.querySelectorAll('.btn-save').forEach((b) => {
+        b.addEventListener('click', () => patchJob(b.getAttribute('data-id')));
+      });
+    }
+
+    function sel(cur, v) {
+      return (cur === v) ? ' selected' : '';
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(s) {
+      return escapeHtml(s).replace(/'/g, '&#39;');
+    }
+
+    async function patchJob(id) {
+      const tok = getToken();
+      if (!tok) {
+        showMessage('Enter admin token.', false);
+        return;
+      }
+      const esc = id.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      const row = tableWrap.querySelector('select.st[data-id="' + esc + '"]');
+      const st = row && row.value;
+      const notesEl = tableWrap.querySelector('input.notes[data-id="' + esc + '"]');
+      const asgEl = tableWrap.querySelector('input.asg[data-id="' + esc + '"]');
+      const body = {};
+      if (st) body.status = st;
+      if (notesEl) body.notes = notesEl.value;
+      if (asgEl) body.assigned_to = asgEl.value || null;
+      try {
+        const r = await fetch(api + '/api/print-jobs/' + encodeURIComponent(id), {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Print-Admin-Token': tok,
+          },
+          body: JSON.stringify(body),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          showMessage(data.error || ('HTTP ' + r.status), false);
+          return;
+        }
+        showMessage('Saved job ' + id.slice(0, 8) + '…', true);
+        await loadJobs();
+      } catch (e) {
+        showMessage(String(e), false);
+      }
+    }
+
+    btnLoad.addEventListener('click', loadJobs);
+  </script>
+</body>
+
+</html>

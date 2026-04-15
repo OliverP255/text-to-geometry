@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Text-to-CAD agent: WGSL SDF code generation via tool calls.
+Text-to-CAD agent: CadQuery B-Rep code generation via tool calls.
 
-The agent uses tool calls to generate, validate, render, and submit WGSL code.
+The agent uses tool calls to generate, validate, render, and submit CadQuery code.
 It iterates until satisfied with the result.
 
 Usage:
-    python wgsl_agent.py
-    python wgsl_agent.py --once "a snowman made of three spheres"
+    python brep_agent.py
+    python brep_agent.py --once "a 100mm mounting plate with 4 corner holes"
 
 Vertex AI: Set T2G_BACKEND=vertex, T2G_VERTEX_PROJECT_ID, T2G_MODEL_ID=claude-opus-4-6
 Extended thinking: Set T2G_CLAUDE_BUDGET_TOKENS=4096
@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -26,93 +27,155 @@ _root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_root / "agent"))
 
 from inference import load_llm
-from tools import TOOLS, execute_tool, get_current_code, set_current_code, post_wgsl_scene
+from brep_tools import TOOLS, execute_tool, get_current_code, set_current_code, post_brep_scene
 
-SERVER_URL = os.environ.get("SCENE_SERVER_URL", "http://localhost:5001/scene/wgsl")
+SERVER_URL = os.environ.get("SCENE_SERVER_URL", "http://localhost:5001/scene/brep")
 
 # ---------------------------------------------------------------------------
-# System prompt for WGSL SDF generation
+# System prompt for CadQuery B-Rep generation
 # ---------------------------------------------------------------------------
 
 SYSTEM_PROMPT = """\
-You are an expert SDF (Signed Distance Function) artist. Given a description, write WGSL code that defines the shape mathematically.
+You are an expert CAD engineer using CadQuery (Python parametric CAD). Given a description, write CadQuery Python code that defines the shape precisely.
 
 ## Workflow
-1. Call generate_wgsl with your complete fn map(p: vec3f) -> f32 code
-2. Call validate_wgsl to check for syntax errors
-3. If invalid, use edit_wgsl to fix specific errors or regenerate
-4. Call render_wgsl to see the result visually
-5. If it doesn't look perfect, use edit_wgsl for small tweaks or regenerate for major changes
-6. Call submit_wgsl only when you are completely satisfied with the shape
+1. Call generate_cadquery with your complete CadQuery script
+2. Call validate_cadquery to check for syntax errors
+3. If invalid, use edit_cadquery to fix specific errors or regenerate
+4. Call render_cadquery to generate mesh preview
+5. If it doesn't look perfect, use edit_cadquery for tweaks or regenerate
+6. Call submit_cadquery only when satisfied with the shape
 
 ## Available Tools
-- generate_wgsl: Generate complete WGSL SDF code
-- edit_wgsl: Find/replace in existing code for incremental changes
-- validate_wgsl: Check for syntax errors
-- render_wgsl: Render to image (4 views: front, top, side, back)
-- submit_wgsl: Push to viewer
+- generate_cadquery: Generate complete CadQuery Python code
+- edit_cadquery: Find/replace in existing code for incremental changes
+- validate_cadquery: Check for syntax errors and safety issues
+- render_cadquery: Generate mesh for preview
+- submit_cadquery: Push to viewer
 
-## When to use edit_wgsl vs generate_wgsl
-- Use edit_wgsl for small tweaks (changing a radius, position, blend amount)
-- Use generate_wgsl when starting fresh or making major structural changes
+## When to use edit_cadquery vs generate_cadquery
+- Use edit_cadquery for small tweaks (changing a dimension, hole position)
+- Use generate_cadquery when starting fresh or making major structural changes
 
-### Coordinate system
-Y-axis is up. Objects centred near origin. Most shapes fit within 0.5–2.0 units.
+## Coordinate System (CRITICAL)
+- **Z-axis is UP** (CAD standard)
+- **Units are MILLIMETRES**
+- Objects are **centered on origin** by default
+- X = width, Y = depth, Z = height
 
-### Primitives (library functions)
-| Function | Signature |
-|----------|-----------|
-| `sdSphere(p, r)` | Sphere |
-| `sdBox(p, vec3f(hx,hy,hz))` | Box (half-extents) |
-| `sdRoundBox(p, vec3f(hx,hy,hz), r)` | Rounded box |
-| `sdTorus(p, vec2f(R,r))` | Torus — see orientation below (major R, tube r) |
-| `sdCylinder(p, h, r)` | Y-cylinder (h=HALF-HEIGHT first, r=RADIUS second) |
-| `sdCylinderX(p, h, r)` / `sdCylinderZ(p, h, r)` | Horizontal cylinders |
-| `sdCapsule(p, a, b, r)` | Capsule between two vec3f points |
-| `sdCone(p, c, h)` | IQ cone: `c = vec2f(sin(α), cos(α))`, `h` = height |
-| `sdHemisphere(p, r)` | Dome (+Y) |
-| `sdEllipsoid(p, vec3f(rx,ry,rz))` | Ellipsoid |
-| `sdHexPrism(p, vec2f(hexR, halfH))` | Hex prism |
+## Workplane Orientation
+| Plane | Description |
+|-------|-------------|
+| `"XY"` | Z-up (default for most shapes) |
+| `"XZ"` | Y-up (for Y-extruded shapes) |
+| `"YZ"` | X-up (for X-extruded shapes) |
 
-### Operations
+## Face Selectors
+| Selector | Meaning |
+|----------|---------|
+| `">Z"` | Top face (max Z) |
+| `"<Z"` | Bottom face (min Z) |
+| `">X"` | Right face (max X) |
+| `"<X"` | Left face (min X) |
+| `">Y"` | Front face (max Y) |
+| `"<Y"` | Back face (min Y) |
+| `"|Z"` | Vertical edges (parallel to Z) |
+
+## High-Level Primitives (USE THESE - PREFERRED)
+
+These primitives simplify CadQuery code. Always prefer them over raw CadQuery chains.
+
+### Basic Solids
 | Function | Description |
 |----------|-------------|
-| `opU(d1, d2)` | Hard union |
-| `opS(d1, d2)` | Subtract d2 from d1 |
-| `opI(d1, d2)` | Intersection |
-| `opSmoothUnion(d1, d2, k)` | Smooth blend — k=0.05 tight, k=0.2 organic, k=0.4 blobby |
-| `opOnion(d, t)` | Shell (wall thickness t) |
-| `opRound(d, r)` | Round all edges by r |
+| `box(width, depth, height)` | Rectangular box centered on origin |
+| `cylinder(radius, height)` | Z-aligned cylinder |
+| `cone(r_bottom, r_top, height)` | Cone or truncated cone |
+| `sphere(radius)` | Sphere centered on origin |
+| `torus(tube_r, ring_r)` | Z-aligned torus |
 
-### Transforms
-| `p - vec3f(x,y,z)` | Translate (subtract center from p before other ops) |
-| `opRotateX/Y/Z(p, radians)` | Rotate the query point (standard SDF: compose as `sdPrim(opRotate*(p - t, a), ...)` for an object centered at `t`) |
-| `opTwist(p, k)` | Twist around Y |
+### Enhanced Solids
+| Function | Description |
+|----------|-------------|
+| `rounded_box(w, d, h, r)` | Box with rounded vertical edges |
+| `tube(outer_r, inner_r, h)` | Hollow tube |
+| `hollow_box(w, d, h, thickness)` | Open-top hollow box |
 
-### Torus orientation (`sdTorus`)
-The library torus is **not** arbitrary-axis: the **major ring lies in the XZ plane** (horizontal), and the **hole / symmetry axis is ±Y** — like a donut lying flat, stick through the hole goes up/down.
+### Plates and Brackets
+| Function | Description |
+|----------|-------------|
+| `mounting_plate(w, d, t, hole_d, margin)` | Plate with corner holes |
+| `mounting_plate(w, d, t, hole_d, margin, (nx, ny))` | Plate with nx×ny hole grid |
+| `corner_bracket(w, h, t, hole_d)` | L-shaped bracket with holes |
 
-- **`opRotateY`** spins that ring in place (plan view). It does **not** tip the ring from horizontal to vertical.
-- For a **vertical arc** (e.g. mug handle beside a Y-up cylinder), you must rotate **~±π/2 about X or Z** so the ring lies in **YZ** or **XY**:
-  - Handle on +X side of the mug: often `sdTorus(opRotateZ(p - handleCenter, angle), vec2f(R,r))` or `opRotateX` depending on attachment; try **Z** vs **X** if the handle lies in the wrong vertical plane.
-- Chain order: **translate then rotate** on `p` (e.g. `opRotateX(p - vec3f(cx,cy,cz), a)`) so the handle sits at the mug wall.
+### Holes and Features
+| Function | Description |
+|----------|-------------|
+| `counterbore_hole(solid, d, cbore_d, cbore_depth)` | Add counterbore hole |
+| `countersink_hole(solid, d, csk_d, angle)` | Add countersink hole |
+| `slot(solid, length, width, depth)` | Cut rectangular slot |
 
-### Rules
-- Output ONLY `fn map(p: vec3f) -> f32 { ... }` — no extra functions
-- Use `let` for all variables; never reuse a variable name
-- Only ONE `return` statement per function
-- `sdCylinder(p, h, r)`: h = HALF-HEIGHT (first), r = RADIUS (second)
-- Prefer `opSmoothUnion` over `opU` for organic shapes
+### Profile Operations
+| Function | Description |
+|----------|-------------|
+| `extruded_profile(points, height)` | Extrude closed 2D profile |
+| `revolved_profile(points, angle)` | Revolve profile around Y-axis |
+
+## Raw CadQuery Reference (for advanced use)
+
+### Basic Operations
+| Method | Description |
+|--------|-------------|
+| `.box(w, d, h)` | Create box |
+| `.circle(r)` | Draw circle |
+| `.rect(w, h)` | Draw rectangle |
+| `.extrude(h)` | Extrude sketch by height |
+| `.revolve(angle)` | Revolve sketch around axis |
+| `.union(other)` | Boolean union |
+| `.cut(other)` | Boolean subtract |
+| `.intersect(other)` | Boolean intersection |
+
+### Feature Operations
+| Method | Description |
+|--------|-------------|
+| `.hole(diameter)` | Drill a through-hole |
+| `.fillet(radius)` | Round edges |
+| `.chamfer(distance)` | Chamfer edges |
+| `.shell(thickness)` | Hollow out solid |
+
+## Code Template
+
+```python
+import cadquery as cq
+from cadquery_primitives import mounting_plate, rounded_box
+
+# Create your geometry
+result = mounting_plate(
+    width=100,    # mm
+    depth=60,     # mm
+    thickness=8,  # mm
+    hole_diameter=6,
+    hole_margin=10
+)
+```
+
+## Rules
+- Import cadquery as `cq`
+- Import primitives from `cadquery_primitives` as needed
+- Create a `result` variable holding the final shape
+- Use explicit dimensions (not magic numbers)
+- Add `# mm` comments for dimensions
+- All dimensions are in millimetres
 """
 
 # ---------------------------------------------------------------------------
 # Agent loop
 # ---------------------------------------------------------------------------
 
-MAX_TURNS = 30
+MAX_TURNS = 10  # B-Rep is more deterministic than SDF
 
 
-def run_agent(
+def run_brep_agent(
     llm: Any,
     user_prompt: str,
     *,
@@ -121,10 +184,10 @@ def run_agent(
     verbose: bool = False,
 ) -> Optional[str]:
     """
-    Run the WGSL agent with tool calls.
+    Run the B-Rep agent with tool calls.
 
-    The agent iterates until it calls submit_wgsl or exhausts max turns.
-    Returns the final WGSL code, or None if unsuccessful.
+    The agent iterates until it calls submit_cadquery or exhausts max turns.
+    Returns the final CadQuery code, or None if unsuccessful.
     """
     messages: list[dict] = [
         {"role": "system", "content": SYSTEM_PROMPT},
@@ -175,7 +238,6 @@ def run_agent(
             # Process tool calls
             tool_results = []
             assistant_content = []
-            render_image_base64 = None  # Track rendered image for VLM feedback
 
             for block in response.content:
                 block_dict = {
@@ -207,28 +269,28 @@ def run_agent(
                     if verbose:
                         print(f"[TIMING] Tool '{tool_name}': {tool_end - tool_start:.2f}s")
                         result_preview = {k: (v[:50] + "..." if isinstance(v, str) and len(v) > 50 else v)
-                                         for k, v in result.items() if k != "image_base64"}
-                        if "image_base64" in result:
-                            result_preview["image_base64"] = f"<{len(result['image_base64'])} chars>"
+                                         for k, v in result.items() if k not in ("mesh", "image_base64")}
+                        if "mesh" in result:
+                            result_preview["mesh"] = f"<{result['mesh'].get('vertices', []).__len__()} vertices>"
                         print(f"  Result: {result_preview}")
 
                     # Track submission
-                    if tool_name == "submit_wgsl" and result.get("success"):
+                    if tool_name == "submit_cadquery" and result.get("success"):
                         submitted_code = get_current_code()
 
                     # Build tool result content
-                    # Note: Anthropic API requires tool result content to be a string, not a list
-                    # Images must be sent in a separate user message after tool results
-                    if "image_base64" in result:
-                        render_image_base64 = result["image_base64"]
+                    # For B-Rep, mesh data is sent to browser, not VLM feedback
+                    if "mesh" in result:
                         tool_results.append({
                             "type": "tool_result",
                             "tool_use_id": tool_id,
                             "content": json.dumps({
                                 "success": True,
                                 "rendered": True,
-                                "message": "Rendered 4 views (front, top, side, back). The image is shown below for your analysis.",
-                                "image_size_bytes": result.get("image_size_bytes", 0),
+                                "message": f"Mesh generated: {result.get('vertices', 0)} vertices, {result.get('faces', 0)} faces",
+                                "bounds": result.get("bounds"),
+                                "volume_mm3": result.get("volume_mm3"),
+                                "is_watertight": result.get("is_watertight"),
                             }),
                         })
                     else:
@@ -240,27 +302,7 @@ def run_agent(
 
             # Append assistant message and tool results
             messages.append({"role": "assistant", "content": assistant_content})
-
-            # If we have a rendered image, add it as a separate user message for VLM feedback
-            if render_image_base64:
-                messages.append({"role": "user", "content": [
-                    {
-                        "type": "text",
-                        "text": "Here is the rendered image showing 4 views (front, top, side, back) of the current shape:",
-                    },
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            "media_type": "image/png",
-                            "data": render_image_base64,
-                        },
-                    },
-                ]})
-                # Reset after sending
-                render_image_base64 = None
-            else:
-                messages.append({"role": "user", "content": tool_results})
+            messages.append({"role": "user", "content": tool_results})
 
         elif stop_reason == "end_turn":
             # Model finished with text response
@@ -292,54 +334,58 @@ def run_agent(
 
 
 def _extract_code_from_text(text: str) -> Optional[str]:
-    """Extract WGSL code from text response."""
-    import re
+    """Extract CadQuery code from text response."""
+    # Look for code blocks with python/cadquery label
+    python_match = re.search(r"```python\s*(.*?)\s*```", text, re.DOTALL)
+    if python_match:
+        return python_match.group(1).strip()
 
-    # Look for code blocks
-    wgsl_match = re.search(r"```wgsl\s*(.*?)\s*```", text, re.DOTALL)
-    if wgsl_match:
-        return wgsl_match.group(1).strip()
-
+    # Look for generic code blocks
     generic_match = re.search(r"```\s*(.*?)\s*```", text, re.DOTALL)
     if generic_match:
         code = generic_match.group(1).strip()
-        if "fn map" in code:
+        if "import cadquery" in code or "result" in code:
             return code
 
-    # Look for fn map directly
-    fn_match = re.search(r"fn\s+map\s*\([^)]*\)\s*->\s*f32\s*\{", text)
-    if fn_match:
-        # Find the matching closing brace
-        start = fn_match.start()
-        brace_count = 0
-        for i, c in enumerate(text[start:], start):
-            if c == "{":
-                brace_count += 1
-            elif c == "}":
-                brace_count -= 1
-                if brace_count == 0:
-                    return text[start:i + 1].strip()
+    # Look for import cadquery directly
+    if "import cadquery" in text or "from cadquery" in text:
+        # Try to extract the code block
+        lines = text.split('\n')
+        code_lines = []
+        in_code = False
+        for line in lines:
+            if 'import cadquery' in line or 'from cadquery' in line:
+                in_code = True
+            if in_code:
+                code_lines.append(line)
+        if code_lines:
+            return '\n'.join(code_lines)
 
     return None
 
 
 # Alias for backward compatibility with server.py
-extract_code_block = _extract_code_from_text
+extract_cadquery_block = _extract_code_from_text
 
 
-def refine_agent(
+def refine_brep_agent(
     llm: Any,
     current_code: str,
     instruction: str,
     *,
     verbose: bool = False,
 ) -> Optional[str]:
-    """Refine existing WGSL code based on a follow-up instruction.
+    """Refine existing CadQuery code based on a follow-up instruction.
 
     This is a simplified version that runs the agent with a refinement prompt.
     """
-    prompt = f"Modify this WGSL code to: {instruction}\n\nCurrent code:\n```wgsl\n{current_code}\n```"
-    return run_agent(llm, prompt, verbose=verbose)
+    prompt = f"Modify this CadQuery code to: {instruction}\n\nCurrent code:\n```python\n{current_code}\n```"
+    return run_brep_agent(llm, prompt, verbose=verbose)
+
+
+# Backward compatibility aliases
+run_agent = run_brep_agent
+refine_agent = refine_brep_agent
 
 
 # ---------------------------------------------------------------------------
@@ -360,7 +406,7 @@ def main() -> None:
 
     _maybe_reexec_in_venv()
 
-    parser = argparse.ArgumentParser(description="Text-to-CAD WGSL SDF agent")
+    parser = argparse.ArgumentParser(description="Text-to-CAD B-Rep CadQuery agent")
     parser.add_argument("--once", type=str, default=None, help="Run once with this prompt and exit")
     parser.add_argument("--verbose", "-v", action="store_true", help="Print debug information")
     parser.add_argument(
@@ -384,7 +430,7 @@ def main() -> None:
 
     if args.once is not None:
         t_start = time.perf_counter()
-        code = run_agent(llm, args.once.strip(), verbose=True)
+        code = run_brep_agent(llm, args.once.strip(), verbose=True)
         t_end = time.perf_counter()
         print(f"\n[TIMING] Total agent run: {t_end - t_start:.2f}s")
         print(f"[TIMING] Total (with model load): {t_end - t0:.2f}s")
@@ -409,7 +455,7 @@ def main() -> None:
             print("Bye.")
             break
 
-        code = run_agent(llm, prompt, verbose=args.verbose)
+        code = run_brep_agent(llm, prompt, verbose=args.verbose)
         if code:
             print(f"\nGenerated:\n{code}\n")
         else:

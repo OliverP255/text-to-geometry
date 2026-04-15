@@ -25,4 +25,18 @@ export interface WGSLSdfScene {
   code: string;
 }
 
-export type SceneData = WGSLSdfScene | PackedFlatIR;
+/** B-Rep mesh scene from CadQuery backend. */
+export interface BRepMeshScene {
+  type: 'brep-mesh';
+  vertices: number[][];      // [N, 3] vertex positions
+  faces: number[][];         // [M, 3] triangle indices
+  normals: number[][];       // [N, 3] vertex normals
+  bounds: {
+    min: [number, number, number];
+    max: [number, number, number];
+  };
+  volume_mm3: number;
+  is_watertight: boolean;
+}
+
+export type SceneData = WGSLSdfScene | PackedFlatIR | BRepMeshScene;

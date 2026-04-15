@@ -6,7 +6,9 @@
 #
 # Prerequisites:
 #   export VERTEXAI_PROJECT="your-gcp-project-id"   # or rely on GOOGLE_CLOUD_PROJECT
-#   Enable Vertex AI API; enable glm-5-maas / glm-4.7-maas in Model Garden for the project.
+#   Enable Vertex AI API; in Model Garden enable glm-5-maas, glm-5.1-maas (if listed), glm-4.7-maas.
+#   GLM 5.1: enable publisher model glm-5.1-maas (zai-org). If your console shows a different id,
+#   change x-glm51 below. Fallback: use Z.AI directly — see comment block after model_list.
 #
 # Auth (Vertex uses Application Default Credentials; order: GOOGLE_APPLICATION_CREDENTIALS,
 # then ~/.config/gcloud/application_default_credentials.json, then GCE metadata):
@@ -53,13 +55,29 @@ x-glm5: &vertex_glm5
   vertex_project: os.environ/VERTEXAI_PROJECT
   vertex_location: global
 
+# GLM 5.1 (newer flagship; Claude Code: set ANTHROPIC_DEFAULT_* to glm-5.1 per Z.ai docs)
+x-glm51: &vertex_glm51
+  model: vertex_ai/zai-org/glm-5.1-maas
+  vertex_project: os.environ/VERTEXAI_PROJECT
+  vertex_location: global
+
 x-glm47: &vertex_glm47
   model: vertex_ai/zai-org/glm-4.7-maas
   vertex_project: os.environ/VERTEXAI_PROJECT
   vertex_location: global
 
 model_list:
-  # --- GLM 5 (primary for Claude Code when ANTHROPIC_* models point at glm-5) ---
+  # --- GLM 5.1 (newest; point Claude Code env vars at glm-5.1 when ready) ---
+  - model_name: glm-5.1
+    litellm_params:
+      <<: *vertex_glm51
+  - model_name: glm-5-1
+    litellm_params:
+      <<: *vertex_glm51
+  - model_name: glm-5.1-maas
+    litellm_params:
+      <<: *vertex_glm51
+  # --- GLM 5 (stable default on Vertex MaaS) ---
   - model_name: glm-5
     litellm_params:
       <<: *vertex_glm5
@@ -108,3 +126,11 @@ model_list:
   - model_name: claude-3-haiku-20240307
     litellm_params:
       <<: *vertex_glm47
+
+# --- Optional: Z.AI API if Vertex has no glm-5.1-maas yet ---
+# 1) Comment out the three GLM 5.1 Vertex entries (glm-5.1 / glm-5-1 / glm-5.1-maas) above.
+# 2) Uncomment below and set ZAI_API_KEY (https://docs.litellm.ai/docs/providers/zai).
+#  - model_name: glm-5.1
+#    litellm_params:
+#      model: zai/glm-5.1
+#      api_key: os.environ/ZAI_API_KEY
