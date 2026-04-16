@@ -7,7 +7,7 @@
 [![vLLM](https://img.shields.io/badge/vLLM-000000?style=flat-square&logoColor=white)](https://vllm.ai)
 [![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)](https://isocpp.org)
 
----
+
 <div align="center" style="padding: 28px 16px;">
 <img src="chair.gif" alt="Demo" width="480">
 </div>
