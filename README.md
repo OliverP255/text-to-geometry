@@ -1,5 +1,7 @@
 # SketchCAD
-
+<div align="center" style="padding: 28px 16px;">
+<img src="chair.gif" alt="Demo" width="480">
+</div>
 ### Turn any idea into a professional-grade, 3D-printable physical product in minutes. No CAD experience required.
 
 [![WebGPU](https://img.shields.io/badge/WebGPU-005A9C?style=flat-square&logo=webgpu&logoColor=white)](https://gpuweb.github.io/gpuweb/)
@@ -8,9 +10,7 @@
 [![C++](https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)](https://isocpp.org)
 
 
-<div align="center" style="padding: 28px 16px;">
-<img src="chair.gif" alt="Demo" width="480">
-</div>
+
 
 ## The Problem
 
