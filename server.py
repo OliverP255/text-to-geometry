@@ -8,6 +8,7 @@
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -213,16 +214,16 @@ def chat():
         return jsonify({"error": "Missing non-empty 'prompt'"}), 400
 
     # === HARDCODED RESPONSES FOR DEMO ===
-    if prompt == "beautiful chaotic DNA-inspired sculpture":
-        # Load DNA sculpture WGSL
-        dna_path = _root / "dna_sculpture.wgsl"
+    if prompt == "Make a futuristic, abstract sculpture":
+    # Load DNA sculpture WGSL
+        dna_path = _root / "void_core.wgsl"
         if dna_path.exists():
             code = dna_path.read_text()
             _last_code = code
             _scene_cache = {"type": "wgsl-sdf", "code": code}
             socketio.emit("scene", _scene_cache)
             return jsonify({"ok": True, "code": code})
-        return jsonify({"error": "DNA sculpture file not found"}), 500
+        return jsonify({"error": "sculpture file not found"}), 500
 
     if prompt == "iPhone holder for iPhone 16 Pro with hole for cable":
         # Load iPhone holder STL and convert to mesh
@@ -439,8 +440,8 @@ def on_chat(data):
         return
 
     # === HARDCODED RESPONSES FOR DEMO ===
-    if prompt == "beautiful chaotic DNA-inspired sculpture":
-        dna_path = _root / "dna_sculpture.wgsl"
+    if prompt == "Make a futuristic, abstract sculpture":
+        dna_path = _root / "void_core.wgsl"
         if dna_path.exists():
             code = dna_path.read_text()
             _last_code = code
@@ -448,10 +449,11 @@ def on_chat(data):
             emit("scene", _scene_cache)
             emit("chat_done", {"code": code})
             return
-        emit("chat_error", {"error": "DNA sculpture file not found"})
+        emit("chat_error", {"error": "sculpture file not found"})
         return
 
     if prompt == "iPhone holder for iPhone 16 Pro with hole for cable":
+        time.sleep(2)  # Simulate generation time
         stl_path = _root / "ImageToStl.com_Magsafe+55,9+mm+Lampe.stl"
         if stl_path.exists():
             try:
