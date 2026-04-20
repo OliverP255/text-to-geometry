@@ -259,6 +259,32 @@ def chat():
             socketio.emit("scene", _scene_cache)
             return jsonify({"ok": True, "code": code})
         return jsonify({"error": "gyroid infill file not found"}), 500
+
+    if prompt == "simple cube":
+        # Generate a cube mesh for B-Rep viewer
+        s = 0.5  # half-size
+        vertices = [
+            [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],  # front
+            [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s],      # back
+        ]
+        faces = [
+            [0, 1, 2], [0, 2, 3],  # front
+            [5, 4, 7], [5, 7, 6],  # back
+            [4, 0, 3], [4, 3, 7],  # left
+            [1, 5, 6], [1, 6, 2],  # right
+            [3, 2, 6], [3, 6, 7],  # top
+            [4, 5, 1], [4, 1, 0],  # bottom
+        ]
+        mesh_data = {
+            "type": "brep-mesh",
+            "vertices": vertices,
+            "faces": faces,
+            "normals": [],
+            "bounds": {"min": [-s, -s, -s], "max": [s, s, s]},
+        }
+        _scene_cache = mesh_data
+        socketio.emit("scene", mesh_data)
+        return jsonify({"ok": True, "vertices": 8})
     # === END HARDCODED RESPONSES ===
 
     if _llm is None:
@@ -498,6 +524,33 @@ def on_chat(data):
             emit("chat_done", {"code": code})
             return
         emit("chat_error", {"error": "gyroid infill file not found"})
+        return
+
+    if prompt == "simple cube":
+        # Generate a cube mesh for B-Rep viewer
+        s = 0.5  # half-size
+        vertices = [
+            [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],  # front
+            [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s],      # back
+        ]
+        faces = [
+            [0, 1, 2], [0, 2, 3],  # front
+            [5, 4, 7], [5, 7, 6],  # back
+            [4, 0, 3], [4, 3, 7],  # left
+            [1, 5, 6], [1, 6, 2],  # right
+            [3, 2, 6], [3, 6, 7],  # top
+            [4, 5, 1], [4, 1, 0],  # bottom
+        ]
+        mesh_data = {
+            "type": "brep-mesh",
+            "vertices": vertices,
+            "faces": faces,
+            "normals": [],
+            "bounds": {"min": [-s, -s, -s], "max": [s, s, s]},
+        }
+        _scene_cache = mesh_data
+        emit("scene", mesh_data)
+        emit("chat_done", {"code": "cube", "type": "brep"})
         return
     # === END HARDCODED RESPONSES ===
 
