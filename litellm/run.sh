@@ -84,4 +84,14 @@ echo "             export ANTHROPIC_AUTH_TOKEN=\"\$LITELLM_MASTER_KEY\"  # same 
 # + `prisma generate`. This project uses YAML-only routing — no DB for the proxy.
 unset DATABASE_URL
 
-exec litellm --config "$ROOT/config.yaml" --host 127.0.0.1 --port 4000
+PROXY_PORT="${LITELLM_PORT:-4000}"
+if command -v lsof >/dev/null 2>&1 && lsof -iTCP:"${PROXY_PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "ERROR: port ${PROXY_PORT} is already in use. Another process is listening (often another LiteLLM)."
+  echo "  If you start this proxy while :${PROXY_PORT} is taken, LiteLLM may bind a random port instead,"
+  echo "  while Claude Code still uses ANTHROPIC_BASE_URL=http://127.0.0.1:${PROXY_PORT} — you then get 400 (e.g. no connected db) from the wrong server."
+  echo "  Stop the process on :${PROXY_PORT}, then rerun. Current listener(s):"
+  lsof -nP -iTCP:"${PROXY_PORT}" -sTCP:LISTEN 2>/dev/null || true
+  exit 1
+fi
+
+exec litellm --config "$ROOT/config.yaml" --host 127.0.0.1 --port "${PROXY_PORT}"

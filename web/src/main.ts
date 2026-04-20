@@ -34,6 +34,98 @@ function setStatus(html: string): void {
   if (el) el.innerHTML = html;
 }
 
+function updateScaleBar(sdfRenderer: WebGPURenderer): void {
+  const rulerTrack = document.querySelector('#ruler .ruler-track');
+  if (!rulerTrack) return;
+
+  const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+  if (!canvas) return;
+
+  const { radius, fov } = sdfRenderer.getCameraInfo();
+  const viewportHeight = canvas.height;
+  const viewportWidth = canvas.width;
+
+  // Calculate pixels per world unit
+  // pixels_per_world_unit = viewport_height / (2 * tan(fov/2) * camera_distance)
+  const halfFov = fov / 2;
+  const pixelsPerWorldUnit = viewportHeight / (2 * Math.tan(halfFov) * radius);
+
+  // Pick a nice increment size (major tick spacing)
+  const targetMajorPixels = 100;
+  const rawWorldLength = targetMajorPixels / pixelsPerWorldUnit;
+
+  const niceValues = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
+  let majorIncrement = niceValues[niceValues.length - 1];
+  for (const nice of niceValues) {
+    if (rawWorldLength <= nice * 1.5) {
+      majorIncrement = nice;
+      break;
+    }
+  }
+
+  const majorPixels = majorIncrement * pixelsPerWorldUnit;
+
+  // Determine minor increment (smaller subdivisions)
+  let minorIncrement = majorIncrement / 10;
+  if (majorPixels < 50) {
+    minorIncrement = majorIncrement / 5;
+  }
+  if (majorPixels < 25) {
+    minorIncrement = majorIncrement / 2;
+  }
+
+  const minorPixels = minorIncrement * pixelsPerWorldUnit;
+
+  // Start from 0 at left edge, go up to viewport width
+  // Calculate how many major ticks we need
+  const numMajorTicks = Math.ceil(viewportWidth / majorPixels) + 1;
+
+  // Clear existing ticks
+  rulerTrack.innerHTML = '';
+
+  // Create tick elements starting from 0 at left
+  for (let i = 0; i <= numMajorTicks; i++) {
+    const majorX = i * majorPixels;
+    if (majorX > viewportWidth + 50) break;
+
+    // Major tick
+    const majorTick = document.createElement('div');
+    majorTick.className = 'tick major';
+    majorTick.style.left = `${majorX}px`;
+    rulerTrack.appendChild(majorTick);
+
+    // Label for major tick
+    const label = document.createElement('span');
+    label.className = 'tick-label';
+    label.style.left = `${majorX}px`;
+    const worldValue = i * majorIncrement;
+    if (worldValue === 0) {
+      label.textContent = '0';
+    } else if (worldValue >= 100) {
+      label.textContent = `${Math.round(worldValue)}`;
+    } else if (worldValue >= 10) {
+      label.textContent = `${Math.round(worldValue)}`;
+    } else if (majorIncrement >= 1) {
+      label.textContent = `${worldValue.toFixed(1)}`;
+    } else {
+      label.textContent = `${worldValue.toFixed(2)}`;
+    }
+    rulerTrack.appendChild(label);
+
+    // Minor ticks between major ticks
+    const minorsPerMajor = Math.round(majorIncrement / minorIncrement);
+    for (let j = 1; j < minorsPerMajor; j++) {
+      const minorX = majorX + j * minorPixels;
+      if (minorX < 0 || minorX > viewportWidth) continue;
+
+      const minorTick = document.createElement('div');
+      minorTick.className = 'tick minor';
+      minorTick.style.left = `${minorX}px`;
+      rulerTrack.appendChild(minorTick);
+    }
+  }
+}
+
 function escapeHtmlText(s: string): string {
   return s
     .replace(/&/g, '&amp;')
@@ -594,6 +686,7 @@ async function main(): Promise<void> {
       brepRenderer.render();
     } else {
       sdfRenderer.render();
+      updateScaleBar(sdfRenderer);
     }
     requestAnimationFrame(loop);
   };
