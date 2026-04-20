@@ -249,6 +249,16 @@ def chat():
             except Exception as e:
                 return jsonify({"error": f"Failed to load STL: {e}"}), 500
         return jsonify({"error": "iPhone holder STL file not found"}), 500
+
+    if prompt == "detailed gyroid infill contained inside of a cylinder with walls of thickness 5mm":
+        gyroid_path = _root / "gyroid_infill.wgsl"
+        if gyroid_path.exists():
+            code = gyroid_path.read_text()
+            _last_code = code
+            _scene_cache = {"type": "wgsl-sdf", "code": code}
+            socketio.emit("scene", _scene_cache)
+            return jsonify({"ok": True, "code": code})
+        return jsonify({"error": "gyroid infill file not found"}), 500
     # === END HARDCODED RESPONSES ===
 
     if _llm is None:
@@ -476,6 +486,18 @@ def on_chat(data):
                 emit("chat_error", {"error": f"Failed to load STL: {e}"})
                 return
         emit("chat_error", {"error": "iPhone holder STL file not found"})
+        return
+
+    if prompt == "detailed gyroid infill contained inside of a cylinder with walls of thickness 5mm":
+        gyroid_path = _root / "gyroid_infill.wgsl"
+        if gyroid_path.exists():
+            code = gyroid_path.read_text()
+            _last_code = code
+            _scene_cache = {"type": "wgsl-sdf", "code": code}
+            emit("scene", _scene_cache)
+            emit("chat_done", {"code": code})
+            return
+        emit("chat_error", {"error": "gyroid infill file not found"})
         return
     # === END HARDCODED RESPONSES ===
 
