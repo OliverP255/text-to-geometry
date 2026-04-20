@@ -107,7 +107,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      max-width: min(720px, calc(100vw - 28px));
+      width: min(700px, calc(100vw - 28px));
       padding: 0 env(safe-area-inset-left, 0px) 0 env(safe-area-inset-right, 0px);
     }
 
@@ -571,8 +571,8 @@
     </div>
   </div>
 
-  <div id="auth-modal" class="modal-backdrop" hidden inert aria-hidden="true">
-    <div class="modal-panel" role="dialog" aria-labelledby="auth-title">
+  <dialog id="auth-modal" class="modal-backdrop" aria-labelledby="auth-title">
+    <div class="modal-panel">
       <h2 id="auth-title">Account</h2>
       <div class="auth-tabs">
         <button type="button" id="auth-tab-login" class="active">Sign in</button>
