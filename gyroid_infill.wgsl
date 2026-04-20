@@ -20,8 +20,8 @@ fn map(p: vec3f) -> f32 {
 
   // Outer cylinder
   let outerCyl = sdCylinder(p, height, outerRadius);
-  // Inner cylinder (to subtract)
-  let innerCyl = sdCylinder(p, height - 0.05, innerRadius);
+  // Inner cylinder to hollow out (same height for open ends)
+  let innerCyl = sdCylinder(p, height, innerRadius);
 
   // Wall shell: outer minus inner (open top/bottom)
   let walls = opS(outerCyl, innerCyl);
