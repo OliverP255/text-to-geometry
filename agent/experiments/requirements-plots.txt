@@ -1,3 +1,0 @@
-# Optional: figures for benchmark comparison (plot_benchmark_comparison.py)
-matplotlib>=3.8
-numpy>=1.26

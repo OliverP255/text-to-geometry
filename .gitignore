@@ -12,6 +12,7 @@ build/
 .claude/
 litellm/.vertex-sa.json
 web/node_modules/
+web/dist/
 **/__pycache__/
 *.pyc
 .env/
@@ -27,6 +28,7 @@ data/print_uploads/
 # Benchmark / local runs (large)
 agent/experiments/outputs/
 agent/experiments/logs/
+agent/experiments/figures/
 
 # OS / editor
 .DS_Store

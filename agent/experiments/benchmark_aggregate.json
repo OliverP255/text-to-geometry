@@ -10,7 +10,6 @@
     "any_code_rate": 100.0,
     "mean_valid_code_len": 284.0,
     "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
     "fidelity_mean": 4.35,
     "fidelity_no_output_count": 0,
     "fidelity_bands": {
@@ -32,7 +31,6 @@
     "any_code_rate": 100.0,
     "mean_valid_code_len": 258.0,
     "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
     "fidelity_mean": 4.28,
     "fidelity_no_output_count": 0,
     "fidelity_bands": {
@@ -54,7 +52,6 @@
     "any_code_rate": 100.0,
     "mean_valid_code_len": 271.0,
     "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
     "fidelity_mean": 4.15,
     "fidelity_no_output_count": 0,
     "fidelity_bands": {
@@ -63,28 +60,6 @@
       "band3_no_dims_21to30": 3.6,
       "band4_vague_31to40": 3.7,
       "band5_organic_41to46": 4.83
-    }
-  },
-  {
-    "slug": "deepseek-ai_DeepSeek-R1-Distill-Qwen-32B",
-    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
-    "label": "DeepSeek-R1-Distill-Qwen-32B",
-    "prompt_count": 46,
-    "validation_passed": 46,
-    "agent_returned_code": 46,
-    "validation_pass_rate": 100.0,
-    "any_code_rate": 100.0,
-    "mean_valid_code_len": 286.0,
-    "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
-    "fidelity_mean": 3.87,
-    "fidelity_no_output_count": 0,
-    "fidelity_bands": {
-      "band1_steps_dims_1to10": 4.1,
-      "band2_dims_no_steps_11to20": 4.2,
-      "band3_no_dims_21to30": 3.5,
-      "band4_vague_31to40": 3.5,
-      "band5_organic_41to46": 4.67
     }
   },
   {
@@ -98,7 +73,6 @@
     "any_code_rate": 100.0,
     "mean_valid_code_len": 285.0,
     "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
     "fidelity_mean": 4.0,
     "fidelity_no_output_count": 0,
     "fidelity_bands": {
@@ -120,7 +94,6 @@
     "any_code_rate": 100.0,
     "mean_valid_code_len": 284.0,
     "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
     "fidelity_mean": 3.96,
     "fidelity_no_output_count": 0,
     "fidelity_bands": {
@@ -132,69 +105,24 @@
     }
   },
   {
-    "slug": "llava-hf_llava-v1.6-mistral-7b-hf",
-    "model_id": "llava-hf/llava-v1.6-mistral-7b-hf",
-    "label": "llava-v1.6-mistral-7b-hf",
+    "slug": "deepseek-ai_DeepSeek-R1-Distill-Qwen-32B",
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+    "label": "DeepSeek-R1-Distill-Qwen-32B",
     "prompt_count": 46,
-    "validation_passed": 44,
-    "agent_returned_code": 44,
-    "validation_pass_rate": 95.7,
-    "any_code_rate": 95.7,
-    "mean_valid_code_len": 224.0,
+    "validation_passed": 46,
+    "agent_returned_code": 46,
+    "validation_pass_rate": 100.0,
+    "any_code_rate": 100.0,
+    "mean_valid_code_len": 286.0,
     "grade": "A",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
-    "fidelity_mean": 2.37,
-    "fidelity_no_output_count": 2,
+    "fidelity_mean": 3.87,
+    "fidelity_no_output_count": 0,
     "fidelity_bands": {
-      "band1_steps_dims_1to10": 2.3,
-      "band2_dims_no_steps_11to20": 2.9,
-      "band3_no_dims_21to30": 1.9,
-      "band4_vague_31to40": 1.8,
-      "band5_organic_41to46": 3.33
-    }
-  },
-  {
-    "slug": "llava-hf_llava-onevision-qwen2-7b-ov-hf",
-    "model_id": "llava-hf/llava-onevision-qwen2-7b-ov-hf",
-    "label": "llava-onevision-qwen2-7b-ov-hf",
-    "prompt_count": 46,
-    "validation_passed": 38,
-    "agent_returned_code": 38,
-    "validation_pass_rate": 82.6,
-    "any_code_rate": 82.6,
-    "mean_valid_code_len": 243.0,
-    "grade": "B",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
-    "fidelity_mean": 2.15,
-    "fidelity_no_output_count": 8,
-    "fidelity_bands": {
-      "band1_steps_dims_1to10": 2.6,
-      "band2_dims_no_steps_11to20": 2.8,
-      "band3_no_dims_21to30": 1.4,
-      "band4_vague_31to40": 1.6,
-      "band5_organic_41to46": 3.17
-    }
-  },
-  {
-    "slug": "THUDM_GLM-Z1-32B-0414",
-    "model_id": "THUDM/GLM-Z1-32B-0414",
-    "label": "GLM-Z1-32B-0414",
-    "prompt_count": 46,
-    "validation_passed": 31,
-    "agent_returned_code": 31,
-    "validation_pass_rate": 67.4,
-    "any_code_rate": 67.4,
-    "mean_valid_code_len": 260.0,
-    "grade": "C",
-    "fidelity_rater": "claude-4.6-opus (automated code-review, no rendering)",
-    "fidelity_mean": 3.02,
-    "fidelity_no_output_count": 15,
-    "fidelity_bands": {
-      "band1_steps_dims_1to10": 3.8,
-      "band2_dims_no_steps_11to20": 4.0,
-      "band3_no_dims_21to30": 2.3,
-      "band4_vague_31to40": 1.9,
-      "band5_organic_41to46": 3.33
+      "band1_steps_dims_1to10": 4.1,
+      "band2_dims_no_steps_11to20": 4.2,
+      "band3_no_dims_21to30": 3.5,
+      "band4_vague_31to40": 3.5,
+      "band5_organic_41to46": 4.67
     }
   }
 ]

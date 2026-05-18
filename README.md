@@ -27,7 +27,7 @@ SketchCAD closes that gap entirely.
 
 ## What SketchCAD Does
 
-You describe what you want. SketcCAD builds it and gives you a file you can print.
+You describe what you want. SketchCAD builds it and gives you a file you can print.
 
 ```html
           "A vase with a twisting body and a voronoi texture on the surface"
@@ -102,103 +102,23 @@ By targeting WGSL (the WebGPU shading language) using iq-style conventions, Sket
 
 ## Benchmark: LLM Geometry Generation
 
-I benchmarked all the top open source models for my task of generating 3D geometry in WGSL. Here were the results.
+A fixed benchmark of **46 prompts** across five difficulty categories was run against leading open-weight code models. WGSL validity was checked programmatically; geometric accuracy was rated on a 1–5 scale from generated code and rendered output.
 
-A fixed benchmark of **46 prompts** across five difficulty categories was run against nine open-weight models. WGSL validity was checked programmatically; geometric accuracy was rated (from both the code and 2D image of the result) by Claude Opus 4.6 on a 1–5 scale.
+| Model | Valid WGSL % | Mean accuracy (1–5) |
+|---|---|---|
+| Qwen2.5-Coder-32B-Instruct | 100% | **4.35** |
+| Qwen3-14B-FP8 | 100% | 4.28 |
+| Qwen3-32B-FP8 | 100% | 4.15 |
+| GLM-4.7-Flash-FP8 | 100% | 4.00 |
+| GLM-4-32B-0414 | 100% | 3.96 |
+| DeepSeek-R1-Distill-Qwen-32B | 100% | 3.87 |
 
-| Model | Valid WGSL % | Mean Accuracy | Grade |
-|---|---|---|---|
-| Qwen2.5-Coder-32B-Instruct | 100.0% | 4.35 | A |
-| Qwen3-14B-FP8 | 100.0% | 4.28 | A |
-| Qwen3-32B-FP8 | 100.0% | 4.15 | A |
-| GLM-4.7-Flash-FP8 | 100.0% | 4.00 | A |
-| GLM-4-32B-0414 | 100.0% | 3.96 | A |
-| DeepSeek-R1-Distill-Qwen-32B | 100.0% | 3.87 | A |
-| GLM-Z1-32B-0414 | 67.4% | 3.02 | C |
-| llava-v1.6-mistral-7b-hf | 95.7% | 2.37 | B |
-| llava-onevision-qwen2-7b-ov-hf | 82.6% | 2.15 | B |
+**Prompt categories:** classic CAD with dimensions and steps (B1–B2), CAD without dimensions (B3–B4), and organic / SDF-native shapes (B5).
 
-**Prompt categories tested:**
+**Finding:** Qwen2.5-Coder-32B-Instruct outperforms larger Qwen3 variants on this task—code-specialised training beats raw scale for WGSL SDF generation.
 
-- **B1** — Classic CAD with specified dimensions + numbered steps
-- **B2** — Classic CAD with specified dimensions, no steps
-- **B3** — Classic CAD, no dimensions specified
-- **B4** — Vague / short prompts
-- **B5** — Organic / SDF-native shapes (smooth blending, gyroids, procedural)
+Full aggregate results: `agent/experiments/benchmark_aggregate.json`. Prompt suite: `agent/experiments/test_prompts.py`.
 
-The dominant failure mode across all models was precise spatial reasoning (e.g. writing incorrect half-extents, wrong positional offsets, rotation errors) rather than syntax failures. 
-
-**Finding:** Qwen2.5-Coder-32B-Instruct outperforms both larger Qwen3 models, demonstrating that code-specialised training is more valuable than raw scale for this task. The model also produced the most creative solutions for complex SDF compositions.
-
-
----
-
-## Roadmap
-
-### Current (v0)
-- [x] Natural language → WGSL SDF generation
-- [x] Real-time WebGPU ray marching preview
-- [x] Multi-model benchmark (46 prompts, 9 models)
-- [x] Grammar-constrained DSL fallback for weaker models
-- [x] SDF → STL export pipeline
-- [x] Mesh repair for slicer compatibility
-
-### Near term
-- [x] VLM vision feedback — agent sees rendered output and self-corrects geometric errors
-- [ ] Parametric layer — named, editable parameters extracted from generated WGSL
-- [ ] Extended primitive library — gears, threads, snap fits, knurling
-- [ ] Print-on-demand integration — order physical prints directly from the interface
-- [ ] Example gallery — curated prompts demonstrating SDF-native geometry
-
-### Medium term
-- [ ] Hybrid B-Rep + SDF engine — precise dimensions for structural features, SDF for organic surfaces
-- [ ] Voxel FEA — basic structural analysis to validate wall thickness and load-bearing geometry
-- [ ] Manufacturing constraint awareness — automatic overhang detection, minimum feature size warnings
-
-### Long term
-- [ ] Physics-driven design — simulation results feeding geometry as field operations
-- [ ] Topology optimisation — SDF-native TO using density field methods
-- [ ] Full generative design pipeline — from engineering specification to optimised physical part
-
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.10+
-- Node.js 18+
-- GPU with WebGPU support (Chrome 113+ or Edge 113+)
-- vLLM-compatible GPU for local inference (or set `T2G_MODEL_ID` to use an API endpoint)
-
-### Installation
-
-```bash
-git clone https://github.com/OliverP255/text-to-geometry
-cd text-to-geometry
-
-# Install Python dependencies
-pip install -r agent/requirements.txt
-
-# Install frontend dependencies
-cd web && npm install && npm run build && cd ..
-
-# Start the server
-python server.py
-```
-
-Open `http://localhost:5001` in a WebGPU-enabled browser.
-
-### Configuration
-
-```bash
-# Use a different model
-T2G_MODEL_ID=Qwen/Qwen2.5-Coder-32B-Instruct python server.py
-
-# Use an external API endpoint
-T2G_API_BASE=https://your-endpoint.com python server.py
-```
 
 ---
 
@@ -206,21 +126,24 @@ T2G_API_BASE=https://your-endpoint.com python server.py
 
 ```
 text-to-geometry/
-├── agent/                  # LLM agent and inference pipeline
-│   ├── experiments/        # Benchmark suite (46 prompts, 9 models)
-│   └── headless_renderer.py # GPU SDF evaluation via wgpu-py
-├── bindings/               # Python bindings for C++ kernel
-├── include/                # C++ SDF primitive headers
-├── src/                    # C++ geometry kernel source
-│   ├── primitives/         # sdSphere, sdBox, sdCylinder, etc.
-│   └── operations/         # opUnion, opSmoothUnion, etc.
-├── server/                 # Flask server and API routes
-├── web/                    # TypeScript frontend
-│   └── src/main.ts         # WebGPU renderer and UI
-├── tests/                  # Geometry and pipeline tests
-├── server.py               # Entry point
-└── architecture.md         # Detailed architecture documentation
+├── agent/                  # LLM agents, WGSL validator, mesh export
+│   ├── experiments/        # Benchmark prompts + aggregate results
+│   └── headless_renderer.py
+├── bindings/               # pybind11 → C++ geometry kernel
+├── include/                # C++ headers (kernel, frontend DSL)
+├── src/
+│   ├── kernel/             # FlatIR, lower, optimise, pack for WebGPU
+│   └── frontend/           # DSL lexer/parser
+├── print_backend/          # Print job API, auth, estimates
+├── templates/              # Admin print-jobs UI
+├── web/                    # TypeScript + Vite frontend
+│   └── src/main.ts         # WebGPU viewer and prompt UI
+├── tests/                  # C++ and Python tests
+├── server.py               # Flask + Socket.IO entry point
+└── chair.gif               # Demo render
 ```
+
+NOTE: The DSL is currently no longer used in the agent loop because stronger models generally perform better using either WGSL or CADQuery as syntax is more familiar
 
 ---
 

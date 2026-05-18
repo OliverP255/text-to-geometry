@@ -1,35 +1,23 @@
 fn map(p: vec3f) -> f32 {
-  // Gyroid infill pattern contained inside a cylinder with 5mm walls
-  // Open top and bottom to see the internal gyroid structure
+    let cylR = 0.8;
+    let cylH = 1.0;
+    let wallT = 0.05;
 
-  // Scale for gyroid pattern (smaller = denser infill)
-  let scale = 0.35;
-  let sp = p * scale;
+    // --- Open-ended shell: subtract taller inner cylinder to cut off caps ---
+    let dOuter = sdCylinder(p, cylH, cylR);
+    let dInner = sdCylinder(p, cylH + 0.01, cylR - wallT);
+    let dWall = opS(dOuter, dInner);
 
-  // Gyroid SDF approximation
-  // f(x,y,z) = sin(x)*cos(y) + sin(y)*cos(z) + sin(z)*cos(x)
-  let gx = sin(sp.x) * cos(sp.y);
-  let gy = sin(sp.y) * cos(sp.z);
-  let gz = sin(sp.z) * cos(sp.x);
-  let gyroid = (abs(gx + gy + gz) - 0.3) / scale;
+    // --- Gyroid infill ---
+    let freq = 10.0;
+    let gp = p * freq;
+    let g = sin(gp.x) * cos(gp.y) + sin(gp.y) * cos(gp.z) + sin(gp.z) * cos(gp.x);
+    let strutT = 0.12;
+    let dGyroid = (abs(g) - strutT) / (freq * 1.5);
 
-  // Outer cylinder shell (5mm walls)
-  let outerRadius = 2.0;
-  let innerRadius = outerRadius - 0.1; // 5mm wall thickness
-  let height = 1.5;
+    // Clip gyroid to interior
+    let dInterior = sdCylinder(p, cylH - wallT * 0.5, cylR - wallT);
+    let dFill = opI(dGyroid, dInterior);
 
-  // Outer cylinder
-  let outerCyl = sdCylinder(p, height, outerRadius);
-  // Inner cylinder to hollow out (same height for open ends)
-  let innerCyl = sdCylinder(p, height, innerRadius);
-
-  // Wall shell: outer minus inner (open top/bottom)
-  let walls = opS(outerCyl, innerCyl);
-
-  // Contain gyroid inside the inner cylinder volume
-  let innerVolume = sdCylinder(p, height - 0.1, innerRadius - 0.02);
-  let containedGyroid = opI(gyroid, innerVolume);
-
-  // Combine: walls + gyroid infill
-  return opU(walls, containedGyroid);
+    return opU(dWall, dFill);
 }

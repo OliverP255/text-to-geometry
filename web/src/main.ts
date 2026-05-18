@@ -283,7 +283,7 @@ function initPromptBar(
         }
       }
       input.value = '';
-      input.placeholder = 'Refine: "make it larger", "add holes", or /brep for CAD mode';
+      input.placeholder = 'Refine: "make it larger", "add holes", or describe a new shape';
       cleanup();
     });
 

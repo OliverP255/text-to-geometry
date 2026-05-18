@@ -8,7 +8,6 @@
 import json
 import os
 import sys
-import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -213,80 +212,6 @@ def chat():
     if not prompt:
         return jsonify({"error": "Missing non-empty 'prompt'"}), 400
 
-    # === HARDCODED RESPONSES FOR DEMO ===
-    if prompt == "Make a futuristic, abstract sculpture":
-    # Load DNA sculpture WGSL
-        dna_path = _root / "void_core.wgsl"
-        if dna_path.exists():
-            code = dna_path.read_text()
-            _last_code = code
-            _scene_cache = {"type": "wgsl-sdf", "code": code}
-            socketio.emit("scene", _scene_cache)
-            return jsonify({"ok": True, "code": code})
-        return jsonify({"error": "sculpture file not found"}), 500
-
-    if prompt == "iPhone holder for iPhone 16 Pro with hole for cable":
-        # Load iPhone holder STL and convert to mesh
-        stl_path = _root / "ImageToStl.com_Magsafe+55,9+mm+Lampe.stl"
-        if stl_path.exists():
-            try:
-                import trimesh
-                mesh = trimesh.load(str(stl_path))
-                bounds_min = mesh.bounds[0].tolist()
-                bounds_max = mesh.bounds[1].tolist()
-                mesh_data = {
-                    "type": "brep-mesh",
-                    "vertices": mesh.vertices.tolist(),
-                    "faces": mesh.faces.tolist(),
-                    "normals": mesh.vertex_normals.tolist() if hasattr(mesh, 'vertex_normals') else [],
-                    "bounds": {"min": bounds_min, "max": bounds_max},
-                    "volume_mm3": mesh.volume,
-                    "is_watertight": mesh.is_watertight,
-                }
-                _scene_cache = mesh_data
-                socketio.emit("scene", mesh_data)
-                return jsonify({"ok": True, "vertices": len(mesh.vertices)})
-            except Exception as e:
-                return jsonify({"error": f"Failed to load STL: {e}"}), 500
-        return jsonify({"error": "iPhone holder STL file not found"}), 500
-
-    if prompt == "detailed gyroid infill contained inside of a cylinder with walls of thickness 5mm":
-        gyroid_path = _root / "gyroid_infill.wgsl"
-        if gyroid_path.exists():
-            code = gyroid_path.read_text()
-            _last_code = code
-            _scene_cache = {"type": "wgsl-sdf", "code": code}
-            socketio.emit("scene", _scene_cache)
-            return jsonify({"ok": True, "code": code})
-        return jsonify({"error": "gyroid infill file not found"}), 500
-
-    if prompt == "simple cube":
-        # Generate a cube mesh for B-Rep viewer
-        s = 0.5  # half-size
-        vertices = [
-            [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],  # front
-            [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s],      # back
-        ]
-        faces = [
-            [0, 1, 2], [0, 2, 3],  # front
-            [5, 4, 7], [5, 7, 6],  # back
-            [4, 0, 3], [4, 3, 7],  # left
-            [1, 5, 6], [1, 6, 2],  # right
-            [3, 2, 6], [3, 6, 7],  # top
-            [4, 5, 1], [4, 1, 0],  # bottom
-        ]
-        mesh_data = {
-            "type": "brep-mesh",
-            "vertices": vertices,
-            "faces": faces,
-            "normals": [],
-            "bounds": {"min": [-s, -s, -s], "max": [s, s, s]},
-        }
-        _scene_cache = mesh_data
-        socketio.emit("scene", mesh_data)
-        return jsonify({"ok": True, "vertices": 8})
-    # === END HARDCODED RESPONSES ===
-
     if _llm is None:
         if _llm_loading:
             return jsonify({"error": "Model is still loading, please wait…"}), 503
@@ -474,85 +399,6 @@ def on_chat(data):
     if not prompt:
         emit("chat_error", {"error": "Missing prompt"})
         return
-
-    # === HARDCODED RESPONSES FOR DEMO ===
-    if prompt == "Make a futuristic, abstract sculpture":
-        dna_path = _root / "void_core.wgsl"
-        if dna_path.exists():
-            code = dna_path.read_text()
-            _last_code = code
-            _scene_cache = {"type": "wgsl-sdf", "code": code}
-            emit("scene", _scene_cache)
-            emit("chat_done", {"code": code})
-            return
-        emit("chat_error", {"error": "sculpture file not found"})
-        return
-
-    if prompt == "iPhone holder for iPhone 16 Pro with hole for cable":
-        time.sleep(2)  # Simulate generation time
-        stl_path = _root / "ImageToStl.com_Magsafe+55,9+mm+Lampe.stl"
-        if stl_path.exists():
-            try:
-                import trimesh
-                mesh = trimesh.load(str(stl_path))
-                mesh_data = {
-                    "type": "brep-mesh",
-                    "vertices": mesh.vertices.tolist(),
-                    "faces": mesh.faces.tolist(),
-                    "normals": mesh.vertex_normals.tolist() if hasattr(mesh, 'vertex_normals') else [],
-                    "bounds": {"min": mesh.bounds[0].tolist(), "max": mesh.bounds[1].tolist()},
-                    "volume_mm3": mesh.volume,
-                    "is_watertight": mesh.is_watertight,
-                }
-                _scene_cache = mesh_data
-                emit("scene", mesh_data)
-                emit("chat_done", {"code": "stl_loaded", "type": "brep"})
-                return
-            except Exception as e:
-                emit("chat_error", {"error": f"Failed to load STL: {e}"})
-                return
-        emit("chat_error", {"error": "iPhone holder STL file not found"})
-        return
-
-    if prompt == "detailed gyroid infill contained inside of a cylinder with walls of thickness 5mm":
-        gyroid_path = _root / "gyroid_infill.wgsl"
-        if gyroid_path.exists():
-            code = gyroid_path.read_text()
-            _last_code = code
-            _scene_cache = {"type": "wgsl-sdf", "code": code}
-            emit("scene", _scene_cache)
-            emit("chat_done", {"code": code})
-            return
-        emit("chat_error", {"error": "gyroid infill file not found"})
-        return
-
-    if prompt == "simple cube":
-        # Generate a cube mesh for B-Rep viewer
-        s = 0.5  # half-size
-        vertices = [
-            [-s, -s, -s], [s, -s, -s], [s, s, -s], [-s, s, -s],  # front
-            [-s, -s, s], [s, -s, s], [s, s, s], [-s, s, s],      # back
-        ]
-        faces = [
-            [0, 1, 2], [0, 2, 3],  # front
-            [5, 4, 7], [5, 7, 6],  # back
-            [4, 0, 3], [4, 3, 7],  # left
-            [1, 5, 6], [1, 6, 2],  # right
-            [3, 2, 6], [3, 6, 7],  # top
-            [4, 5, 1], [4, 1, 0],  # bottom
-        ]
-        mesh_data = {
-            "type": "brep-mesh",
-            "vertices": vertices,
-            "faces": faces,
-            "normals": [],
-            "bounds": {"min": [-s, -s, -s], "max": [s, s, s]},
-        }
-        _scene_cache = mesh_data
-        emit("scene", mesh_data)
-        emit("chat_done", {"code": "cube", "type": "brep"})
-        return
-    # === END HARDCODED RESPONSES ===
 
     if _llm is None:
         emit("chat_error", {"error": "Model not loaded"})
