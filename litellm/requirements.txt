@@ -1,2 +1,0 @@
-litellm[proxy]>=1.65.0
-google-cloud-aiplatform>=1.38.0
